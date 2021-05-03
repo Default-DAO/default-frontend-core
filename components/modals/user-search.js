@@ -12,7 +12,7 @@ import Card from '../../reusable/card'
 import Avatar from '../../reusable/avatar'
 import Button from '../../reusable/button'
 import keys from '../../config/keys'
-import { useStoreApi } from '../../redux/provider'
+import { useStoreApi } from '../../store/provider'
 
 const SearchModal = props => {
   const { classes, title, open, close, action } = props
@@ -28,7 +28,7 @@ const SearchModal = props => {
       newSelected.push(cell)
       setSelected(newSelected)
     }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
-      <Avatar size={40}></Avatar>
+      <Avatar user={cell} size={40}></Avatar>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
     </Card>
   }

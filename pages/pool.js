@@ -6,10 +6,10 @@ import keys from '../config/keys'
 import Button from '../reusable/button'
 import Text from '../reusable/text'
 import Card from '../reusable/card'
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 const Pool = props => {
-  const {setShowAddLiquidity} = useStoreApi()
+  const {setShowAddLiquidity, setShowSwapLiquidity} = useStoreApi()
 
   const { classes } = props
   return (

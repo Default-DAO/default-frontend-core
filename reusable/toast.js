@@ -8,7 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 //success / error snackbar with message
 const Toast = props => {

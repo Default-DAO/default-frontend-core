@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
+const shortid = require('shortid')
 
 import { withStyles } from '@material-ui/core/styles';
 
 import keys from '../config/keys'
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 const pastelColors = [
   "#B0E0E6",
@@ -21,9 +22,7 @@ const pastelColors = [
 ]
 
 const Avatar = (props) => {
-  const { user } = useStoreApi()
-
-  const { classes } = props
+  const { classes, user } = props
   if (user.image) {
     return <img className={clsx(classes.avatar)} src={user.image}></img>
   } else {
@@ -31,6 +30,16 @@ const Avatar = (props) => {
     if (user.alias) aliasLetter = user.alias[0]
     return <div className={clsx(classes.noImage, classes.avatar)}>{aliasLetter}</div>
   }
+}
+
+const hashStr = (str, range) => {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+      var charCode = str.charCodeAt(i);
+      hash += charCode;
+  }
+  
+  return hash % range;
 }
 
 const useStyles = theme => ({
@@ -44,8 +53,11 @@ const useStyles = theme => ({
     }
   },
   noImage: props => {
-    const { size } = props
-    let randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)]
+    let { size, user } = props
+    if (!user) user = {}
+    if (!user.alias) user.alias = shortid.generate()
+
+    let randomColor = pastelColors[ hashStr(user.alias, pastelColors.length) ]
     return {
       backgroundColor: randomColor,
       fontWeight: 700,

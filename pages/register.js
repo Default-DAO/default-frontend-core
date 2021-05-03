@@ -6,7 +6,7 @@ import Button from '../reusable/button'
 import Form from '../reusable/form'
 import Text from '../reusable/text'
 import { useWeb3, setUserAccount } from '../api/web3'
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 const Register = (props) => {
   const {showToast, setShowToast} = useStoreApi()

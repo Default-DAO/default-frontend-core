@@ -27,99 +27,99 @@ const SHOW_ADD_VALUE_NETWORK = 'SHOW_ADD_VALUE_NETWORK'
 const DUMMY_USERS = [
   { 
     ethAddress: shortid.generate(),
-    alias: "@zaz",
+    alias: "zaz",
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@fullyallocated" 
+    alias: "fullyallocated" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@soma" 
+    alias: "soma" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@melloone" 
+    alias: "melloone" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@maximillius" 
+    alias: "maximillius" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@scottsgc" 
+    alias: "scottsgc" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@zaz" 
+    alias: "zaz" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@fullyallocated" 
+    alias: "fullyallocated" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@soma" 
+    alias: "soma" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@melloone" 
+    alias: "melloone" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@maximillius" 
+    alias: "maximillius" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@scottsgc" 
+    alias: "scottsgc" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@zaz" 
+    alias: "zaz" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@fullyallocated" 
+    alias: "fullyallocated" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@soma" 
+    alias: "soma" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@melloone" 
+    alias: "melloone" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@maximillius" 
+    alias: "maximillius" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@scottsgc" 
+    alias: "scottsgc" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@zaz" 
+    alias: "zaz" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@fullyallocated" 
+    alias: "fullyallocated" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@soma" 
+    alias: "soma" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@melloone" 
+    alias: "melloone" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@maximillius" 
+    alias: "maximillius" 
   },
   { 
     ethAddress: shortid.generate(),
-    alias: "@scottsgc" 
+    alias: "scottsgc" 
   }
 ]
 

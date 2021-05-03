@@ -23,7 +23,7 @@ const Stake = props => {
     const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar size={40}></Avatar>
+        <Avatar user={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
       </span>
       <Weight

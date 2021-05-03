@@ -9,7 +9,7 @@ import Text from '../reusable/text'
 import Avatar from '../reusable/avatar'
 import Card from '../reusable/card'
 import Table from '../reusable/table'
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 const Network = props => {
   const store = useStoreApi()
@@ -20,7 +20,7 @@ const Network = props => {
   function renderCell(cell) {
     const { classes } = props
     return <Card className={classes.cell}>
-      <Avatar size={40}></Avatar>
+      <Avatar user={cell} size={40}></Avatar>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
     </Card>
   }

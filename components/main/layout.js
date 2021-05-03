@@ -9,7 +9,7 @@ import UserSearch from '../modals/user-search'
 import AddLiquidity from '../liquidity/add'
 import SwapLiquidity from '../liquidity/swap'
 import WithdrawLiquidity from '../liquidity/withdraw'
-import { useStoreApi } from '../../redux/provider'
+import { useStoreApi } from '../../store/provider'
 
 const Layout = (props) => {
   const store = useStoreApi()

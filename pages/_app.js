@@ -2,7 +2,7 @@
 import './global-style.css'
 import React from 'react';
 import Head from 'next/head';
-import { StoreProvider } from '../redux/provider'
+import { StoreProvider } from '../store/provider'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
