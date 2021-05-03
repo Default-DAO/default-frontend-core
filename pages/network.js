@@ -1,77 +1,69 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {mdiWalletGiftcard, mdiTrophyAward} from '@mdi/js';
+import { mdiWalletGiftcard, mdiTrophyAward } from '@mdi/js';
 
-import * as actions from '../redux/actions';
 import keys from '../config/keys'
 import Text from '../reusable/text'
 import Avatar from '../reusable/avatar'
 import Card from '../reusable/card'
 import Table from '../reusable/table'
+import { useStoreApi } from '../redux/provider'
 
-class Network extends React.Component {
-  constructor(props){
-      super(props)
+const Network = props => {
+  const store = useStoreApi()
 
-      this.state = {
-        stakeNetwork: [],
-        valueNetwork: [...keys.DUMMY_USERS]
-      }
-  }
+  const [stakeNetwork, setStakeNetwork] = useState([])
+  const [valueNetwork, setValueNetwork] = useState([...keys.DUMMY_USERS])
 
-  renderCell(cell) {
-    const {classes} = this.props
+  function renderCell(cell) {
+    const { classes } = props
     return <Card className={classes.cell}>
       <Avatar size={40}></Avatar>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
     </Card>
   }
 
-  render() {
-      const {classes} = this.props
-      return(
-          <div className={classes.network}>
-            <div className={classes.left}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Stake Network</Text>
-                <AddIcon 
-                  onClick={() => this.props.showAddStakeNetworkAction(true)} 
-                  className={classes.icon} 
-                  fontSize="small" 
-                />
-              </span>
-              <Table
-                text='Your stake network is empty!'
-                list={this.state.stakeNetwork}
-                renderCell={value => this.renderCell(value)}
-                icon={mdiWalletGiftcard}
-                action={() => this.props.showAddStakeNetworkAction(true)}
-              />
-            </div>
-            <div className={classes.right}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Value Network</Text>
-                <AddIcon 
-                  onClick={() => this.props.showAddValueNetworkAction(true)} 
-                  className={classes.icon} 
-                  fontSize="small" 
-                />
-              </span>
-              <Table
-                text='Your value network is empty!'
-                list={this.state.valueNetwork}
-                renderCell={value => this.renderCell(value)}
-                icon={mdiTrophyAward}
-                action={() => this.props.showAddValueNetworkAction(true)}
-              />
-            </div>
-          </div>
-      )
-  }
+  const { classes } = props
+  return (
+    <div className={classes.network}>
+      <div className={classes.left}>
+        <span className={classes.textContainer}>
+          <Text type="paragraph" fontSize={20} fontWeight={700}>Stake Network</Text>
+          <AddIcon
+            onClick={() => store.setShowAddStakeNetwork(true)}
+            className={classes.icon}
+            fontSize="small"
+          />
+        </span>
+        <Table
+          text='Your stake network is empty!'
+          list={stakeNetwork}
+          renderCell={value => renderCell(value)}
+          icon={mdiWalletGiftcard}
+          action={() => store.setShowAddStakeNetwork(true)}
+        />
+      </div>
+      <div className={classes.right}>
+        <span className={classes.textContainer}>
+          <Text type="paragraph" fontSize={20} fontWeight={700}>Value Network</Text>
+          <AddIcon
+            onClick={() => store.setShowAddValueNetwork(true)}
+            className={classes.icon}
+            fontSize="small"
+          />
+        </span>
+        <Table
+          text='Your value network is empty!'
+          list={valueNetwork}
+          renderCell={value => renderCell(value)}
+          icon={mdiTrophyAward}
+          action={() => store.setShowAddValueNetwork(true)}
+        />
+      </div>
+    </div>
+  )
 }
 
 const useStyles = theme => ({
@@ -121,15 +113,4 @@ const useStyles = theme => ({
   },
 });
 
-function mapStateToProps({getUserReducer}) {
-  return {getUserReducer};
-}
-
-function mapDispatchToProps(dispatch){
-  return bindActionCreators(
-      {...actions},
-      dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Network));
+export default withStyles(useStyles)(Network);

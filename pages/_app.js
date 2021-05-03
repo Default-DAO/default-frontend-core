@@ -1,14 +1,11 @@
 // require('./global-style.css')
 import './global-style.css'
 import React from 'react';
-import App from 'next/app';
 import Head from 'next/head';
-import { Provider } from 'react-redux';
+import { StoreProvider } from '../redux/provider'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import red from '@material-ui/core/colors/red';
 
-import store from '../redux/store';
 import * as keys from '../config/keys';
 import Layout from '../components/main/layout'
 
@@ -39,7 +36,7 @@ const noAuth = [
     '/settings/privacy-policy'
 ]
 
-function Default(props) {
+const Default = (props) => {
     const { Component, pageProps, router } = props;
     
     React.useEffect(() => {
@@ -57,7 +54,7 @@ function Default(props) {
                 <title>{keys.APP_NAME}</title>  
             </Head>
             {/* Wrapping the app with Redux Provider lets components further down the tree access the Redux */}                    
-            <Provider store={store}>                                            
+            <StoreProvider>
                 <MuiThemeProvider theme={theme}>
                     {(noAuth.includes(router.route)) ? (
                         <Component {...pageProps} />
@@ -69,7 +66,7 @@ function Default(props) {
                         />
                     )}
                 </MuiThemeProvider>
-            </Provider>                
+            </StoreProvider>           
         </React.Fragment>            
     );
 }

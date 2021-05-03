@@ -1,10 +1,10 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import keys from '../config/keys'
-import clsx from 'clsx';
+import { useStoreApi } from '../redux/provider'
 
 const pastelColors = [
   "#B0E0E6",
@@ -20,31 +20,22 @@ const pastelColors = [
   "#556B2F"
 ]
 
-class Avatar extends React.Component {
-  constructor(props){
-      super(props)
+const Avatar = (props) => {
+  const { user } = useStoreApi()
 
-      this.state = {
-        
-      }
-  }
-
-  render() {
-    const {classes} = this.props
-    let user = this.props.getUserReducer
-    if (user.image) {
-      return <img className={clsx(classes.avatar)} src={user.image}></img>
-    } else {
-      let aliasLetter = 'Ð'
-      if (user.alias) aliasLetter = user.alias[0]
-      return <div className={clsx(classes.noImage, classes.avatar)}>{aliasLetter}</div>
-    }
+  const { classes } = props
+  if (user.image) {
+    return <img className={clsx(classes.avatar)} src={user.image}></img>
+  } else {
+    let aliasLetter = 'Ð'
+    if (user.alias) aliasLetter = user.alias[0]
+    return <div className={clsx(classes.noImage, classes.avatar)}>{aliasLetter}</div>
   }
 }
 
 const useStyles = theme => ({
   avatar: props => {
-    const {size, margin} = props
+    const { size, margin } = props
     return {
       width: size ? size : 50,
       height: size ? size : 50,
@@ -53,7 +44,7 @@ const useStyles = theme => ({
     }
   },
   noImage: props => {
-    const {size} = props
+    const { size } = props
     let randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)]
     return {
       backgroundColor: randomColor,
@@ -69,8 +60,4 @@ const useStyles = theme => ({
 
 });
 
-function mapStateToProps({getUserReducer}) {
-  return {getUserReducer};
-}
-
-export default connect(mapStateToProps, null)(withStyles(useStyles)(Avatar));
+export default withStyles(useStyles)(Avatar);

@@ -1,12 +1,9 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {mdiWalletGiftcard, mdiTrophyAward} from '@mdi/js';
+import { mdiWalletGiftcard, mdiTrophyAward } from '@mdi/js';
 
-import * as actions from '../redux/actions';
 import keys from '../config/keys'
 import Text from '../reusable/text'
 import Avatar from '../reusable/avatar'
@@ -16,19 +13,14 @@ import Weight from '../reusable/weight'
 import Button from '../reusable/button'
 import StakeModal from '../components/liquidity/give'
 
-class Stake extends React.Component {
-  constructor(props){
-      super(props)
+const Stake = props => {
 
-      this.state = {
-        stakeTo: [...keys.DUMMY_USERS],
-        stakeFrom: [...keys.DUMMY_USERS],
-        stakeDntOpen: false
-      }
-  }
+  const [stakeTo, setStakeTo] = useState([...keys.DUMMY_USERS])
+  const [stakeFrom, setStakeFrom] = useState([...keys.DUMMY_USERS])
+  const [stakeDntOpen, setStakeDntOpen] = useState(false)
 
-  renderToCell(cell, i) {
-    const {classes} = this.props
+  function renderToCell(cell, i) {
+    const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar size={40}></Avatar>
@@ -37,24 +29,23 @@ class Stake extends React.Component {
       <Weight
         value={cell.weight}
         onChange={(weight) => {
-          let stakeTo = [...this.state.stakeTo]
-          let user = {...stakeTo[i]}
+          let newStakeTo = [...stakeTo]
+          let user = { ...newStakeTo[i] }
           user.weight = weight
-          stakeTo[i] = user
-          stakeTo = stakeTo.sort((u1, u2) => {
+          newStakeTo[i] = user
+          newStakeTo = newStakeTo.sort((u1, u2) => {
             u1.weight = u1.weight ? u1.weight : 0
             u2.weight = u2.weight ? u2.weight : 0
             return u1 - u2
           })
-          console.log("SL ", stakeTo)
-          this.setState({stakeTo})
+          setStakeTo(newStakeTo)
         }}
       />
     </Card>
   }
 
-  renderFromCell(cell) {
-    const {classes} = this.props
+  function renderFromCell(cell) {
+    const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar size={40}></Avatar>
@@ -67,10 +58,10 @@ class Stake extends React.Component {
     </Card>
   }
 
-  renderStakeButton() {
-    const {classes} = this.props
+  function renderStakeButton() {
+    const { classes } = props
     let weightSet = false
-    this.state.stakeTo.forEach(user => {
+    stakeTo.forEach(user => {
       if (user && user.weight && user.weight > 0) {
         weightSet = true
         return
@@ -82,62 +73,60 @@ class Stake extends React.Component {
         gradient
         width={200}
         height={50}
-        onClick={() => this.setState({stakeDntOpen: true})}
+        onClick={() => setStakeDntOpen(true)}
       >
         Stake!
       </Button></span>
     )
   }
 
-  render() {
-      const {classes} = this.props
-      return(
-          <div className={classes.stake}>
-            <div className={classes.epoch}>
-              <Button type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>Epoch 1</Button>
-              <Text type="subheading" fontSize={18} fontWeight={600}>Ends in 00:00:04</Text>
-            </div>
-            <div className={classes.tables}>
-            <div className={classes.left}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Stake To</Text>
-                <AddIcon 
-                  onClick={() => this.props.showAddStakeNetworkAction(true)} 
-                  className={classes.icon} 
-                  fontSize="small" 
-                />
-              </span>
-              <Table
-                text='Your stake network is empty!'
-                list={this.state.stakeTo}
-                renderCell={(value, i) => this.renderToCell(value, i)}
-                icon={mdiWalletGiftcard}
-                action={() => this.props.showAddStakeNetworkAction(true)}
-              />
-              {this.renderStakeButton()}
-            </div>
-            <div className={classes.right}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Stake From</Text>
-              </span>
-              <Table
-                text='Nobody has staked to you yet!'
-                list={this.state.stakeFrom}
-                renderCell={value => this.renderFromCell(value)}
-                icon={mdiTrophyAward}
-              />
-            </div>
-            </div>
-            <StakeModal
-              open={this.state.stakeDntOpen}
-              close={() => this.setState({stakeDntOpen: false})}
-              title="Stake Your DNT"
-              label="Stake DNT"
-              buttonLabel="Stake"
+  const { classes } = props
+  return (
+    <div className={classes.stake}>
+      <div className={classes.epoch}>
+        <Button type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>Epoch 1</Button>
+        <Text type="subheading" fontSize={18} fontWeight={600}>Ends in 00:00:04</Text>
+      </div>
+      <div className={classes.tables}>
+        <div className={classes.left}>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={20} fontWeight={700}>Stake To</Text>
+            <AddIcon
+              onClick={() => setShowAddStakeNetwork(true)}
+              className={classes.icon}
+              fontSize="small"
             />
-          </div>
-      )
-  }
+          </span>
+          <Table
+            text='Your stake network is empty!'
+            list={stakeTo}
+            renderCell={(value, i) => renderToCell(value, i)}
+            icon={mdiWalletGiftcard}
+            action={() => setShowAddStakeNetwork(true)}
+          />
+          {renderStakeButton()}
+        </div>
+        <div className={classes.right}>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={20} fontWeight={700}>Stake From</Text>
+          </span>
+          <Table
+            text='Nobody has staked to you yet!'
+            list={stakeFrom}
+            renderCell={value => renderFromCell(value)}
+            icon={mdiTrophyAward}
+          />
+        </div>
+      </div>
+      <StakeModal
+        open={stakeDntOpen}
+        close={() => setStakeDntOpen(false)}
+        title="Stake Your DNT"
+        label="Stake DNT"
+        buttonLabel="Stake"
+      />
+    </div>
+  )
 }
 
 const useStyles = theme => ({
@@ -220,15 +209,4 @@ const useStyles = theme => ({
   }
 });
 
-function mapStateToProps({getUserReducer}) {
-  return {getUserReducer};
-}
-
-function mapDispatchToProps(dispatch){
-  return bindActionCreators(
-      {...actions},
-      dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Stake));
+export default withStyles(useStyles)(Stake);

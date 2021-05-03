@@ -9,7 +9,7 @@ const StyledPopover = withStyles({
   }
 })(Popover);
 
-function PopoverWrapper(props) {
+const PopoverWrapper = (props) => {
 
 	const {customOpen, customClose, style, customSelector, children, font,
 		anchorVertical, anchorHorizontal, transformVertical, transformHorizontal, 

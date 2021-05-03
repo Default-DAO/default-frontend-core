@@ -1,12 +1,8 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
+import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {mdiWalletGiftcard, mdiTrophyAward} from '@mdi/js';
+import { mdiWalletGiftcard, mdiTrophyAward } from '@mdi/js';
 
-import * as actions from '../redux/actions';
 import keys from '../config/keys'
 import Text from '../reusable/text'
 import Avatar from '../reusable/avatar'
@@ -15,21 +11,17 @@ import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
 import RewardModal from '../components/liquidity/give'
+import { useStoreApi } from '../redux/provider'
 
+const Reward = props => {
+  const {setShowAddValueNetwork} = useStoreApi()
 
-class Reward extends React.Component {
-  constructor(props){
-      super(props)
+  const [valueTo, setValueTo] = useState([...keys.DUMMY_USERS])
+  const [valueFrom, setValueFrom] = useState([...keys.DUMMY_USERS])
+  const [rewardDntOpen, setRewardDntOpen] = useState(false)
 
-      this.state = {
-        valueTo: [...keys.DUMMY_USERS],
-        valueFrom: [...keys.DUMMY_USERS],
-        rewardDntOpen: false
-      }
-  }
-
-  renderToCell(cell, i) {
-    const {classes} = this.props
+  function renderToCell(cell, i) {
+    const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar size={40}></Avatar>
@@ -38,24 +30,23 @@ class Reward extends React.Component {
       <Weight
         value={cell.weight}
         onChange={(weight) => {
-          let valueTo = [...this.state.valueTo]
-          let user = {...valueTo[i]}
-          user.weight = weight
-          valueTo[i] = user
-          valueTo = valueTo.sort((u1, u2) => {
+          let newValueTo = [...valueTo]
+          let selectedUser = { ...newValueTo[i] }
+          selectedUser.weight = weight
+          newValueTo[i] = selectedUser
+          newValueTo = newValueTo.sort((u1, u2) => {
             u1.weight = u1.weight ? u1.weight : 0
             u2.weight = u2.weight ? u2.weight : 0
             return u1 - u2
           })
-          console.log("SL ", valueTo)
-          this.setState({valueTo})
+          setValueTo(newValueTo)
         }}
       />
     </Card>
   }
 
-  renderFromCell(cell) {
-    const {classes} = this.props
+  function renderFromCell(cell) {
+    const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar size={40}></Avatar>
@@ -68,10 +59,10 @@ class Reward extends React.Component {
     </Card>
   }
 
-  renderStakeButton() {
-    const {classes} = this.props
+  function renderStakeButton() {
+    const { classes } = props
     let weightSet = false
-    this.state.valueTo.forEach(user => {
+    valueTo.forEach(user => {
       if (user && user.weight && user.weight > 0) {
         weightSet = true
         return
@@ -83,62 +74,60 @@ class Reward extends React.Component {
         gradient
         width={200}
         height={50}
-        onClick={() => this.setState({rewardDntOpen: true})}
+        onClick={() => setRewardDntOpen(true)}
       >
         Reward!
       </Button></span>
     )
   }
 
-  render() {
-      const {classes} = this.props
-      return(
-          <div className={classes.stake}>
-            <div className={classes.epoch}>
-              <Button type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>Epoch 1</Button>
-              <Text type="subheading" fontSize={18} fontWeight={600}>Ends in 00:00:04</Text>
-            </div>
-            <div className={classes.tables}>
-            <div className={classes.left}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
-                <AddIcon 
-                  onClick={() => this.props.showAddValueNetworkAction(true)} 
-                  className={classes.icon} 
-                  fontSize="small" 
-                />
-              </span>
-              <Table
-                text='Your stake network is empty!'
-                list={this.state.valueTo}
-                renderCell={(value, i) => this.renderToCell(value, i)}
-                icon={mdiWalletGiftcard}
-                action={() => this.props.showAddValueNetworkAction(true)}
-              />
-              {this.renderStakeButton()}
-            </div>
-            <div className={classes.right}>
-              <span className={classes.textContainer}>
-                <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
-              </span>
-              <Table
-                text='Nobody has staked to you yet!'
-                list={this.state.valueFrom}
-                renderCell={value => this.renderFromCell(value)}
-                icon={mdiTrophyAward}
-              />
-            </div>
-            </div>
-            <RewardModal
-              open={this.state.rewardDntOpen}
-              close={() => this.setState({rewardDntOpen: false})}
-              title="Reward Your DNT"
-              label="Reward DNT"
-              buttonLabel="Reward"
+  const { classes } = props
+  return (
+    <div className={classes.stake}>
+      <div className={classes.epoch}>
+        <Button type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>Epoch 1</Button>
+        <Text type="subheading" fontSize={18} fontWeight={600}>Ends in 00:00:04</Text>
+      </div>
+      <div className={classes.tables}>
+        <div className={classes.left}>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
+            <AddIcon
+              onClick={() => setShowAddValueNetwork(true)}
+              className={classes.icon}
+              fontSize="small"
             />
-          </div>
-      )
-  }
+          </span>
+          <Table
+            text='Your stake network is empty!'
+            list={valueTo}
+            renderCell={(value, i) => renderToCell(value, i)}
+            icon={mdiWalletGiftcard}
+            action={() => setShowAddValueNetwork(true)}
+          />
+          {renderStakeButton()}
+        </div>
+        <div className={classes.right}>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
+          </span>
+          <Table
+            text='Nobody has staked to you yet!'
+            list={valueFrom}
+            renderCell={value => renderFromCell(value)}
+            icon={mdiTrophyAward}
+          />
+        </div>
+      </div>
+      <RewardModal
+        open={rewardDntOpen}
+        close={() => setRewardDntOpen(false)}
+        title="Reward Your DNT"
+        label="Reward DNT"
+        buttonLabel="Reward"
+      />
+    </div>
+  )
 }
 
 const useStyles = theme => ({
@@ -221,15 +210,4 @@ const useStyles = theme => ({
   }
 });
 
-function mapStateToProps({getUserReducer}) {
-  return {getUserReducer};
-}
-
-function mapDispatchToProps(dispatch){
-  return bindActionCreators(
-      {...actions},
-      dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Reward));
+export default withStyles(useStyles)(Reward);

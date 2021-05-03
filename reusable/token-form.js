@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -24,102 +24,94 @@ const Tokens = [
   }
 ]
 
-class TokenForm extends React.Component {
-    constructor(props){
-        super(props)
+const TokenForm = props => {
+  const [tokenSelector, setTokenSelector] = useState(false)
 
-        this.state = {
-          tokenSelector: false
-        }
-    }
+  function renderToken(token) {
+    const { classes } = props
+    const tokenImage = `../static/token/${token}.svg`
+    return (
+      <span className={classes.tokenContainer}>
+        <img className={classes.token} src={tokenImage} />
+        <Text className={classes.tokenText} type="paragraph">{token.toUpperCase()}</Text>
+      </span>
+    )
+  }
 
-    renderToken(token) {
-      const {classes} = this.props
-      const tokenImage = `../static/token/${token}.svg`
-      return (
-        <span className={classes.tokenContainer}>
-          <img className={classes.token} src={tokenImage}/>
-          <Text className={classes.tokenText} type="paragraph">{token.toUpperCase()}</Text>
-        </span>
-      )
-    }
-
-    renderTokenSelector() {
-      const {classes, onSelectedTokenChange, currencies} = this.props
-      return (
-        <div className={classes.tokenSelector}>
-          {currencies.map(t => {
-            return <span 
-              onClick={() => {
-                this.setState({tokenSelector: false})
-                onSelectedTokenChange(t)
-              }}
-              className={classes.tokenSelectorItem}>
-              {this.renderToken(t)}
-            </span>
-          })}
-        </div>
-      )
-    }
-
-    getSymbol(token) {
-      let symbol = ''
-      Tokens.forEach(t => {
-        if (t.token == token) {
-          symbol = t.symbol
-        }
-      })
-      return symbol
-    }
-
-    render() {
-      let {classes,label, value, onValueChange, balance, selectedToken, currencies} = this.props
-
-      let symbol = this.getSymbol(selectedToken) + " "
-
-      return(
-        <Card width={'100%'} className={classes.card}>
-          <span className={classes.labelContainer}>
-            <Text>
-              {label ? label : 'Tokens'}
-            </Text>
-            <Text>
-              Balance: {balance ? balance : symbol + 0.0}
-            </Text>
+  function renderTokenSelector() {
+    const { classes, onSelectedTokenChange, currencies } = props
+    return (
+      <div className={classes.tokenSelector}>
+        {currencies.map(t => {
+          return <span
+            onClick={() => {
+              setTokenSelector(false)
+              onSelectedTokenChange(t)
+            }}
+            className={classes.tokenSelectorItem}>
+            {renderToken(t)}
           </span>
-          <div className={classes.formContainer}>
-            <Form
-              value={value}
-              className={classes.form}
-              placeholder={0.0}
-              onChange={(value) => {
-                onValueChange(value)
+        })}
+      </div>
+    )
+  }
+
+  function getSymbol(token) {
+    let symbol = ''
+    Tokens.forEach(t => {
+      if (t.token == token) {
+        symbol = t.symbol
+      }
+    })
+    return symbol
+  }
+
+  let { classes, label, value, onValueChange, balance, selectedToken, currencies } = props
+
+  let symbol = getSymbol(selectedToken) + " "
+
+  return (
+    <Card width={'100%'} className={classes.card}>
+      <span className={classes.labelContainer}>
+        <Text>
+          {label ? label : 'Tokens'}
+        </Text>
+        <Text>
+          Balance: {balance ? balance : symbol + 0.0}
+        </Text>
+      </span>
+      <div className={classes.formContainer}>
+        <Form
+          value={value}
+          className={classes.form}
+          placeholder={0.0}
+          onChange={(value) => {
+            onValueChange(value)
+          }}
+          number
+        ></Form>
+        <Popover
+          customOpen={tokenSelector}
+          customClose={() => setTokenSelector(false)}
+          transformHorizontal="right"
+          anchorHorizontal="right"
+          customSelector={(onClick) => {
+            return <Button
+              className={classes.button}
+              onClick={(event) => {
+                onClick(event)
+                setTokenSelector(true)
               }}
-              number
-            ></Form>
-            <Popover 
-              customOpen={this.state.tokenSelector}
-              customClose={() => this.setState({tokenSelector: false})}
-              transformHorizontal="right"
-              anchorHorizontal="right"
-              customSelector={(onClick) => {
-              return <Button
-                className={classes.button}
-                onClick={(event) => {
-                  onClick(event)
-                  this.setState({tokenSelector: true})
-                }}
-                height={35}
-              >
-                {this.renderToken(selectedToken)}
-              </Button>
-            }}>
-              {this.renderTokenSelector()}
-            </Popover>
-          </div>
-        </Card>
-      )
-    }
+              height={35}
+            >
+              {renderToken(selectedToken)}
+            </Button>
+          }}>
+          {renderTokenSelector()}
+        </Popover>
+      </div>
+    </Card>
+  )
 }
 
 const useStyles = theme => ({
