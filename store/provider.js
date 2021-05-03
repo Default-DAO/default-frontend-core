@@ -1,8 +1,12 @@
 import React, { useReducer, useContext, createContext } from 'react'
 import keys from '../config/keys';
 
-const StoreContext = createContext()
+export const StoreContext = createContext()
 const initialState = {
+  web3: undefined,
+  ethAddress: '',
+  ethBalance: 0,
+
   showToast: { show: false, text: '', reason: 'success' },
   isLoading: false,
   user: {},
@@ -19,6 +23,21 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case keys.WEB_3:
+      return {
+        ...state,
+        web3: action.web3
+      }
+    case keys.ETH_ADDRESS:
+      return {
+        ...state,
+        ethAddress: action.ethAddress
+      }
+    case keys.ETH_BALANCE:
+      return {
+        ...state,
+        ethBalance: action.ethBalance
+      }
     case keys.SHOW_TOAST:
       return {
         ...state,
@@ -29,22 +48,21 @@ const reducer = (state, action) => {
         ...state,
         isLoading: action.isLoading
       }
-    case keys.GET_USER:
+    case keys.USER:
       return {
         ...state,
         user: action.user
       }
-    case keys.GET_POOL:
+    case keys.POOL:
       return {
         ...state,
         pool: action.pool
       }
-    case keys.GET_PROTOCOL:
+    case keys.PROTOCOL:
       return {
         ...state,
         protocol: action.protocol
       }
-      
     case keys.SHOW_ADD_LIQUIDITY:
       return {
         ...state,
@@ -90,6 +108,10 @@ export const useStoreApi = () => {
   const { state, dispatch } = useStore()
   if (!state) return {}
   return {
+    web3: state.web3,
+    ethAddress: state.ethAddress,
+    ethBalance: state.ethBalance,
+
     user: state.user,
     showToast: state.showToast,
     isLoading: state.isLoading,
@@ -103,9 +125,28 @@ export const useStoreApi = () => {
     showAddStakeNetwork: state.showAddStakeNetwork,
     showAddValueNetwork: state.showAddValueNetwork,
 
+    setWeb3: web3 => {
+      dispatch({
+        type: keys.WEB_3,
+        web3
+      })
+    },
+    setEthAddress: ethAddress => {
+      dispatch({
+        type: keys.ETH_ADDRESS,
+        ethAddress
+      })
+    },
+    setEthBalance: ethBalance => {
+      dispatch({
+        type: keys.ETH_BALANCE,
+        ethBalance
+      })
+    },
+
     setUser: user => {
       dispatch({
-        type: keys.GET_USER,
+        type: keys.USER,
         user
       })
     },
@@ -127,13 +168,13 @@ export const useStoreApi = () => {
     },
     setPool: pool => {
       dispatch({
-        type: keys.GET_POOL,
+        type: keys.POOL,
         pool
       })
     },
     setProtocol: protocol => {
       dispatch({
-        type: keys.GET_PROTOCOL,
+        type: keys.PROTOCOL,
         protocol
       })
     },

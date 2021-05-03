@@ -12,8 +12,10 @@ import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
 import StakeModal from '../components/liquidity/give'
+import { useStoreApi } from '../store/provider'
 
 const Stake = props => {
+  const {setShowAddStakeNetwork} = useStoreApi()
 
   const [stakeTo, setStakeTo] = useState([...keys.DUMMY_USERS])
   const [stakeFrom, setStakeFrom] = useState([...keys.DUMMY_USERS])

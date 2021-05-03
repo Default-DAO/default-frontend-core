@@ -30,7 +30,7 @@ export const theme = createMuiTheme({
 
 
 const noAuth = [    
-    // '/',
+    '/',
     '/register',
     '/settings/terms-of-service',
     '/settings/privacy-policy'
@@ -45,6 +45,8 @@ const Default = (props) => {
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
         }
+
+        
     }, []);
     
     return (

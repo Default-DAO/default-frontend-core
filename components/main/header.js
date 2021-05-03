@@ -15,10 +15,6 @@ const routes = [
     text: "Pool"
   },
   {
-    route: '/network',
-    text: "Network"
-  },
-  {
     route: '/stake',
     text: "Stake"
   },
@@ -62,12 +58,12 @@ const Header = (props) => {
         >
           Add
             </a>
-        <a
+        {/* <a
           className={classes.link}
           onClick={() => store.setShowSwapLiquidity(true)}
         >
           Swap
-            </a>
+            </a> */}
       </div>
     );
   }
