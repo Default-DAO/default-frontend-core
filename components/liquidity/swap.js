@@ -1,81 +1,77 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
-import {mdiArrowDown} from '@mdi/js';
+import { mdiArrowDown } from '@mdi/js';
 import Icon from '@mdi/react'
 
-import {showToastAction} from '../../redux/actions';
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
 import TokenForm from '../../reusable/token-form'
 import Button from '../../reusable/button'
 import keys from '../../config/keys'
 
-class SwapLiquidity extends React.Component {
-    constructor(props){
-        super(props)
+const SwapLiquidity = props => {
+  const { classes, open, close } = props
 
-        this.state = {
-          from: 'usdc',
-          to: 'dnt',
-          fromValue: '',
-          toValue: ''
-        }
-    }
+  const [from, setFrom] = useState('usdc')
+  const [to, setTo] = useState('dnt')
+  const [fromValue, setFromValue] = useState('')
+  const [toValue, setToValue] = useState('')
 
-    handleSwitch(token, direction) {
-      if (direction == 'from') {
-        if (token == 'usdc') {
-          this.setState({from: 'usdc', to: 'dnt', fromValue: '', toValue: ''})
-        } else {
-          this.setState({from: 'dnt', to: 'usdc', fromValue: '', toValue: ''})
-        }
+  function switchTokens(from, to) {
+    setFrom(from)
+    setTo(to)
+    setFromValue('')
+    setToValue('')
+  }
+
+  function handleSwitch(token, direction) {
+    if (direction == 'from') {
+      if (token == 'usdc') {
+        switchTokens('usdc', 'dnt')
       } else {
-        if (token == 'usdc') {
-          this.setState({from: 'dnt', to: 'usdc', fromValue: '', toValue: ''})
-        } else {
-          this.setState({from: 'usdc', to: 'dnt', fromValue: '', toValue: ''})
-        }
+        switchTokens('dnt', 'usdc')
+      }
+    } else {
+      if (token == 'usdc') {
+        switchTokens('dnt', 'usdc')
+      } else {
+        switchTokens('usdc', 'dnt')
       }
     }
+  }
 
-    render() {
-      const {classes, open, close} = this.props
-      const {from, to, fromValue, toValue} = this.state
-      return(
-        <Modal width={400} className={classes.modal} open={open} close={close}>
-          <Text margin='0px 0px 25px 0px' center type="paragraph" fontSize={24} fontWeight={600} >Swap Liquidity</Text>
-          <TokenForm
-            currencies={['dnt', 'usdc']}
-            value={fromValue}
-            onValueChange={(value) => this.setState({fromValue: value})}
-            selectedToken={from}
-            onSelectedTokenChange={(token) => this.handleSwitch(token, 'from')}
-            label="From"
-          />
-          <Icon path={mdiArrowDown}
-              size={0.7}
-              color={keys.WHITE}
-              className={classes.icon}
-          />
-          <TokenForm
-            currencies={['dnt', 'usdc']}
-            value={toValue}
-            onValueChange={(value) => this.setState({toValue: value})}
-            selectedToken={to}
-            onSelectedTokenChange={(token) => this.handleSwitch(token, 'to')}
-            label="To"
-          />
-          <Button 
-            onClick={() => {}}
-            margin="35px 0px 0px 0px" gradient width={200} height={50}>
-              Swap!
+  return (
+    <Modal width={400} className={classes.modal} open={open} close={close}>
+      <Text margin='0px 0px 25px 0px' center type="paragraph" fontSize={24} fontWeight={600} >Swap Liquidity</Text>
+      <TokenForm
+        currencies={['dnt', 'usdc']}
+        value={fromValue}
+        onValueChange={(value) => setFromValue(value)}
+        selectedToken={from}
+        onSelectedTokenChange={(token) => handleSwitch(token, 'from')}
+        label="From"
+      />
+      <Icon path={mdiArrowDown}
+        size={0.7}
+        color={keys.WHITE}
+        className={classes.icon}
+      />
+      <TokenForm
+        currencies={['dnt', 'usdc']}
+        value={toValue}
+        onValueChange={(value) => setToValue(value)}
+        selectedToken={to}
+        onSelectedTokenChange={(token) => handleSwitch(token, 'to')}
+        label="To"
+      />
+      <Button
+        onClick={() => { }}
+        margin="35px 0px 0px 0px" gradient width={200} height={50}>
+        Swap!
             </Button>
-        </Modal>
-      )
-    }
+    </Modal>
+  )
 }
 
 const useStyles = theme => ({
@@ -88,15 +84,4 @@ const useStyles = theme => ({
   }
 });
 
-function mapStateToProps({getUserReducer}) {
-    return {getUserReducer};
-}
-
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(
-        {showToastAction},
-        dispatch
-    );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(SwapLiquidity));
+export default withStyles(useStyles)(SwapLiquidity);

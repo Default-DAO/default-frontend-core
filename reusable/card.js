@@ -5,28 +5,18 @@ import { withStyles } from '@material-ui/core/styles';
 
 import keys from '../config/keys'
 
-class Card extends React.Component {
-  constructor(props){
-      super(props)
-
-      this.state = {
-          
-      }
-  }
-
-  render() {
-      const {onClick, classes, children, className} = this.props
-      return(
-          <div onClick={onClick} className={clsx(classes.card, className ? className : '')}>
-              {children}
-          </div>
-      )
-  }
+const Card = (props) => {
+  const { onClick, classes, children, className } = props
+  return (
+    <div onClick={onClick} className={clsx(classes.card, className ? className : '')}>
+      {children}
+    </div>
+  )
 }
 
 const useStyles = theme => ({
   card: props => {
-    const {width, height, margin, gradient} = props
+    const { width, height, margin, gradient } = props
     return {
       background: gradient ? keys.GRADIENT : keys.GRAY,
       padding: 30,

@@ -1,24 +1,14 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import {showToastAction} from '../redux/actions';
 import keys from '../config/keys'
 
-class Form extends React.Component {
-  constructor(props){
-      super(props)
+const Form = (props) => {
 
-      this.state = {
-          
-      }
-  }
-
-  handleChange(value) {
-    const {number, onChange, max} = this.props
+  function handleChange(value) {
+    const { number, onChange, max } = props
     if (number) {
       if (max != undefined && Number(value) > max) return
       onChange(parseFloat(value))
@@ -27,22 +17,20 @@ class Form extends React.Component {
     }
   }
 
-  render() {
-    const {classes, className, placeholder, label, value, disabled, number} = this.props
-      return(
-        <div className={classes.container}>
-          {label ? <p className={classes.label}>{label}</p> : null}
-          <input 
-            type={number ? 'number' : 'text'}
-            className={clsx(classes.form, className ? className : '')}
-            placeholder={placeholder} 
-            value={value || value == 0 ? value : ''}
-            onChange={(e) => this.handleChange(e.target.value)}
-            disabled={disabled ? disabled : false}
-          />
-        </div>
-      )
-  }
+  const { classes, className, placeholder, label, value, disabled, number } = props
+  return (
+    <div className={classes.container}>
+      {label ? <p className={classes.label}>{label}</p> : null}
+      <input
+        type={number ? 'number' : 'text'}
+        className={clsx(classes.form, className ? className : '')}
+        placeholder={placeholder}
+        value={value || value == 0 ? value : ''}
+        onChange={(e) => handleChange(e.target.value)}
+        disabled={disabled ? disabled : false}
+      />
+    </div>
+  )
 }
 
 
@@ -55,8 +43,8 @@ const useStyles = theme => ({
     opacity: 0.7,
     marginBottom: 3
   },
-  form: props => { 
-    const {width, underline, margin, center} = props
+  form: props => {
+    const { width, underline, margin, center } = props
     return {
       appearance: 'none',
       borderRadius: '0px',
@@ -71,23 +59,16 @@ const useStyles = theme => ({
       transition: '0.2s',
       color: keys.WHITE,
       '&:focus': {
-          outline: 'none',
-          opacity: 0.7,
-          transition: '0.2s'
+        outline: 'none',
+        opacity: 0.7,
+        transition: '0.2s'
       },
       '&:placeholder': {
-          fontSize: 18,
-          opacity: 0.7
+        fontSize: 18,
+        opacity: 0.7
       }
     }
   }
 });
 
-function mapDispatchToProps(dispatch){
-  return bindActionCreators(
-      {showToastAction},
-      dispatch
-  );
-}
-
-export default connect(null, mapDispatchToProps)(withStyles(useStyles)(Form));
+export default withStyles(useStyles)(Form);

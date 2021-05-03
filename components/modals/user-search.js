@@ -1,12 +1,9 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
-import {mdiAccountQuestionOutline} from '@mdi/js';
+import { mdiAccountQuestionOutline } from '@mdi/js';
 
-import * as actions from '../../redux/actions';
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
 import Form from '../../reusable/form'
@@ -15,64 +12,57 @@ import Card from '../../reusable/card'
 import Avatar from '../../reusable/avatar'
 import Button from '../../reusable/button'
 import keys from '../../config/keys'
+import { useStoreApi } from '../../redux/provider'
 
-class SearchModal extends React.Component {
-    constructor(props){
-        super(props)
+const SearchModal = props => {
+  const { classes, title, open, close, action } = props
 
-        this.state = {
-          users: [...keys.DUMMY_USERS],
-          searchText:"",
-          selected: []
-        }
-    }
+  const store = useStoreApi()
+  const [users, setUsers] = useState([...keys.DUMMY_USERS])
+  const [searchText, setSearchText] = useState('')
+  const [selected, setSelected] = useState([])
 
-    renderCell(cell) {
-      const {classes} = this.props
-      let {selected} = this.state
-      return <Card onClick={() => {
-        let newSelected = [...selected]
-        newSelected.push(cell)
-        this.setState({selected: newSelected})
-      }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
-        <Avatar size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
-      </Card>
-    }
+  function renderCell(cell) {
+    return <Card onClick={() => {
+      let newSelected = [...selected]
+      newSelected.push(cell)
+      setSelected(newSelected)
+    }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
+      <Avatar size={40}></Avatar>
+      <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
+    </Card>
+  }
 
-    render() {
-      const {classes, title, open, close, action} = this.props
-      return(
-        <Modal className={classes.modal} open={open} close={close}>
-          <Text center type="paragraph" fontSize={24} fontWeight={600} >{title}</Text>
-          {/* <Form 
-            value={this.state.searchText} 
-            onChange={searchText => this.setState({searchText})}
+  return (
+    <Modal className={classes.modal} open={open} close={close}>
+      <Text center type="paragraph" fontSize={24} fontWeight={600} >{title}</Text>
+      {/* <Form 
+            value={searchText} 
+            onChange={searchText => setSearchText(searchText)}
             placeholder="Search users"
           >
           </Form> */}
-          <Table
-            height="65vh"
-            list={this.state.users}
-            renderCell={value => this.renderCell(value)}
-            text="We couldn't find users"
-            subText="Please try again later"
-            actionText="Close"
-            action={close}
-            icon={mdiAccountQuestionOutline}
-          ></Table>
-          {this.state.selected.length > 0 ? <Button 
-            onClick={() => {
-              action(this.state.selected)
-              this.props.showAddStakeNetworkAction(false)
-              this.props.showAddValueNetworkAction(false)
-            }}
-            margin="35px 0px 0px 0px" gradient width={150} height={40}>
-              Add users
-            </Button> : null }
-        </Modal>
-      )
-    }
+      <Table
+        height="65vh"
+        list={users}
+        renderCell={value => renderCell(value)}
+        text="We couldn't find users"
+        subText="Please try again later"
+        actionText="Close"
+        action={close}
+        icon={mdiAccountQuestionOutline}
+      ></Table>
+      {selected.length > 0 ? <Button
+        onClick={() => {
+          action(selected)
+          store.setShowAddStakeNetwork(false)
+          store.setShowAddValueNetwork(false)
+        }}
+        margin="35px 0px 0px 0px" gradient width={150} height={40}>
+        Add users
+            </Button> : null}
+    </Modal>
+  )
 }
 
 const useStyles = theme => ({
@@ -99,15 +89,4 @@ const useStyles = theme => ({
   }
 });
 
-function mapStateToProps({getUserReducer}) {
-    return {getUserReducer};
-}
-
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(
-        {...actions},
-        dispatch
-    );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(SearchModal));
+export default withStyles(useStyles)(SearchModal);

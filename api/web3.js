@@ -1,48 +1,39 @@
-const Ethers = require('./assets/scripts/ethers.js');
-const axios = require('axios')
+export const Web3 = require("web3")
 
-export async function initWeb3() {
-  const ethereum = window.ethereum;
-  const provider = Ethers.providers.Web3Provider(ethereum);
+const useWeb3 = () => {
+  let instance
+  if (window.ethereum) {
+    try {
+      instance = new Web3(window.ethereum)
+    } catch(err) {
+      console.log(err)
+    }
+  } else if (window.web3) {
+    instance = new Web3(window.web3)
+  }
+  return instance
+}
 
-  if (provider) {
-    // Get MetaMask account if connected
-    ethereum.request({ method: 'eth_accounts' }).then(this.accountsChanged);
-
-    // Detect account changes
-    ethereum.on('accountsChanged', this.accountsChanged);
-
-    // Detect chain changes
-    ethereum.on('chainChanged', this.chainChanged);
-  } else {
-    console.error('No web3 provider.');
+export const setUserAccount = async () => {
+  let web3 = useWeb3()
+  if (window && window.ethereum) {
+    await window.ethereum.enable()
+    web3.eth.getAccounts().then(accounts => {
+      let account = accounts[0]
+    })
   }
 }
 
-export async function generateSignedMessage ({ getters, commit }) {
-  // Get ethAddress, provider, and chainId
-  const ethAddress = Ethers.utils.getAddress(getters.account);
-  const provider = getters.provider;
-
-  const chainId = getters.chainId || (await provider.getNetwork()).chainId;
-
-  // Retrieve nonce from backend
-  let authMsg;
-  const urlParams = new URLSearchParams({ ethAddress });
-  const { data: { result } } = await axios.get('/auth?' + urlParams);
-  if (result.error) { throw result.errorCode; }
-
-  authMsg = result.authMsg;
-  authMsg.domain.chainId = chainId;
-
-  const signature = await window.ethereum.request({
-    method: 'eth_signTypedData_v4',
-    params: [ethAddress, JSON.stringify(authMsg)],
-  });
-
-  return { signature, ethAddress, chainId };
+export const setUserBalance = async (fromAddress) => {
+  await web3.eth.getBalance(fromAddress).then(value => {
+    const credit = web3.utils.fromWei(value, 'ether')
+  })
 }
 
-export function connectWallet() {
-  window.ethereum.request({ method: 'eth_requestAccounts' });
+export const sendTransaction = async (amount, recepient) => {
+  await web3.eth.sendTransaction({
+    from: '', //address,
+    to: recepient,
+    value: web3.utils.toWei(amount, 'ether')
+  })
 }

@@ -1,6 +1,4 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -10,6 +8,7 @@ import keys from '../../config/keys'
 import Button from '../../reusable/button'
 import Avatar from '../../reusable/avatar'
 import Text from '../../reusable/text'
+import { useStoreApi } from '../../redux/provider'
 
 const routes = [
   {
@@ -30,76 +29,60 @@ const routes = [
   }
 ]
 
-class Header extends React.Component {    
-  constructor(props) {
-    super(props)
+const Header = (props) => {
+  const store = useStoreApi()
 
-    this.state = {            
-      isDesktop: true,
-      clickedRoute: '',
-    }
-  }
-  
-  renderLogo() {
-    const {classes} = this.props
+  function renderLogo() {
+    const { classes } = props
     return (
-        <p className={classes.logo}>Ð</p>
+      <p className={classes.logo}>Ð</p>
     )
   }
 
-  //handle click of a menu item through redirect
-  handleClick(route) {
-    this.setState({clickedRoute: route})
+  function menuSelected(route) {
+    return route == props.route
   }
 
-  menuSelected(route) {
-    //have the menu turn gray when clicked. 
-    const {clickedRoute} = this.state
-    // Otherwise, make the menu that matches the router selected
-    if (clickedRoute != '') return route == clickedRoute        
-    return route == this.props.route
-  }
-
-	renderMenu() {
-    const {classes} = this.props
+  function renderMenu() {
+    const { classes } = props
     return (
-        <div className={classes.links}>
-            {routes.map(navItem => {
-                const {route, text} = navItem
-                return (
-                    <a 
-                      className={!this.menuSelected(route) ? classes.link : clsx(classes.link, classes.linkSelected)}
-                      key={route} href={route} passhref='true'>
-                        {text}
-                    </a>
-                )
-            })}
-            <a 
-              className={classes.link}
-              onClick={() => this.props.showAddLiquidityAction(true)}
-            >
-                Add
+      <div className={classes.links}>
+        {routes.map(navItem => {
+          const { route, text } = navItem
+          return (
+            <a
+              className={!menuSelected(route) ? classes.link : clsx(classes.link, classes.linkSelected)}
+              key={route} href={route} passhref='true'>
+              {text}
             </a>
-            <a 
-              className={classes.link}
-              onClick={() => this.props.showSwapLiquidityAction(true)}
-            >
-                Swap
+          )
+        })}
+        <a
+          className={classes.link}
+          onClick={() => store.setShowAddLiquidity(true)}
+        >
+          Add
             </a>
-        </div>
-    ); 
-  } 
+        <a
+          className={classes.link}
+          onClick={() => store.setShowSwapLiquidity(true)}
+        >
+          Swap
+            </a>
+      </div>
+    );
+  }
 
-	renderProfile() {
-		const {classes} = this.props
-		return (
-			<div className={classes.profile}>
+  function renderProfile() {
+    const { classes } = props
+    return (
+      <div className={classes.profile}>
         <Button
           gradient
           height={30}
           width={50}
           margin='0px 0px 0px 14px'
-          onClick={() => this.props.showAddLiquidityAction(true)}
+          onClick={() => store.setShowAddLiquidity(true)}
         >Ð</Button>
         <Text
           fontSize={14}
@@ -115,29 +98,29 @@ class Header extends React.Component {
           fontWeight={700}
           margin='0px 0px 0px 8px'
         >@scottsgc</Text>
-			</div>
-		)
-	}
+      </div>
+    )
+  }
 
-    render() {
-        const { classes } = this.props;
 
-        return (
-            <div className={classes.header}>
-              <div className={classes.left}>
-                {this.renderLogo()}
-                {this.renderMenu()}
-              </div>
-              <div className={classes.right}>
-                {this.renderProfile()}
-              </div>
-            </div>
-        )
-    }
+  const { classes } = props;
+
+  return (
+    <div className={classes.header}>
+      <div className={classes.left}>
+        {renderLogo()}
+        {renderMenu()}
+      </div>
+      <div className={classes.right}>
+        {renderProfile()}
+      </div>
+    </div>
+  )
+
 }
 
 const useStyles = theme => ({
-	header: {
+  header: {
     height: 60,
     width: '100%',
     display: 'flex',
@@ -191,11 +174,4 @@ const useStyles = theme => ({
   }
 })
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(
-        {...actions},
-        dispatch
-    );
-}
-
-export default connect(null, mapDispatchToProps)(withStyles(useStyles)(Header));
+export default withStyles(useStyles)(Header);

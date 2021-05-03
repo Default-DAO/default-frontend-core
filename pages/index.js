@@ -1,17 +1,10 @@
 import React from 'react';
+import Register from './register'
 
-class Index extends React.Component {
-    constructor(props) {
-        super(props)        
-    }
-
-    render() {        
-        return (
-            <div>
-                H ELLO
-            </div>
-        );
-    }
+const Index = props => {
+    return (
+        <Register/>
+    );
 }
 
 export default Index;

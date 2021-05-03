@@ -1,52 +1,40 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import {showToastAction} from '../redux/actions';
 import NoContent from './no-content'
 
-class Table extends React.Component {
-    constructor(props){
-        super(props)
+const Table = props => {
 
-        this.state = {
-            
-        }
+  function renderEmptyTable() {
+    const { text, subText, actionText, action, icon } = props
+    if (!props.list || props.list.length <= 0) {
+      return <NoContent
+        text={text}
+        subText={subText}
+        actionText={actionText}
+        icon={icon}
+        action={action}
+      />
     }
+  }
 
-    renderEmptyTable() {
-      const {text, subText, actionText, action, icon} = this.props
-      if (!this.props.list || this.props.list.length <= 0) {
-        return <NoContent
-          text={text}
-          subText={subText}
-          actionText={actionText}
-          icon={icon}
-          action={action}
-        />
-      }
-    }
-    
-    render() {
-      const {classes} = this.props
-      return(
-        <div className={classes.table}>
-          {this.renderEmptyTable()}
-          {this.props.list.map((object, index) => {
-            return <span key={index}>
-              {this.props.renderCell(object, index)}
-            </span>
-          })}
-        </div>
-      )
-    }
+  const { classes } = props
+  return (
+    <div className={classes.table}>
+      {renderEmptyTable()}
+      {props.list.map((object, index) => {
+        return <span key={index}>
+          {props.renderCell(object, index)}
+        </span>
+      })}
+    </div>
+  )
 }
 
 const useStyles = theme => ({
   table: props => {
-    const {height, width} = props
+    const { height, width } = props
     return {
       height: height ? height : '75vh',
       width: width ? width : 400,
@@ -58,11 +46,4 @@ const useStyles = theme => ({
   }
 });
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(
-        {showToastAction},
-        dispatch
-    );
-}
-
-export default connect(null, mapDispatchToProps)(withStyles(useStyles)(Table));
+export default withStyles(useStyles)(Table);

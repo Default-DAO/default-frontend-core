@@ -5,29 +5,19 @@ import { withStyles } from '@material-ui/core/styles';
 
 import keys from '../config/keys'
 
-class Button extends React.Component {
-  constructor(props){
-      super(props)
-
-      this.state = {
-          
-      }
-  }
-
-  render() {
-    const {classes, className, onClick, children} = this.props
-    return(
-        <div className={clsx(classes.button, className ? className : '')} onClick={onClick}>
-          <b>{children}</b>
-        </div>
-    )
-  }
+const Button = (props) => {
+  const { classes, className, onClick, children } = props
+  return (
+    <div className={clsx(classes.button, className ? className : '')} onClick={onClick}>
+      <b>{children}</b>
+    </div>
+  )
 }
 
 const useStyles = theme => ({
   button: props => {
-    const {width, height, type, gradient, margin} = props
-    let background = type =='secondary' ? keys.GRAY : keys.PRIMARY_COLOR
+    const { width, height, type, gradient, margin } = props
+    let background = type == 'secondary' ? keys.GRAY : keys.PRIMARY_COLOR
     background = gradient ? keys.GRADIENT : background
     return {
       display: 'flex',
