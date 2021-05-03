@@ -11,7 +11,7 @@ import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
 import RewardModal from '../components/liquidity/give'
-import { useStoreApi } from '../redux/provider'
+import { useStoreApi } from '../store/provider'
 
 const Reward = props => {
   const {setShowAddValueNetwork} = useStoreApi()
@@ -24,7 +24,7 @@ const Reward = props => {
     const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar size={40}></Avatar>
+        <Avatar user={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
       </span>
       <Weight

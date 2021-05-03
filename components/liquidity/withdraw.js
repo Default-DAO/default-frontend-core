@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import { showToastAction } from '../../redux/actions';
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
 import TokenForm from '../../reusable/token-form'

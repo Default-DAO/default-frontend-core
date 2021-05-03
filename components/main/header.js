@@ -3,12 +3,11 @@ import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import * as actions from '../../redux/actions';
 import keys from '../../config/keys'
 import Button from '../../reusable/button'
 import Avatar from '../../reusable/avatar'
 import Text from '../../reusable/text'
-import { useStoreApi } from '../../redux/provider'
+import { useStoreApi } from '../../store/provider'
 
 const routes = [
   {
@@ -90,6 +89,7 @@ const Header = (props) => {
           margin='0px 0px 0px 14px'
         >Epoch 1</Text>
         <Avatar
+          user={store.user}
           size={30}
           margin='0px 0px 0px 14px'
         ></Avatar>
