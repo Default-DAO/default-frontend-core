@@ -33,7 +33,6 @@ app.prepare().then(() => {
 
     //Koa acts like "app" in express
     const server = new Koa();    
-    server.keys = [process.env.APP_SECRET];
     
     server.use(koaConnect(compression()))
     server.use(cors);

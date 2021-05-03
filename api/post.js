@@ -23,12 +23,3 @@ export const stake = async (params) => {
 export const reward = async (params) => {
   
 }
-
-export const addStakeNetwork = async (params) => {
-  
-}
-
-export const addRewardNetwork = async (params) => {
-  
-}
-

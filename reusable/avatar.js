@@ -23,11 +23,11 @@ const pastelColors = [
 
 const Avatar = (props) => {
   const { classes, user } = props
-  if (user.image) {
+  if (user && user.image) {
     return <img className={clsx(classes.avatar)} src={user.image}></img>
   } else {
     let aliasLetter = 'Ð'
-    if (user.alias) aliasLetter = user.alias[0]
+    if (user && user.alias) aliasLetter = user.alias[0]
     return <div className={clsx(classes.noImage, classes.avatar)}>{aliasLetter}</div>
   }
 }

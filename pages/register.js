@@ -9,7 +9,7 @@ import { useWeb3, setUserAccount } from '../api/web3'
 import { useStoreApi } from '../store/provider'
 
 const Register = (props) => {
-  const {showToast, setShowToast} = useStoreApi()
+  const {showToast, setShowToast, ethAddress, setEthAddress} = useStoreApi()
   const [alias, setAlias] = useState('')
 
   const { classes } = props
@@ -32,11 +32,20 @@ const Register = (props) => {
         <Button
           gradient width={300} height={40}
           onClick={async () => {
-            
+            let newEthAddress = await setUserAccount()
+            setEthAddress(newEthAddress)
           }}
         >
           Register
         </Button>
+        {/* <Button
+          gradient width={300} height={40}
+          onClick={async () => {
+            console.log(ethAddress)
+          }}
+        >
+          GETAD
+        </Button> */}
       </span>
     </div>
   )

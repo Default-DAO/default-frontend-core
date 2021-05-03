@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, createContext } from 'react'
 import keys from '../config/keys';
 
-const StoreContext = createContext()
+export const StoreContext = createContext()
 const initialState = {
   web3: undefined,
   ethAddress: '',
