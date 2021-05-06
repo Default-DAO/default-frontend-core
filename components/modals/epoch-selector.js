@@ -14,70 +14,38 @@ import Button from '../../reusable/button'
 import keys from '../../config/keys'
 import { getMembers } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
+import {getCurrentEpoch} from '../../utils/epoch'
 
-const SearchModal = props => {
+const EpochSelector = props => {
   const { classes, title, open, close, action } = props
-
-  const store = useStoreApi()
-  const [members, setMembers] = useState([])
-  const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState([])
-
-
-  useEffect(() => {
-    searchMembers(0)
-  }, [])
-
-  async function searchMembers(page) {
-    let members = await getMembers({params: {
-      page
-    }})
-    setMembers(members)
-  }
-
-  function closeSearch() {
-    props.close()
-    setSelected([])
+  const currentEpoch = getCurrentEpoch()
+  let epochs = []
+  for (let i = 1; i <= currentEpoch; i++) {
+    epochs.push(i)
   }
 
   function renderCell(cell) {
     return <Card onClick={() => {
-      let newSelected = [...selected]
-      newSelected.push(cell)
-      setSelected(newSelected)
-    }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
-      <Avatar member={cell} size={40}></Avatar>
-      <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
+      action(cell)
+    }} className={classes.cell}>
+      <Text margin="0px 0px 0px 15px" fontSize={20}>Epoch {cell}</Text>
     </Card>
   }
 
+  
   return (
-    <Modal className={classes.modal} open={open} close={closeSearch}>
+    <Modal className={classes.modal} open={open} close={close}>
       <Text center type="paragraph" fontSize={24} fontWeight={600} >{title}</Text>
-      {/* <Form 
-        value={searchText} 
-        onChange={searchText => setSearchText(searchText)}
-        placeholder="Search members"
-      >
-      </Form> */}
       <Table
         height="65vh"
-        list={members}
+        list={epochs}
         renderCell={value => renderCell(value)}
         text="We couldn't find members"
         subText="Please try again later"
         actionText="Close"
-        action={closeSearch}
+        action={close}
         icon={mdiAccountQuestionOutline}
       ></Table>
-      {selected.length > 0 ? <Button
-        onClick={() => {
-          action(selected)
-          closeSearch()
-        }}
-        margin="35px 0px 0px 0px" gradient width={150} height={40}>
-        Add members
-            </Button> : null}
     </Modal>
   )
 }
@@ -99,11 +67,7 @@ const useStyles = theme => ({
       opacity: 0.8,
       transition: '0.2s'
     }
-  },
-  selectedCell: {
-    opacity: 0.5,
-    transform: 'scale(0.95)'
   }
 });
 
-export default withStyles(useStyles)(SearchModal);
+export default withStyles(useStyles)(EpochSelector);

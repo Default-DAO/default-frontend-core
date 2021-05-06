@@ -10,10 +10,10 @@ import Text from '../../reusable/text'
 import { useStoreApi } from '../../store/provider'
 
 const routes = [
-  {
-    route: '/pool',
-    text: "Pool"
-  },
+  // {
+  //   route: '/pool',
+  //   text: "Pool"
+  // },
   {
     route: '/stake',
     text: "Stake"
@@ -52,12 +52,12 @@ const Header = (props) => {
             </a>
           )
         })}
-        <a
+        {/* <a
           className={classes.link}
           onClick={() => store.setShowAddLiquidity(true)}
         >
           Add
-            </a>
+            </a> */}
         {/* <a
           className={classes.link}
           onClick={() => store.setShowSwapLiquidity(true)}

@@ -10,36 +10,68 @@ import Card from '../reusable/card'
 import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
+import MemberSearch from '../components/modals/member-search'
+import EpochSelector from '../components/modals/epoch-selector'
 import RewardModal from '../components/liquidity/give'
 import { useStoreApi } from '../store/provider'
+import { getMembers, getAllocations } from '../api/get'
+import { getCurrentEpoch } from '../utils/epoch'
 
 const Reward = props => {
-  const {setShowAddValueNetwork} = useStoreApi()
+  const store = useStoreApi()
+  const { member } = store
 
-  const [valueTo, setValueTo] = useState([...keys.DUMMY_MEMBERS])
-  const [valueFrom, setValueFrom] = useState([...keys.DUMMY_MEMBERS])
-  const [rewardDntOpen, setRewardDntOpen] = useState(false)
+  const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
+  const [selectedEpoch, setSelectedEpoch] = useState(1)
+  const [allocationsTo, setAllocationsTo] = useState([])
+  const [allocationsFrom, setAllocationsFrom] = useState([])
+  const [showMemberSearch, setShowMemberSearch] = useState(false)
+
+  useEffect(() => {
+    console.log(getCurrentEpoch())
+    getValueAllocations(0, selectedEpoch)
+  }, [])
+
+  async function getValueAllocations(page, epoch) {
+    let { allocationsFrom, allocationsTo } = await getAllocations({
+      params: {
+        page,
+        epoch,
+        ethAddress: member.ethAddress
+      },
+      store
+    })
+    // console.log({allocationsFrom, allocationsTo})
+    setAllocationsFrom(allocationsFrom)
+    setAllocationsTo(allocationsTo)
+  }
+
+  async function sendAllocations() {
+
+  }
 
   function renderToCell(cell, i) {
     const { classes } = props
+    const { toTxMember, weight } = cell
+
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar member={cell} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
+        <Avatar member={toTxMember} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{toTxMember.alias}</Text>
       </span>
       <Weight
-        value={cell.weight}
+        value={weight}
         onChange={(weight) => {
-          let newValueTo = [...valueTo]
-          let selectedMember = { ...newValueTo[i] }
+          let newAllocationsTo = [...allocationsTo]
+          let selectedMember = { ...newAllocationsTo[i] }
           selectedMember.weight = weight
-          newValueTo[i] = selectedMember
-          newValueTo = newValueTo.sort((u1, u2) => {
+          newAllocationsTo[i] = selectedMember
+          newAllocationsTo = newAllocationsTo.sort((u1, u2) => {
             u1.weight = u1.weight ? u1.weight : 0
             u2.weight = u2.weight ? u2.weight : 0
             return u1 - u2
           })
-          setValueTo(newValueTo)
+          setAllocationsTo(newAllocationsTo)
         }}
       />
     </Card>
@@ -47,34 +79,37 @@ const Reward = props => {
 
   function renderFromCell(cell) {
     const { classes } = props
+    const { fromTxMember, weight } = cell
+
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
+        <Avatar member={fromTxMember} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{fromTxMember.alias}</Text>
       </span>
       <Weight
-        value={cell.weight}
+        value={weight}
         disabled
       />
     </Card>
   }
 
-  function renderStakeButton() {
+  function renderAllocationButton() {
     const { classes } = props
     let weightSet = false
-    valueTo.forEach(member => {
+    allocationsTo.forEach(member => {
       if (member && member.weight && member.weight > 0) {
         weightSet = true
         return
       }
     })
     if (!weightSet) return null
+    if (selectedEpoch != getCurrentEpoch()) return null
     return (
       <span className={classes.buttonContainer}><Button
         gradient
         width={200}
         height={50}
-        onClick={() => setRewardDntOpen(true)}
+        onClick={() => sendAllocations()}
       >
         Reward!
       </Button></span>
@@ -83,55 +118,73 @@ const Reward = props => {
 
   const { classes } = props
   return (
-    <div className={classes.stake}>
+    <div className={classes.value}>
       <div className={classes.epoch}>
-        <Button type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>Epoch 1</Button>
-        <Text type="subheading" fontSize={18} fontWeight={600}>Ends in 00:00:04</Text>
+        <Button
+          onClick={() => setEpochSelectorOpen(true)}
+          type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
+          Epoch {selectedEpoch}
+        </Button>
       </div>
       <div className={classes.tables}>
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
-            <AddIcon
-              onClick={() => setShowAddValueNetwork(true)}
+            {(selectedEpoch == getCurrentEpoch()) ?<AddIcon
+              onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
-            />
+            /> : null}
           </span>
           <Table
-            text='Your stake network is empty!'
-            list={valueTo}
+            text="You haven't rewarded anyone"
+            list={allocationsTo}
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
-            action={() => setShowAddValueNetwork(true)}
+            action={(selectedEpoch != getCurrentEpoch()) ? null : () => {
+              setShowMemberSearch(true)}
+            }
           />
-          {renderStakeButton()}
+          {renderAllocationButton()}
         </div>
         <div className={classes.right}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
           </span>
           <Table
-            text='Nobody has staked to you yet!'
-            list={valueFrom}
+            text='No rewards here'
+            list={allocationsFrom}
             renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
           />
+          <MemberSearch
+            open={showMemberSearch}
+            close={() => setShowMemberSearch(false)}
+            title={'Choose people to reward'}
+            action={(selected) => {
+              console.log("SEL ", selected)
+
+              setShowMemberSearch(false)
+            }}
+          />
+          <EpochSelector
+            open={epochSelectorOpen}
+            close={() => setEpochSelectorOpen(false)}
+            title={'Select epoch'}
+            action={(selected) => {
+              setSelectedEpoch(selected)
+              getValueAllocations(0, selected)
+              setEpochSelectorOpen(false)
+            }}
+          />
         </div>
       </div>
-      <RewardModal
-        open={rewardDntOpen}
-        close={() => setRewardDntOpen(false)}
-        title="Reward Your DNT"
-        label="Reward DNT"
-        buttonLabel="Reward"
-      />
     </div>
   )
 }
 
 const useStyles = theme => ({
-  stake: {
+  value: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
