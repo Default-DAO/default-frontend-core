@@ -13,11 +13,11 @@ const noAuth = [
     '/settings/terms-of-service'
 ]
 
-class KropDocument extends Document {    
+class DefaultDocument extends Document {    
     
     renderHead() {
         return (
-            //link files to load when user is on the landing page before signup
+            //link files to load when member is on the landing page before signup
             <Head>
             	<meta charSet="UTF-8"/>
             </Head>
@@ -37,7 +37,7 @@ class KropDocument extends Document {
     }
 }
 
-KropDocument.getInitialProps = async ctx => {
+DefaultDocument.getInitialProps = async ctx => {
     // Resolution order
     //
     // On the server:
@@ -78,4 +78,4 @@ KropDocument.getInitialProps = async ctx => {
     };
 };
 
-export default KropDocument;
+export default DefaultDocument;

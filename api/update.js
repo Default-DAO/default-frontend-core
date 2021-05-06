@@ -1,5 +1,5 @@
 import axios from 'axios'
 
-export const updateUser = async (params) => {
+export const updateMember = async (params) => {
   
 }

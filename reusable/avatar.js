@@ -22,12 +22,12 @@ const pastelColors = [
 ]
 
 const Avatar = (props) => {
-  const { classes, user } = props
-  if (user && user.image) {
-    return <img className={clsx(classes.avatar)} src={user.image}></img>
+  const { classes, member } = props
+  if (member && member.image) {
+    return <img className={clsx(classes.avatar)} src={member.image}></img>
   } else {
     let aliasLetter = 'Ð'
-    if (user && user.alias) aliasLetter = user.alias[0]
+    if (member && member.alias) aliasLetter = member.alias[0]
     return <div className={clsx(classes.noImage, classes.avatar)}>{aliasLetter}</div>
   }
 }
@@ -53,11 +53,11 @@ const useStyles = theme => ({
     }
   },
   noImage: props => {
-    let { size, user } = props
-    if (!user) user = {}
-    if (!user.alias) user.alias = shortid.generate()
+    let { size, member } = props
+    if (!member) member = {}
+    if (!member.alias) member.alias = shortid.generate()
 
-    let randomColor = pastelColors[ hashStr(user.alias, pastelColors.length) ]
+    let randomColor = pastelColors[ hashStr(member.alias, pastelColors.length) ]
     return {
       backgroundColor: randomColor,
       fontWeight: 700,

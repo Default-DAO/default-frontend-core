@@ -16,24 +16,24 @@ import { useStoreApi } from '../store/provider'
 const Reward = props => {
   const {setShowAddValueNetwork} = useStoreApi()
 
-  const [valueTo, setValueTo] = useState([...keys.DUMMY_USERS])
-  const [valueFrom, setValueFrom] = useState([...keys.DUMMY_USERS])
+  const [valueTo, setValueTo] = useState([...keys.DUMMY_MEMBERS])
+  const [valueFrom, setValueFrom] = useState([...keys.DUMMY_MEMBERS])
   const [rewardDntOpen, setRewardDntOpen] = useState(false)
 
   function renderToCell(cell, i) {
     const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar user={cell} size={40}></Avatar>
+        <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
       </span>
       <Weight
         value={cell.weight}
         onChange={(weight) => {
           let newValueTo = [...valueTo]
-          let selectedUser = { ...newValueTo[i] }
-          selectedUser.weight = weight
-          newValueTo[i] = selectedUser
+          let selectedMember = { ...newValueTo[i] }
+          selectedMember.weight = weight
+          newValueTo[i] = selectedMember
           newValueTo = newValueTo.sort((u1, u2) => {
             u1.weight = u1.weight ? u1.weight : 0
             u2.weight = u2.weight ? u2.weight : 0
@@ -62,8 +62,8 @@ const Reward = props => {
   function renderStakeButton() {
     const { classes } = props
     let weightSet = false
-    valueTo.forEach(user => {
-      if (user && user.weight && user.weight > 0) {
+    valueTo.forEach(member => {
+      if (member && member.weight && member.weight > 0) {
         weightSet = true
         return
       }
