@@ -1,0 +1,32 @@
+name: staging deployment
+
+on:
+  push:
+    branches: [ release ]
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      steps:
+      
+      - name: Checkout source code
+        uses: actions/checkout@v1
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip Procfile api/* buildspec.yml components/* config/* ecosystem.config.js imagedefinitions.json package-lock.json package.json pages/* reusable/* scripts/* server.js static/* store/*
+       
+      - name: Set version
+        id: generate-uuid
+        uses: filipstefansson/uuid-action@v1
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v16
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: staging-default-fe
+          environment_name: Stagingdefaultfe-env
+          version_label: ${{ steps.generate-uuid.outputs.uuid }}
+          region: us-west-1
+          deployment_package: deploy.zip
+          wait_for_deployment: true
