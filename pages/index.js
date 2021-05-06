@@ -1,9 +1,9 @@
 import React from 'react';
-import Register from './register'
+import Pool from './pool'
 
 const Index = props => {
     return (
-        <Register/>
+        <Pool/>
     );
 }
 

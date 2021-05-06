@@ -18,7 +18,7 @@ const SearchModal = props => {
   const { classes, title, open, close, action } = props
 
   const store = useStoreApi()
-  const [users, setUsers] = useState([...keys.DUMMY_USERS])
+  const [members, setMembers] = useState([...keys.DUMMY_MEMBERS])
   const [searchText, setSearchText] = useState('')
   const [selected, setSelected] = useState([])
 
@@ -28,7 +28,7 @@ const SearchModal = props => {
       newSelected.push(cell)
       setSelected(newSelected)
     }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
-      <Avatar user={cell} size={40}></Avatar>
+      <Avatar member={cell} size={40}></Avatar>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
     </Card>
   }
@@ -39,14 +39,14 @@ const SearchModal = props => {
       {/* <Form 
             value={searchText} 
             onChange={searchText => setSearchText(searchText)}
-            placeholder="Search users"
+            placeholder="Search members"
           >
           </Form> */}
       <Table
         height="65vh"
-        list={users}
+        list={members}
         renderCell={value => renderCell(value)}
-        text="We couldn't find users"
+        text="We couldn't find members"
         subText="Please try again later"
         actionText="Close"
         action={close}
@@ -59,7 +59,7 @@ const SearchModal = props => {
           store.setShowAddValueNetwork(false)
         }}
         margin="35px 0px 0px 0px" gradient width={150} height={40}>
-        Add users
+        Add members
             </Button> : null}
     </Modal>
   )

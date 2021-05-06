@@ -8,12 +8,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 
+import keys from '../config/keys'
 import { useStoreApi } from '../store/provider'
 
 //success / error snackbar with message
 const Toast = props => {
   const {showToast, setShowToast} = useStoreApi()
-  
   const { classes } = props;
   const Icon = iconType[showToast.reason]
 
@@ -21,18 +21,18 @@ const Toast = props => {
     <div className={classes.root}>
       <Snackbar
         open={showToast.show}
-        onExiting={() => setShowToast(false)}
+        onExiting={() => setShowToast({show: false})}
         onClose={(event, reason) => {
           //prevents toast from disappearing when new toast is triggered. Neither will show if clickaway is enabled
           if (reason && reason == 'clickaway') return
-          setShowToast(false)
+          setShowToast({show: false})
         }}
         autoHideDuration={2000}
         ContentProps={{
           'aria-describedby': 'message-id',
         }}
         action={[
-          <IconButton key="close" aria-label="Close" color="inherit" onClick={() => setShowToast(false)}>
+          <IconButton key="close" aria-label="Close" color="inherit" onClick={() => setShowToast({show:false})}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         ]}
@@ -54,6 +54,8 @@ const iconType = {
 
 const useStyles = theme => ({
   root: {
+    // backgroundColor: keys.GRAY,
+    // color: 'white',
     zIndex: 999999999999
   },
   icon: {

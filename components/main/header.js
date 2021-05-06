@@ -85,7 +85,7 @@ const Header = (props) => {
           margin='0px 0px 0px 14px'
         >Epoch 1</Text>
         <Avatar
-          user={store.user}
+          member={store.member}
           size={30}
           margin='0px 0px 0px 14px'
         ></Avatar>
@@ -93,7 +93,7 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 8px'
-        >@scottsgc</Text>
+        >@{store.member.alias}</Text>
       </div>
     )
   }

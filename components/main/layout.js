@@ -3,14 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import Toast from '../../reusable/toast'
 import Header from './header'
-import UserSearch from '../modals/user-search'
+import MemberSearch from '../modals/member-search'
 import AddLiquidity from '../liquidity/add'
 import SwapLiquidity from '../liquidity/swap'
 import WithdrawLiquidity from '../liquidity/withdraw'
 import { useStoreApi } from '../../store/provider'
-
 const Layout = (props) => {
   const store = useStoreApi()
   useEffect(() => {
@@ -20,13 +18,12 @@ const Layout = (props) => {
   const { classes, Component, route } = props;
   return (
     <div className={classes.root}>
-      <Toast />
       <CssBaseline />
       <Header/>
       <div className={classes.main}>
         {Component()}
       </div>
-      <UserSearch
+      <MemberSearch
         open={store.showAddStakeNetwork}
         close={() => store.setShowAddStakeNetwork(false)}
         title={'Add to stake network'}
@@ -34,7 +31,7 @@ const Layout = (props) => {
 
         }}
       />
-      <UserSearch
+      <MemberSearch
         open={store.showAddValueNetwork}
         close={() => store.setShowAddValueNetwork(false)}
         title={'Add to value network'}

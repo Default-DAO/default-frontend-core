@@ -14,27 +14,33 @@ import Button from '../reusable/button'
 import StakeModal from '../components/liquidity/give'
 import { useStoreApi } from '../store/provider'
 
+
+
 const Stake = props => {
   const {setShowAddStakeNetwork} = useStoreApi()
 
-  const [stakeTo, setStakeTo] = useState([...keys.DUMMY_USERS])
-  const [stakeFrom, setStakeFrom] = useState([...keys.DUMMY_USERS])
+  const [stakeTo, setStakeTo] = useState([...keys.DUMMY_MEMBERS])
+  const [stakeFrom, setStakeFrom] = useState([...keys.DUMMY_MEMBERS])
   const [stakeDntOpen, setStakeDntOpen] = useState(false)
+
+  useEffect(() => {
+    
+  })
 
   function renderToCell(cell, i) {
     const { classes } = props
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar user={cell} size={40}></Avatar>
+        <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
       </span>
       <Weight
         value={cell.weight}
         onChange={(weight) => {
           let newStakeTo = [...stakeTo]
-          let user = { ...newStakeTo[i] }
-          user.weight = weight
-          newStakeTo[i] = user
+          let member = { ...newStakeTo[i] }
+          member.weight = weight
+          newStakeTo[i] = member
           newStakeTo = newStakeTo.sort((u1, u2) => {
             u1.weight = u1.weight ? u1.weight : 0
             u2.weight = u2.weight ? u2.weight : 0
@@ -63,8 +69,8 @@ const Stake = props => {
   function renderStakeButton() {
     const { classes } = props
     let weightSet = false
-    stakeTo.forEach(user => {
-      if (user && user.weight && user.weight > 0) {
+    stakeTo.forEach(member => {
+      if (member && member.weight && member.weight > 0) {
         weightSet = true
         return
       }

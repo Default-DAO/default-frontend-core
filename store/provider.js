@@ -4,12 +4,13 @@ import keys from '../config/keys';
 export const StoreContext = createContext()
 const initialState = {
   web3: undefined,
-  ethAddress: '',
-  ethBalance: 0,
+  ethAddress: undefined,
+  ethBalance: undefined,
+  chainId: undefined,
 
   showToast: { show: false, text: '', reason: 'success' },
   isLoading: false,
-  user: {},
+  member: {},
   pool: {},
   protocol: {},
 
@@ -33,6 +34,11 @@ const reducer = (state, action) => {
         ...state,
         ethAddress: action.ethAddress
       }
+    case keys.CHAIN_ID:
+      return {
+        ...state,
+        chainId: action.chainId
+      }
     case keys.ETH_BALANCE:
       return {
         ...state,
@@ -48,10 +54,10 @@ const reducer = (state, action) => {
         ...state,
         isLoading: action.isLoading
       }
-    case keys.USER:
+    case keys.MEMBER:
       return {
         ...state,
-        user: action.user
+        member: action.member
       }
     case keys.POOL:
       return {
@@ -111,8 +117,9 @@ export const useStoreApi = () => {
     web3: state.web3,
     ethAddress: state.ethAddress,
     ethBalance: state.ethBalance,
+    chainId: state.chainId,
 
-    user: state.user,
+    member: state.member,
     showToast: state.showToast,
     isLoading: state.isLoading,
     pool: state.pool,
@@ -143,14 +150,20 @@ export const useStoreApi = () => {
         ethBalance
       })
     },
-
-    setUser: user => {
+    setChainId: chainId => {
       dispatch({
-        type: keys.USER,
-        user
+        type: keys.ETH_BALANCE,
+        chainId
       })
     },
-    setShowToast: (show, text, reason) => {
+
+    setMember: member => {
+      dispatch({
+        type: keys.MEMBER,
+        member
+      })
+    },
+    setShowToast: ({show, text, reason}) => {
       if (!text) text = ''
       if (!reason) reason = 'success'
       dispatch({
