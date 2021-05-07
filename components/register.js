@@ -20,13 +20,10 @@ const Register = (props) => {
       <span className={classes.registerContainer}>
         <Text className={classes.logo} type='heading' fontSize={100} fontWeight={700}>Ðefault</Text>
         <Form
-          value={'e'}
+          value={alias}
           center
           className={classes.form}
           onChange={(text) => {
-            if (text.length > 0 && text[0] != '@') {
-              text = '@' + text
-            }
             setAlias(text)
           }}
           width={280}
@@ -34,9 +31,15 @@ const Register = (props) => {
         <Button
           gradient width={300} height={40}
           onClick={async () => {
+            if (alias.length < 3) {
+              return setShowToast({show: true, text: "Please make your alias longer than 3 characters!", reason:'error'})
+            }
+
             let newEthAddress = await registerWallet()
             let member = await registerMember({
-              params: {ethAddress: newEthAddress},
+              params: {
+                alias
+              },
               store
             })
           }}

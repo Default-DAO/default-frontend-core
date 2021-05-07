@@ -84,7 +84,6 @@ const App = (props) => {
       localStorage.setItem(keys.MEMBER, JSON.stringify({}))
       setEthAddress(undefined)
       setEthBalance(undefined)
-      setChainId(chainId)
 
       checkRegistered((member) => {
         setMember(member)
