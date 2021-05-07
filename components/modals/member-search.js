@@ -40,9 +40,16 @@ const SearchModal = props => {
     setSelected([])
   }
 
+  function includes(array, cell) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].ethAddress == cell.ethAddress) return true
+    }
+    return false
+  }
+
   function renderCell(cell) {
 
-    let isSelected = selected.includes(cell) || props.selected.includes(cell)
+    let isSelected = includes(selected, cell) || includes(props.selected, cell)
 
     return <Card onClick={() => {
       if (isSelected) return

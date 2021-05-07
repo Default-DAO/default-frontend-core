@@ -2,13 +2,14 @@ import axios from 'axios'
 import keys from '../config/keys'
 import { getSignedMessage, getMember } from './get'
 
-export const registerMember = async ({ store }) => {
+export const registerMember = async ({ params, store }) => {
   try {
     const { signature, ethAddress, chainId } = await getSignedMessage()
     const { data: { result } } = await axios.post(process.env.API_URL + '/api/member/claim', {
       signature,
       ethAddress,
-      chainId
+      chainId,
+      alias: params.alias,
     })
 
     let member
