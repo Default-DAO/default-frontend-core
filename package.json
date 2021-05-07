@@ -9,7 +9,7 @@
 				"build": "next build",
 				"start": "next start",
 				"preprod": "./node_modules/next/dist/bin/next build",
-				"prod": "pm2-runtime start ecosystem.config.js",
+				"prod": "pm2-runtime start ecosystem.config.js --env production",
 				"postprod": "node ./node_modules/pm2/bin/pm2 logs",
 				"stop": "./node_modules/pm2/bin/pm2 stop all"
 		},
