@@ -54,6 +54,13 @@ const Stake = props => {
     })
   }
 
+  function includes(array, cell) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].ethAddress == cell.ethAddress) return true
+    }
+    return false
+  }
+
   function renderToCell(cell, i) {
     const { classes } = props
     const { alias, weight } = cell
@@ -185,7 +192,7 @@ const Stake = props => {
           let newSelected = [...delegationsTo]
           for (let i = 0; i < selected.length; i ++) {
             if (selected[i].weight == undefined) selected[i].weight = 0
-            if (!newSelected.includes(selected[i])) {
+            if (!includes(newSelected, selected[i])) {
               newSelected.push(selected[i])
             }
           }

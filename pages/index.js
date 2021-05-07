@@ -1,9 +1,9 @@
 import React from 'react';
-import Pool from './pool'
+import Stake from './stake'
 
 const Index = props => {
     return (
-        <Pool/>
+        <Stake/>
     );
 }
 
