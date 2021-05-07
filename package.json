@@ -9,7 +9,7 @@
 				"build": "next build",
 				"start": "next start",
 				"preprod": "./node_modules/next/dist/bin/next build",
-				"prod": "./node_modules/.bin/pm2-runtime start ./node_modules/next/dist/bin/next -i 2",
+				"prod": "./node_modules/.bin/pm2-runtime start ./node_modules/next/dist/bin/next -- start",
 				"postprod": "node ./node_modules/pm2/bin/pm2 logs",
 				"stop": "./node_modules/pm2/bin/pm2 stop all",
 				"pm2update": "./node_modules/.bin/pm2 updatePM2"
