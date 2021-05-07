@@ -8,7 +8,7 @@
 				"dev": "node server.js",
 				"build": "next build",
 				"start": "next start",
-				"preprod": "./node_modules/.bin/next build",
+				"preprod": "./node_modules/next/dist/bin/next build",
 				"prod": "./node_modules/.bin/pm2 start ./node_modules/next/dist/bin/next -i 2",
 				"postprod": "node ./node_modules/pm2/bin/pm2 logs",
 				"stop": "./node_modules/pm2/bin/pm2 stop all",
