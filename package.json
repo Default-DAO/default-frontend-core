@@ -9,7 +9,7 @@
 				"build": "next build",
 				"start": "next start",
 				"preprod": "./node_modules/.bin/next build",
-				"prod": "pm2-runtime start 'node_modules/.bin/next' -i 2 -- start ",
+				"prod": "pm2-runtime ./node_modules/next/dist/bin/next -i 2",
 				"postprod": "node ./node_modules/pm2/bin/pm2 logs",
 				"stop": "./node_modules/pm2/bin/pm2 stop all"
 		},
@@ -41,7 +41,7 @@
 				"next": "^10.1.2",
 				"npm": "^6.11.3",
 				"path": "^0.12.7",
-				"pm2": "^4.5.6",
+				"pm2": "4.5.6",
 				"react": "^16.8.3",
 				"react-dom": "^16.8.3",
 				"react-redux": "^6.0.1",
