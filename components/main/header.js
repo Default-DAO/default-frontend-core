@@ -8,12 +8,13 @@ import Button from '../../reusable/button'
 import Avatar from '../../reusable/avatar'
 import Text from '../../reusable/text'
 import { useStoreApi } from '../../store/provider'
+import { getCurrentEpoch } from '../../utils/epoch';
 
 const routes = [
-  {
-    route: '/pool',
-    text: "Pool"
-  },
+  // {
+  //   route: '/pool',
+  //   text: "Pool"
+  // },
   {
     route: '/stake',
     text: "Stake"
@@ -52,12 +53,12 @@ const Header = (props) => {
             </a>
           )
         })}
-        <a
+        {/* <a
           className={classes.link}
           onClick={() => store.setShowAddLiquidity(true)}
         >
           Add
-            </a>
+            </a> */}
         {/* <a
           className={classes.link}
           onClick={() => store.setShowSwapLiquidity(true)}
@@ -77,15 +78,17 @@ const Header = (props) => {
           height={30}
           width={50}
           margin='0px 0px 0px 14px'
-          onClick={() => store.setShowAddLiquidity(true)}
+          onClick={() => {
+            // store.setShowAddLiquidity(true)
+          }}
         >Ð</Button>
         <Text
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 14px'
-        >Epoch 1</Text>
+        >Epoch {getCurrentEpoch()}</Text>
         <Avatar
-          user={store.user}
+          member={store.member}
           size={30}
           margin='0px 0px 0px 14px'
         ></Avatar>
@@ -93,7 +96,7 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 8px'
-        >@scottsgc</Text>
+        >@{store.member.alias}</Text>
       </div>
     )
   }

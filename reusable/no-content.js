@@ -27,7 +27,7 @@ const NoContent = props => {
             {subText}
           </Text> : null}
         </div>
-        <Button
+        {action ? <Button
           disabled={isLoading ? isLoading : false}
           onClick={action}
           gradient
@@ -35,7 +35,7 @@ const NoContent = props => {
           height={40}
         >
           {actionText ? actionText : 'Add'}
-        </Button>
+        </Button> : null}
         <p className={classes.subText}>
           {footerText}
         </p>

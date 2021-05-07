@@ -5,11 +5,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '../reusable/button'
 import Form from '../reusable/form'
 import Text from '../reusable/text'
-import { useWeb3, setUserAccount } from '../api/web3'
+import { useWeb3, registerWallet } from '../api/web3'
 import { useStoreApi } from '../store/provider'
+import {registerMember} from '../api/post'
 
 const Register = (props) => {
-  const {showToast, setShowToast, ethAddress, setEthAddress} = useStoreApi()
+  const store = useStoreApi()
+  const {showToast, setShowToast, ethAddress, setEthAddress} = store
   const [alias, setAlias] = useState('')
 
   const { classes } = props
@@ -32,8 +34,11 @@ const Register = (props) => {
         <Button
           gradient width={300} height={40}
           onClick={async () => {
-            let newEthAddress = await setUserAccount()
-            setEthAddress(newEthAddress)
+            let newEthAddress = await registerWallet()
+            let member = await registerMember({
+              params: {ethAddress: newEthAddress},
+              store
+            })
           }}
         >
           Register

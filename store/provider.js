@@ -4,12 +4,13 @@ import keys from '../config/keys';
 export const StoreContext = createContext()
 const initialState = {
   web3: undefined,
-  ethAddress: '',
-  ethBalance: 0,
+  ethAddress: undefined,
+  ethBalance: undefined,
+  chainId: undefined,
 
   showToast: { show: false, text: '', reason: 'success' },
   isLoading: false,
-  user: {},
+  member: {},
   pool: {},
   protocol: {},
 
@@ -17,8 +18,6 @@ const initialState = {
   showSwapLiquidity: false,
   showWitdhrawLiquidity: false,
   showStakeLiquidity: false,
-  showAddStakeNetwork: false,
-  showAddValueNetwork: false
 }
 
 const reducer = (state, action) => {
@@ -32,6 +31,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         ethAddress: action.ethAddress
+      }
+    case keys.CHAIN_ID:
+      return {
+        ...state,
+        chainId: action.chainId
       }
     case keys.ETH_BALANCE:
       return {
@@ -48,10 +52,10 @@ const reducer = (state, action) => {
         ...state,
         isLoading: action.isLoading
       }
-    case keys.USER:
+    case keys.MEMBER:
       return {
         ...state,
-        user: action.user
+        member: action.member
       }
     case keys.POOL:
       return {
@@ -78,16 +82,6 @@ const reducer = (state, action) => {
         ...state,
         showWitdhrawLiquidity: action.showWitdhrawLiquidity
       }
-    case keys.SHOW_ADD_STAKE_NETWORK:
-      return {
-        ...state,
-        showAddStakeNetwork: action.showAddStakeNetwork
-      }
-    case keys.SHOW_ADD_VALUE_NETWORK:
-      return {
-        ...state,
-        showAddValueNetwork: action.showAddValueNetwork
-      }
     default:
       return {
         ...state
@@ -111,8 +105,9 @@ export const useStoreApi = () => {
     web3: state.web3,
     ethAddress: state.ethAddress,
     ethBalance: state.ethBalance,
+    chainId: state.chainId,
 
-    user: state.user,
+    member: state.member,
     showToast: state.showToast,
     isLoading: state.isLoading,
     pool: state.pool,
@@ -122,8 +117,6 @@ export const useStoreApi = () => {
     showSwapLiquidity: state.showSwapLiquidity,
     showWitdhrawLiquidity: state.showWitdhrawLiquidity,
     showStakeLiquidity: state.showStakeLiquidity,
-    showAddStakeNetwork: state.showAddStakeNetwork,
-    showAddValueNetwork: state.showAddValueNetwork,
 
     setWeb3: web3 => {
       dispatch({
@@ -143,14 +136,20 @@ export const useStoreApi = () => {
         ethBalance
       })
     },
-
-    setUser: user => {
+    setChainId: chainId => {
       dispatch({
-        type: keys.USER,
-        user
+        type: keys.ETH_BALANCE,
+        chainId
       })
     },
-    setShowToast: (show, text, reason) => {
+
+    setMember: member => {
+      dispatch({
+        type: keys.MEMBER,
+        member
+      })
+    },
+    setShowToast: ({show, text, reason}) => {
       if (!text) text = ''
       if (!reason) reason = 'success'
       dispatch({
@@ -197,17 +196,5 @@ export const useStoreApi = () => {
         showWitdhrawLiquidity
       })
     },
-    setShowAddStakeNetwork: showAddStakeNetwork => {
-      dispatch({
-        type: keys.SHOW_ADD_STAKE_NETWORK,
-        showAddStakeNetwork
-      })
-    },
-    setShowAddValueNetwork: showAddValueNetwork => {
-      dispatch({
-        type: keys.SHOW_ADD_VALUE_NETWORK,
-        showAddValueNetwork
-      })
-    }
   }
 }
