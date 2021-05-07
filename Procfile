@@ -1,1 +1,1 @@
-web: npm run pm2update && npm install && npm run prod
+web: npm run pm2update && npm run prod
