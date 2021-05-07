@@ -18,8 +18,6 @@ const initialState = {
   showSwapLiquidity: false,
   showWitdhrawLiquidity: false,
   showStakeLiquidity: false,
-  showAddStakeNetwork: false,
-  showAddValueNetwork: false
 }
 
 const reducer = (state, action) => {
@@ -84,16 +82,6 @@ const reducer = (state, action) => {
         ...state,
         showWitdhrawLiquidity: action.showWitdhrawLiquidity
       }
-    case keys.SHOW_ADD_STAKE_NETWORK:
-      return {
-        ...state,
-        showAddStakeNetwork: action.showAddStakeNetwork
-      }
-    case keys.SHOW_ADD_VALUE_NETWORK:
-      return {
-        ...state,
-        showAddValueNetwork: action.showAddValueNetwork
-      }
     default:
       return {
         ...state
@@ -129,8 +117,6 @@ export const useStoreApi = () => {
     showSwapLiquidity: state.showSwapLiquidity,
     showWitdhrawLiquidity: state.showWitdhrawLiquidity,
     showStakeLiquidity: state.showStakeLiquidity,
-    showAddStakeNetwork: state.showAddStakeNetwork,
-    showAddValueNetwork: state.showAddValueNetwork,
 
     setWeb3: web3 => {
       dispatch({
@@ -210,17 +196,5 @@ export const useStoreApi = () => {
         showWitdhrawLiquidity
       })
     },
-    setShowAddStakeNetwork: showAddStakeNetwork => {
-      dispatch({
-        type: keys.SHOW_ADD_STAKE_NETWORK,
-        showAddStakeNetwork
-      })
-    },
-    setShowAddValueNetwork: showAddValueNetwork => {
-      dispatch({
-        type: keys.SHOW_ADD_VALUE_NETWORK,
-        showAddValueNetwork
-      })
-    }
   }
 }

@@ -88,6 +88,7 @@ const TokenForm = props => {
           onChange={(value) => {
             onValueChange(value)
           }}
+          max={10000000000}
           number
         ></Form>
         <Popover

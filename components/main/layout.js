@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Header from './header'
-import MemberSearch from '../modals/member-search'
 import AddLiquidity from '../liquidity/add'
 import SwapLiquidity from '../liquidity/swap'
 import WithdrawLiquidity from '../liquidity/withdraw'
@@ -23,22 +22,6 @@ const Layout = (props) => {
       <div className={classes.main}>
         {Component()}
       </div>
-      <MemberSearch
-        open={store.showAddStakeNetwork}
-        close={() => store.setShowAddStakeNetwork(false)}
-        title={'Add to stake network'}
-        action={(selected) => {
-
-        }}
-      />
-      <MemberSearch
-        open={store.showAddValueNetwork}
-        close={() => store.setShowAddValueNetwork(false)}
-        title={'Add to value network'}
-        action={(selected) => {
-
-        }}
-      />
       <AddLiquidity
         open={store.showAddLiquidity}
         close={() => store.setShowAddLiquidity(false)}
