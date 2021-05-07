@@ -12,9 +12,9 @@ import Weight from '../reusable/weight'
 import Button from '../reusable/button'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
-import RewardModal from '../components/liquidity/give'
 import { useStoreApi } from '../store/provider'
-import { getMembers, getAllocations } from '../api/get'
+import { getAllocations } from '../api/get'
+import { allocateRewards } from '../api/post'
 import { getCurrentEpoch } from '../utils/epoch'
 
 const Reward = props => {
@@ -22,13 +22,12 @@ const Reward = props => {
   const { member } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
-  const [selectedEpoch, setSelectedEpoch] = useState(1)
+  const [selectedEpoch, setSelectedEpoch] = useState(getCurrentEpoch())
   const [allocationsTo, setAllocationsTo] = useState([])
   const [allocationsFrom, setAllocationsFrom] = useState([])
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
-    console.log(getCurrentEpoch())
     getValueAllocations(0, selectedEpoch)
   }, [])
 
@@ -41,25 +40,28 @@ const Reward = props => {
       },
       store
     })
-    // console.log({allocationsFrom, allocationsTo})
     setAllocationsFrom(allocationsFrom)
     setAllocationsTo(allocationsTo)
   }
 
-  async function sendAllocations() {
-
+  async function rewardAllocations() {
+    await allocateRewards({
+      params: {allocations: allocationsTo},
+      store
+    })
   }
 
   function renderToCell(cell, i) {
     const { classes } = props
-    const { toTxMember, weight } = cell
+    const { alias, weight } = cell
 
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar member={toTxMember} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{toTxMember.alias}</Text>
+        <Avatar member={cell} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
+        disabled={selectedEpoch != getCurrentEpoch()}
         value={weight}
         onChange={(weight) => {
           let newAllocationsTo = [...allocationsTo]
@@ -79,12 +81,12 @@ const Reward = props => {
 
   function renderFromCell(cell) {
     const { classes } = props
-    const { fromTxMember, weight } = cell
+    const { alias, weight } = cell
 
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar member={fromTxMember} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{fromTxMember.alias}</Text>
+        <Avatar member={cell} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
         value={weight}
@@ -109,7 +111,7 @@ const Reward = props => {
         gradient
         width={200}
         height={50}
-        onClick={() => sendAllocations()}
+        onClick={() => rewardAllocations()}
       >
         Reward!
       </Button></span>
@@ -159,11 +161,18 @@ const Reward = props => {
           />
           <MemberSearch
             open={showMemberSearch}
+            selected={allocationsTo}
             close={() => setShowMemberSearch(false)}
             title={'Choose people to reward'}
             action={(selected) => {
-              console.log("SEL ", selected)
-
+              let newSelected = [...allocationsTo]
+              for (let i = 0; i < selected.length; i ++) {
+                if (selected[i].weight == undefined) selected[i].weight = 0
+                if (!newSelected.includes(selected[i])) {
+                  newSelected.push(selected[i])
+                }
+              }
+              setAllocationsTo(newSelected)
               setShowMemberSearch(false)
             }}
           />

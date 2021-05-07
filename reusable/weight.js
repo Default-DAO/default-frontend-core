@@ -13,7 +13,8 @@ const Weight = props => {
     <Card className={classes.card} height={30}>
       <Form
         className={classes.form}
-        value={value ? value : 0}
+        placeholder="0"
+        value={value ? value : ''}
         onChange={value => onChange(value)}
         center
         disabled={disabled ? disabled : false}

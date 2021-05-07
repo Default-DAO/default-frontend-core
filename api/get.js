@@ -6,7 +6,7 @@ export const getSignedMessage = async () => {
   try {
     let ethAddress = await web3.getEthAddress()
     let chainId = await web3.getChainId()
-    const { data: { result } } = await axios.get(keys.API_URL + '/api/auth', {
+    const { data: { result } } = await axios.get(process.env.API_URL + '/api/auth', {
       params: {
         ethAddress,
         chainId
@@ -28,7 +28,7 @@ export const getSignedMessage = async () => {
 
 export const getMember = async ({ params, store }) => {
   try {
-    const { data: { result } } = await axios.get(keys.API_URL + '/api/member', {
+    const { data: { result } } = await axios.get(process.env.API_URL + '/api/member', {
       params: {
         ...params
       }
@@ -43,7 +43,7 @@ export const getMember = async ({ params, store }) => {
 export const getMembers = async ({ params, store }) => {
   try {
     //page
-    const { data: { result } } = await axios.get(keys.API_URL + '/api/ctMember/getMembers', {
+    const { data: { result } } = await axios.get(process.env.API_URL + '/api/ctMember/getMembers', {
       params: {
         ...params
       }
@@ -71,16 +71,33 @@ export const getProtocol = async ({ params, store }) => {
 export const getAllocations = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    const { data: { result } } = await axios.get(keys.API_URL + '/api/txValueAllocation', {
+    const { data: { result } } = await axios.get(process.env.API_URL + '/api/txValueAllocation', {
       params: {
         ...params
       }
     })
-    // result : {
-    //   allocationsTo,
-    //   allocationsFrom
-    // }
-    return result
+    
+    let allocationsTo = []
+    result.allocationsTo.map((to, i) => {
+      const {alias, ethAddress} = to.toTxMember
+      const weight = to.weight
+      allocationsTo.push({
+        ethAddress, alias, weight
+      })
+    })
+
+    let allocationsFrom = []
+    result.allocationsFrom.map((from, i) => {
+      const {alias, ethAddress} = from.fromTxMember
+      const weight = from.weight
+      allocationsFrom.push({
+        ethAddress, alias, weight
+      })
+    })
+
+    console.log({allocationsTo, allocationsFrom})
+
+    return {allocationsTo, allocationsFrom}
   } catch (err) {
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get allocations. Please try again later", reason: 'error' })
@@ -90,19 +107,32 @@ export const getAllocations = async ({ params, store }) => {
 export const getStakes = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    const { data: { result } } = await axios.get(keys.API_URL + '/api/txStakeDelegation', {
+    const { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation', {
       params: {
         ...params
       }
     })
-    // result : {
-    //   delegationsTo,
-    //   delegationsFrom
-    // }
-    console.log("R:", result)
-    return result
+    
+    let delegationsTo = []
+    result.delegationsTo.map((to, i) => {
+      const {alias, ethAddress} = to.toTxMember
+      const weight = to.weight
+      delegationsTo.push({
+        ethAddress, alias, weight
+      })
+    })
+
+    let delegationsFrom = []
+    result.delegationsFrom.map((from, i) => {
+      const {alias, ethAddress} = from.fromTxMember
+      const weight = from.weight
+      delegationsFrom.push({
+        ethAddress, alias, weight
+      })
+    })
+
+    return {delegationsTo, delegationsFrom}
   } catch (err) {
-    console.log("E:R", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get stakes. Please try again later", reason: 'error' })
   }

@@ -11,11 +11,12 @@ import Card from '../reusable/card'
 import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
-import StakeModal from '../components/liquidity/give'
+import StakeModal from '../components/liquidity/stake'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
-import { getMembers, getAllocations, getStakes } from '../api/get'
+import { getStakes } from '../api/get'
+import { delegateStakes } from '../api/post'
 import { getCurrentEpoch } from '../utils/epoch'
 
 const Stake = props => {
@@ -47,19 +48,23 @@ const Stake = props => {
   }
 
   async function stakeDelegations() {
-    
+    await delegateStakes({
+      params: {delegations: delegationsTo},
+      store
+    })
   }
 
   function renderToCell(cell, i) {
     const { classes } = props
-    const { toTxMember, weight } = cell
+    const { alias, weight } = cell
 
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar member={toTxMember} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{toTxMember.alias}</Text>
+        <Avatar member={cell} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
+        disabled={selectedEpoch != getCurrentEpoch()}
         value={weight}
         onChange={(weight) => {
           let newDelegationsTo = [...delegationsTo]
@@ -119,12 +124,12 @@ const Stake = props => {
   return (
     <div className={classes.stake}>
       <div className={classes.epoch}>
-        <Button 
+        <Button
           onClick={() => setEpochSelectorOpen(true)}
           type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
           Epoch {selectedEpoch}
         </Button>
-        {(selectedEpoch == getCurrentEpoch()) ? <Button 
+        {(selectedEpoch == getCurrentEpoch()) ? <Button
           onClick={() => setStakeDntOpen(true)}
           gradient className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
           Stake DNT!
@@ -134,7 +139,7 @@ const Stake = props => {
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Stake To</Text>
-            {(selectedEpoch == getCurrentEpoch()) ?<AddIcon
+            {(selectedEpoch == getCurrentEpoch()) ? <AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
@@ -146,7 +151,8 @@ const Stake = props => {
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
             action={(selectedEpoch != getCurrentEpoch()) ? null : () => {
-              setShowMemberSearch(true)}
+              setShowMemberSearch(true)
+            }
             }
           />
           {renderStakeButton()}
@@ -171,11 +177,19 @@ const Stake = props => {
         buttonLabel="Stake"
       />
       <MemberSearch
+        selected={delegationsTo}
         open={showMemberSearch}
         close={() => setShowMemberSearch(false)}
         title={'Choose people to stake'}
         action={(selected) => {
-          
+          let newSelected = [...delegationsTo]
+          for (let i = 0; i < selected.length; i ++) {
+            if (selected[i].weight == undefined) selected[i].weight = 0
+            if (!newSelected.includes(selected[i])) {
+              newSelected.push(selected[i])
+            }
+          }
+          setDelegationsTo(newSelected)
           setShowMemberSearch(false)
         }}
       />

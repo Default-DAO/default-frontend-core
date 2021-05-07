@@ -6,8 +6,11 @@ import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
 import TokenForm from '../../reusable/token-form'
 import Button from '../../reusable/button'
+import { stakeDnt } from '../../api/post'
+import { useStoreApi } from '../../store/provider'
 
 const StakeReward = props => {
+  const store = useStoreApi()
   const [value, setValue] = useState('')
 
   const { classes, open, close, configurations, title, label, buttonLabel } = props
@@ -23,7 +26,12 @@ const StakeReward = props => {
         label={label}
       />
       <Button
-        onClick={() => { }}
+        onClick={() => { 
+          stakeDnt({
+            params: { amountDnt: value },
+            store
+          })
+        }}
         margin="35px 0px 0px 0px" gradient width={200} height={50}>
         {buttonLabel}
       </Button>

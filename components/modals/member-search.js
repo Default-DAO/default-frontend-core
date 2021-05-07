@@ -16,7 +16,7 @@ import { getMembers } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
 
 const SearchModal = props => {
-  const { classes, title, open, close, action } = props
+  const { classes, title, open, close, action, disabled } = props
 
   const store = useStoreApi()
   const [members, setMembers] = useState([])
@@ -41,11 +41,15 @@ const SearchModal = props => {
   }
 
   function renderCell(cell) {
+
+    let isSelected = selected.includes(cell) || props.selected.includes(cell)
+
     return <Card onClick={() => {
+      if (isSelected) return
       let newSelected = [...selected]
       newSelected.push(cell)
       setSelected(newSelected)
-    }} className={clsx(classes.cell, selected.includes(cell) ? classes.selectedCell : "")}>
+    }} className={clsx(classes.cell, isSelected ? classes.selectedCell : "")}>
       <Avatar member={cell} size={40}></Avatar>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{cell.alias}</Text>
     </Card>
