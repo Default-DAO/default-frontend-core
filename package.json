@@ -9,9 +9,10 @@
 				"build": "next build",
 				"start": "next start",
 				"preprod": "./node_modules/next/dist/bin/next build",
-				"prod": "pm2-runtime start ecosystem.json --env production",
+				"prod": "./node_modules/.bin/pm2-runtime start ./node_modules/next/dist/bin/next -- start",
 				"postprod": "node ./node_modules/pm2/bin/pm2 logs",
-				"stop": "./node_modules/pm2/bin/pm2 stop all"
+				"stop": "./node_modules/pm2/bin/pm2 stop all",
+				"pm2update": "./node_modules/.bin/pm2 updatePM2"
 		},
 		"author": "",
 		"license": "ISC",
@@ -41,7 +42,7 @@
 				"next": "^10.1.2",
 				"npm": "^6.11.3",
 				"path": "^0.12.7",
-				"pm2": "^4.5.6",
+				"pm2": "4.5.6",
 				"react": "^16.8.3",
 				"react-dom": "^16.8.3",
 				"react-redux": "^6.0.1",
