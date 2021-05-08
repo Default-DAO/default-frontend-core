@@ -51,7 +51,9 @@ async function checkRegistered(callback) {
     }
 
     let ethAddress = await getEthAddress()
-    if (!ethAddress) return
+    if (!ethAddress) {
+      return callback({})
+    }
     member = await getMember({params: {
       ethAddress
     }})
