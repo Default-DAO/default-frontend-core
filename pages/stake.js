@@ -17,16 +17,19 @@ import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
 import { getStakes } from '../api/get'
 import { delegateStakes } from '../api/post'
-import { getCurrentEpoch } from '../utils/epoch'
+import { format } from '../utils/money'
 
 const Stake = props => {
   const store = useStoreApi()
-  const { member } = store
+  const { getMember, getProtocol } = store
+  console.log(getProtocol().epochNumber)
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
-  const [selectedEpoch, setSelectedEpoch] = useState(getCurrentEpoch())
+  const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
   const [delegationsTo, setDelegationsTo] = useState([])
   const [delegationsFrom, setDelegationsFrom] = useState([])
+  const [delegationsToAmount, setDelegationsToAmount] = useState(0)
+  const [delegationsFromAmount, setDelegationsFromAmount] = useState(0)
   const [stakeDntOpen, setStakeDntOpen] = useState(false)
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
@@ -35,16 +38,23 @@ const Stake = props => {
   }, [])
 
   async function getStakeDelegations(page, epoch) {
-    let { delegationsFrom, delegationsTo } = await getStakes({
+    let { 
+      delegationsFrom, 
+      delegationsTo, 
+      delegationsFromAmount, 
+      delegationsToAmount 
+    } = await getStakes({
       params: {
         page,
         epoch,
-        ethAddress: member.ethAddress
+        ethAddress: getMember().ethAddress
       },
       store
     })
     setDelegationsFrom(delegationsFrom)
     setDelegationsTo(delegationsTo)
+    setDelegationsFromAmount(delegationsFromAmount)
+    setDelegationsToAmount(delegationsToAmount)
   }
 
   async function stakeDelegations() {
@@ -71,7 +81,7 @@ const Stake = props => {
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
-        disabled={selectedEpoch != getCurrentEpoch()}
+        disabled={selectedEpoch != getProtocol().epochNumber}
         value={weight}
         onChange={(weight) => {
           let newDelegationsTo = [...delegationsTo]
@@ -91,12 +101,12 @@ const Stake = props => {
 
   function renderFromCell(cell) {
     const { classes } = props
-    const { fromTxMember, weight } = cell
+    const { alias, weight } = cell
 
     return <Card className={classes.cell}>
       <span className={classes.profileContainer}>
-        <Avatar member={fromTxMember} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{fromTxMember.alias}</Text>
+        <Avatar member={cell} size={40}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
         value={weight}
@@ -114,7 +124,8 @@ const Stake = props => {
         return
       }
     })
-    if (!weightSet) return null
+    if (selectedEpoch != getProtocol().epochNumber || !weightSet) return null 
+    
     return (
       <span className={classes.buttonContainer}><Button
         gradient
@@ -136,7 +147,7 @@ const Stake = props => {
           type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
           Epoch {selectedEpoch}
         </Button>
-        {(selectedEpoch == getCurrentEpoch()) ? <Button
+        {(selectedEpoch == getProtocol().epochNumber) ? <Button
           onClick={() => setStakeDntOpen(true)}
           gradient className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
           Stake DNT!
@@ -146,18 +157,21 @@ const Stake = props => {
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Stake To</Text>
-            {(selectedEpoch == getCurrentEpoch()) ? <AddIcon
+            {(selectedEpoch == getProtocol().epochNumber) ? <AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
             /> : null}
+          </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsToAmount, 2)}</Text>
           </span>
           <Table
             text="You haven't staked anyone"
             list={delegationsTo}
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
-            action={(selectedEpoch != getCurrentEpoch()) ? null : () => {
+            action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
               setShowMemberSearch(true)
             }
             }
@@ -167,6 +181,9 @@ const Stake = props => {
         <div className={classes.right}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Stake From</Text>
+          </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsFromAmount, 2)}</Text>
           </span>
           <Table
             text='No stakes here!'

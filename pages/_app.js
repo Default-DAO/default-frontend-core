@@ -10,8 +10,8 @@ import * as keys from '../config/keys';
 import Layout from '../components/main/layout'
 import { useStoreApi } from '../store/provider'
 import Register from '../components/register'
-import { getEthAddress, handleAccountChange, handleChainChange } from '../api/web3'
-import { getMember } from '../api/get'
+import { isMetamask, getEthAddress, handleAccountChange, handleChainChange } from '../api/web3'
+import { getMember, getMemberPool, getProtocol } from '../api/get'
 import Toast from '../reusable/toast'
 import Loading from '../components/loading'
 
@@ -41,63 +41,67 @@ const noAuth = [
   '/settings/privacy-policy'
 ]
 
-async function checkRegistered(callback) {
+async function checkRegistered(store) {
   try {
-    let member = localStorage.getItem(keys.MEMBER)
-    if (member) member = JSON.parse(member)
-
-    if (member && member.ethAddress) {
-      return callback(member)
-    }
-
     let ethAddress = await getEthAddress()
     if (!ethAddress) {
-      return callback({})
+      return {}
     }
-    member = await getMember({params: {
+    console.log("eeee ", ethAddress)
+    
+    let member = await getMember({params: {
       ethAddress
     }})
-    localStorage.setItem(keys.MEMBER, JSON.stringify(member))
-    callback(member.apiMember)
+    
+    return member
   } catch(err) {
-    console.log(err)
-    localStorage.setItem(keys.MEMBER, JSON.stringify({}))
-    callback({})
+    store.setMember({})
+    store.setIsLoading(false)
   }
 }
 
 const App = (props) => {
   const { children, router } = props
-  const { setEthAddress, setEthBalance, setChainId, setMember, member } = useStoreApi()
-  const [isLoading, setIsLoading] = useState(true)
+  const store = useStoreApi()
+  let { reset, isLoading, setIsLoading, setMember, getMember } = store
   React.useEffect(() => {
+    if (!isMetamask()) {
+      return reset()
+    }
+
     handleChainChange((chainId) => {
-      setMember({})
-      localStorage.setItem(keys.MEMBER, JSON.stringify({}))
-      setEthAddress(undefined)
-      setEthBalance(undefined)
-      setChainId(chainId)
+      reset()
       window.location.reload();
-      setIsLoading(false)
     })
 
-    handleAccountChange((account) => {
-      setMember({})
-      localStorage.setItem(keys.MEMBER, JSON.stringify({}))
-      setEthAddress(undefined)
-      setEthBalance(undefined)
-
-      checkRegistered((member) => {
-        setMember(member)
-        setIsLoading(false)
-      })
-    })
-
-    checkRegistered((member) => {
+    handleAccountChange(async (account) => {
+      reset()
+      let member = await checkRegistered(store) 
       setMember(member)
       setIsLoading(false)
     })
+
+    loadInfo()
   }, []);
+
+  async function loadInfo() {
+    let member = await checkRegistered(store)
+    setMember(member)
+    console.log("ETH: ", member)
+
+    await getMemberPool({
+      params: {
+        ethAddress: store.getMember().ethAddress
+      },
+      store
+    })
+    await getProtocol({
+      params: {},
+      store
+    })
+
+    setIsLoading(false)
+  }
 
   if (noAuth.includes(router.route)) {
     return children
@@ -109,9 +113,11 @@ const App = (props) => {
   
   return <React.Fragment>
     <Toast/>
-    {(member && member.nonce) ? <Layout
+    {(getMember() && getMember().nonce) ? <Layout
       route={router.route}
-      Component={() => { return children }}
+      Component={() => { 
+        return children 
+      }}
     /> : <Register />}
   </React.Fragment>
 }

@@ -1,5 +1,6 @@
 import React, { useReducer, useContext, createContext } from 'react'
 import keys from '../config/keys';
+import { getLocalStorage, setLocalStorage } from '../utils/local-storage';
 
 export const StoreContext = createContext()
 const initialState = {
@@ -11,7 +12,7 @@ const initialState = {
   showToast: { show: false, text: '', reason: 'success' },
   isLoading: false,
   member: {},
-  pool: {},
+  memberPool: {},
   protocol: {},
 
   showAddLiquidity: false,
@@ -57,10 +58,10 @@ const reducer = (state, action) => {
         ...state,
         member: action.member
       }
-    case keys.POOL:
+    case keys.MEMBER_POOL:
       return {
         ...state,
-        pool: action.pool
+        memberPool: action.memberPool
       }
     case keys.PROTOCOL:
       return {
@@ -81,6 +82,10 @@ const reducer = (state, action) => {
       return {
         ...state,
         showWitdhrawLiquidity: action.showWitdhrawLiquidity
+      }
+    case keys.RESET:
+      return {
+        ...initialState,
       }
     default:
       return {
@@ -108,10 +113,35 @@ export const useStoreApi = () => {
     chainId: state.chainId,
 
     member: state.member,
+    getMember: () => {
+      let member = getLocalStorage(keys.MEMBER)
+      if (member) {
+        return member
+      } else {
+        return state.member
+      }
+    },
+    memberPool: state.memberPool,
+    getMemberPool: () => {
+      let memberPool = getLocalStorage(keys.MEMBER_POOL)
+      if (memberPool) {
+        return memberPool
+      } else {
+        return state.memberPool
+      }
+    },
+    protocol: state.protocol,
+    getProtocol: () => {
+      let protocol = getLocalStorage(keys.PROTOCOL)
+      if (protocol) {
+        return protocol
+      } else {
+        return state.protocol
+      }
+    },
+
     showToast: state.showToast,
     isLoading: state.isLoading,
-    pool: state.pool,
-    protocol: state.protocol,
 
     showAddLiquidity: state.showAddLiquidity,
     showSwapLiquidity: state.showSwapLiquidity,
@@ -138,17 +168,33 @@ export const useStoreApi = () => {
     },
     setChainId: chainId => {
       dispatch({
-        type: keys.ETH_BALANCE,
+        type: keys.CHAIN_ID,
         chainId
       })
     },
 
     setMember: member => {
+      setLocalStorage(keys.MEMBER, member)
       dispatch({
         type: keys.MEMBER,
         member
       })
     },
+    setMemberPool: pool => {
+      setLocalStorage(keys.MEMBER_POOL, pool)
+      dispatch({
+        type: keys.MEMBER_POOL,
+        pool
+      })
+    },
+    setProtocol: protocol => {
+      setLocalStorage(keys.PROTOCOL, protocol)
+      dispatch({
+        type: keys.PROTOCOL,
+        protocol
+      })
+    },
+
     setShowToast: ({show, text, reason}) => {
       if (!text) text = ''
       if (!reason) reason = 'success'
@@ -163,18 +209,6 @@ export const useStoreApi = () => {
       dispatch({
         type: keys.IS_LOADING,
         isLoading
-      })
-    },
-    setPool: pool => {
-      dispatch({
-        type: keys.POOL,
-        pool
-      })
-    },
-    setProtocol: protocol => {
-      dispatch({
-        type: keys.PROTOCOL,
-        protocol
       })
     },
 
@@ -196,5 +230,14 @@ export const useStoreApi = () => {
         showWitdhrawLiquidity
       })
     },
+
+    reset: () => {
+      setLocalStorage(keys.PROTOCOL, {})
+      setLocalStorage(keys.MEMBER_POOL, {})
+      setLocalStorage(keys.MEMBER, {})
+      dispatch({
+        type: keys.RESET
+      })
+    }
   }
 }

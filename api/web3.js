@@ -41,7 +41,7 @@ export const getEthAddress = async () => {
 }
 
 export const registerWallet = async () => {
-  if (!window || !window.ethereum) return
+  if (!isMetamask()) return
 
   try {
     await window.ethereum.request({ method: 'eth_requestAccounts' })

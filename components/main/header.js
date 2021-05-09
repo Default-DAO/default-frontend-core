@@ -8,13 +8,12 @@ import Button from '../../reusable/button'
 import Avatar from '../../reusable/avatar'
 import Text from '../../reusable/text'
 import { useStoreApi } from '../../store/provider'
-import { getCurrentEpoch } from '../../utils/epoch';
 
 const routes = [
-  // {
-  //   route: '/pool',
-  //   text: "Pool"
-  // },
+  {
+    route: '/pool',
+    text: "Pool"
+  },
   {
     route: '/stake',
     text: "Stake"
@@ -53,12 +52,12 @@ const Header = (props) => {
             </a>
           )
         })}
-        {/* <a
+        <a
           className={classes.link}
           onClick={() => store.setShowAddLiquidity(true)}
         >
           Add
-            </a> */}
+        </a>
         {/* <a
           className={classes.link}
           onClick={() => store.setShowSwapLiquidity(true)}
@@ -86,9 +85,9 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 14px'
-        >Epoch {getCurrentEpoch()}</Text>
+        >Epoch {store.getProtocol().epochNumber}</Text>
         <Avatar
-          member={store.member}
+          member={store.getMember()}
           size={30}
           margin='0px 0px 0px 14px'
         ></Avatar>
@@ -96,7 +95,7 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 8px'
-        >@{store.member.alias}</Text>
+        >@{store.getMember().alias}</Text>
       </div>
     )
   }
