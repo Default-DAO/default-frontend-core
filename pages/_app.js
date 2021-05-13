@@ -114,12 +114,12 @@ const App = (props) => {
   
   return <React.Fragment>
     <Toast/>
-    {(getMember() && getMember().claimed) ? <Layout
+    {(!getMember() || !getMember().claimed) ? <Register /> : <Layout
       route={router.route}
       Component={() => { 
         return children 
       }}
-    /> : <Register />}
+    />}
   </React.Fragment>
 }
 
