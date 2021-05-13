@@ -35,8 +35,7 @@ const EpochSelector = props => {
         height="65vh"
         list={epochs}
         renderCell={value => renderCell(value)}
-        text="We couldn't find members"
-        subText="Please try again later"
+        text="There are no selectable epochs"
         actionText="Close"
         action={close}
         icon={mdiAccountQuestionOutline}

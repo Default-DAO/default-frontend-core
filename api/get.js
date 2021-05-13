@@ -95,9 +95,10 @@ export const getMemberPool = async ({ params, store }) => {
 export const getProtocol = async ({ params, store }) => {
   try {
     const { data: { result } } = await http.get('/api/ctProtocol')
-    console.log("RE: ", result)
-    store.setProtocol(result.protocol)
-    return result.protocol
+    let protocol = result.protocol ? result.protocol : {}
+
+    store.setProtocol(protocol)
+    return protocol
   } catch(err) {
 
   }

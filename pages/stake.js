@@ -22,7 +22,6 @@ import { format } from '../utils/money'
 const Stake = props => {
   const store = useStoreApi()
   const { getMember, getProtocol } = store
-  console.log(getProtocol().epochNumber)
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)

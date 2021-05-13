@@ -83,7 +83,7 @@ const App = (props) => {
   async function loadInfo() {
     setIsLoading(true)
     let member = await checkRegistered(store)
-    if (!member || !member.ethAddress) {
+    if (!member || !member.claimed) {
       setMember({})
       setIsLoading(false)
       return
@@ -114,7 +114,7 @@ const App = (props) => {
   
   return <React.Fragment>
     <Toast/>
-    {(getMember() && getMember().nonce) ? <Layout
+    {(getMember() && getMember().claimed) ? <Layout
       route={router.route}
       Component={() => { 
         return children 
