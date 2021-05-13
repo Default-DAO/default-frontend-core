@@ -33,6 +33,7 @@
 				"clsx": "^1.0.4",
 				"compression": "^1.7.4",
 				"dotenv": "^8.2.0",
+				"ethereumjs-util": "^7.0.10",
 				"koa": "^2.7.0",
 				"koa-bodyparser": "^4.2.1",
 				"koa-connect": "^2.0.1",
