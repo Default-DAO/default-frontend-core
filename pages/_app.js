@@ -46,9 +46,7 @@ async function checkRegistered(store) {
     let ethAddress = await getEthAddress()
     if (!ethAddress) {
       return {}
-    }
-    console.log("eeee ", ethAddress)
-    
+    }    
     let member = await getMember({params: {
       ethAddress
     }})
@@ -76,18 +74,21 @@ const App = (props) => {
 
     handleAccountChange(async (account) => {
       reset()
-      let member = await checkRegistered(store) 
-      setMember(member)
-      setIsLoading(false)
+      await loadInfo()
     })
 
     loadInfo()
   }, []);
 
   async function loadInfo() {
+    setIsLoading(true)
     let member = await checkRegistered(store)
+    if (!member || !member.ethAddress) {
+      setMember({})
+      setIsLoading(false)
+      return
+    }
     setMember(member)
-    console.log("ETH: ", member)
 
     await getMemberPool({
       params: {

@@ -1,11 +1,20 @@
 import axios from 'axios'
 import keys from '../config/keys'
 import { getSignedMessage, getMember } from './get'
+let http = axios.create({
+  baseURL: process.env.API_URL,
+  withCredentials: false,
+  headers: {
+    'Access-Control-Allow-Origin' : '*'
+    }
+});
 
 export const registerMember = async ({ params, store }) => {
   try {
-    const { signature, ethAddress, chainId } = await getSignedMessage()
-    const { data: { result } } = await axios.post(process.env.API_URL + '/api/member/claim', {
+    const sign = await getSignedMessage({store})
+    if (!sign) return
+    const { signature, ethAddress, chainId } = sign
+    const { data: { result } } = await http.post('/api/member/claim', {
       signature,
       ethAddress,
       chainId,
@@ -32,6 +41,9 @@ export const registerMember = async ({ params, store }) => {
     localStorage.setItem(keys.MEMBER, JSON.stringify(member))
     return member
   } catch (err) {
+    if (err == 'notWhitelisted') {
+      return store.setShowToast({ show: true, text: 'Not whitelisted yet. Please contact support!', reason: 'error' })
+    }
     store.setShowToast({ show: true, text: 'Unable to register member', reason: 'error' })
   }
 }
@@ -39,7 +51,7 @@ export const registerMember = async ({ params, store }) => {
 export const addLiquidity = async ({ params, store }) => {
   try {
     const { signature, ethAddress, chainId } = await getSignedMessage()
-    const { data: { result } } = await axios.post(process.env.API_URL + '/api/ctPools/addLiquidity', {
+    const { data: { result } } = await http.post('/api/ctPools/addLiquidity', {
       signature,
       ethAddress,
       chainId,
@@ -70,7 +82,7 @@ export const withdrawLiquidity = async ({ params, store }) => {
 export const stakeDnt = async ({ params, store }) => {
   try {
     const { signature, ethAddress, chainId } = await getSignedMessage()
-    const { data: { result } } = await axios.post(process.env.API_URL + '/api/txStakeDelegation/stake', {
+    const { data: { result } } = await http.post('/api/txStakeDelegation/stake', {
       signature,
       ethAddress,
       chainId,
@@ -106,7 +118,7 @@ export const delegateStakes = async ({ params, store }) => {
         weight: delegation.weight
       }
     }
-    const { data: { result } } = await axios.post(process.env.API_URL + '/api/txStakeDelegation/send', {
+    const { data: { result } } = await http.post('/api/txStakeDelegation/send', {
       signature,
       ethAddress,
       chainId,
@@ -135,7 +147,7 @@ export const allocateRewards = async ({ params, store }) => {
       }
     }
 
-    const { data: { result } } = await axios.post(process.env.API_URL + '/api/txValueAllocation/send', {
+    const { data: { result } } = await http.post('/api/txValueAllocation/send', {
       signature,
       ethAddress,
       chainId,
@@ -146,6 +158,7 @@ export const allocateRewards = async ({ params, store }) => {
       store.setShowToast({ show: true, text: 'Successfully allocated rewards!', reason: 'success' })
     }
   } catch (err) {
+    console.log("ERR: ", err)
     store.setShowToast({ show: true, text: 'Unable to save rewards', reason: 'error' })
   }
 }
