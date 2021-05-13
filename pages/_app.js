@@ -61,7 +61,7 @@ async function checkRegistered(store) {
 const App = (props) => {
   const { children, router } = props
   const store = useStoreApi()
-  let { reset, isLoading, setIsLoading, setMember, getMember } = store
+  let { reset, isLoading, setIsLoading, setMember, member, getMember } = store
   React.useEffect(() => {
     if (!isMetamask()) {
       return reset()

@@ -36,10 +36,9 @@ export const registerMember = async ({ params, store }) => {
       member = result;
     }
 
-    store.setMember(member)
+    store.setMember({...member.apiMember, ...member.txMember})
     store.setEthAddress(ethAddress)
-    localStorage.setItem(keys.MEMBER, JSON.stringify(member))
-    return member
+    return {...member.apiMember, ...member.txMember}
   } catch (err) {
     if (err == 'notWhitelisted') {
       return store.setShowToast({ show: true, text: 'Not whitelisted yet. Please contact support!', reason: 'error' })

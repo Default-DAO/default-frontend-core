@@ -1,4 +1,7 @@
 import Web3 from 'web3'
+const ethUtil = require('ethereumjs-util');
+
+export const checkSumAddress = (ethAddress) => ethUtil.toChecksumAddress(ethAddress);
 
 export const getWeb3 = () => {
   var web3 = new Web3(window.ethereum);
@@ -44,7 +47,7 @@ export const getChainId = async (callback) => {
 export const getEthAddress = async () => {
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   let account = accounts[0]
-  return account
+  return checkSumAddress(account)
 }
 
 export const registerWallet = async () => {

@@ -36,6 +36,7 @@ export const getSignedMessage = async () => {
 
 export const getMember = async ({ params, store }) => {
   try {
+    console.log("PP: ", params)
     const { data: { result } } = await http.get('/api/member', {
       params: {
         ...params
