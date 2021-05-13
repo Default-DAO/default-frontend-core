@@ -36,9 +36,9 @@ const AddLiquidity = (props) => {
             return store.setShowToast({show: true, text:"This amount is over the limit!"})
           }
           var web3 = getWeb3();
-          let contract = new web3.eth.Contract(abi,'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+          let contract = new web3.eth.Contract(abi, process.env.USDC_CONTRACT_ADDRESS);
 
-          let data = contract.methods.transfer('0xEe4De25a333A96389bc29363ed404814f6211BB3', value).encodeABI()
+          let data = contract.methods.transfer(process.env.DEFAULT_CONTRACT_ADDRESS, value).encodeABI()
 
           await sendTransaction({
             from: getMember().ethAddress,
