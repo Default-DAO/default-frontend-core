@@ -30,22 +30,25 @@ export const getSignedMessage = async () => {
 
     return { signature, ethAddress, chainId };
   } catch (err) {
+    console.log("getSignedMessage: ", err)
     throw err
   }
 }
 
 export const getMember = async ({ params, store }) => {
   try {
-    console.log("PP: ", params)
-    const { data: { result } } = await http.get('/api/member', {
+    let { data: { result } } = await http.get('/api/member', {
       params: {
         ...params
       }
     })
-    console.log({ result })
-    return { ...result.apiMember, ...result.txMember }
+
+    result = result ? result : {}
+    let apiMember = result.apiMember ? result.apiMember : {}
+    let txMember = result.txMember ? result.txMember : {}
+    return { ...apiMember, ...txMember }
   } catch (err) {
-    console.log("E: ", err)
+    console.log("getMember: ", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get member", reason: 'error' })
   }
@@ -53,19 +56,15 @@ export const getMember = async ({ params, store }) => {
 
 export const getMembers = async ({ params, store }) => {
   try {
-    //page
     const { data: { result } } = await http.get('/api/ctMember/getMembers', {
       params: {
         ...params
       }
     })
 
-    // result : {
-    //   members,
-    //   error
-    // }
-    return result.members
+    return result.members ? result.members : []
   } catch (err) {
+    console.log("getMembers: ", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get allocations. Please try again later", reason: 'error' })
   }
@@ -74,9 +73,9 @@ export const getMembers = async ({ params, store }) => {
 export const getPool = async ({ params, store }) => {
   try {
     const { data: { result } } = await http.get('/api/ctPools')
-    return result
+    return result ? result : {}
   } catch(err) {
-
+    console.log("getPool: ", err)
   }
 }
 
@@ -87,9 +86,9 @@ export const getMemberPool = async ({ params, store }) => {
         ...params
       }
     })
-    return result
+    return result ? result : {}
   } catch(err) {
-
+    console.log("getMemberPool: ", err)
   }
 }
 
@@ -101,41 +100,42 @@ export const getProtocol = async ({ params, store }) => {
     store.setProtocol(protocol)
     return protocol
   } catch(err) {
-
+    console.log("getProtocol: ", err)
   }
 }
 
 export const getAllocations = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    const { data: { result } } = await http.get('/api/txValueAllocation', {
+    let { data: { result } } = await http.get('/api/txValueAllocation', {
       params: {
         ...params
       }
     })
-    console.log("RES: ", result)
+    result = result ? result : {}
+    
     let allocationsTo = []
-    result.allocationsTo.map((to, i) => {
+    result.allocationsTo ? result.allocationsTo.map((to, i) => {
       const {alias, ethAddress} = to.toTxMember
       const weight = to.weight
       allocationsTo.push({
         ethAddress, alias, weight
       })
-    })
+    }) : null
 
     let allocationsFrom = []
-    result.allocationsFrom.map((from, i) => {
+    result.allocationsFrom ? result.allocationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
       const weight = from.weight
       allocationsFrom.push({
         ethAddress, alias, weight
       })
-    })
+    }) : null
 
     const {allocationsToAmount, allocationsFromAmount} = result
     return {allocationsToAmount, allocationsFromAmount, allocationsTo, allocationsFrom}
   } catch (err) {
-    console.log("ERRRR: ", err)
+    console.log("getAllocations: ", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get allocations. Please try again later", reason: 'error' })
   }
@@ -144,33 +144,35 @@ export const getAllocations = async ({ params, store }) => {
 export const getStakes = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    const { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation', {
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation', {
       params: {
         ...params
       }
     })
-    
+    result = result ? result : {}
+
     let delegationsTo = []
-    result.delegationsTo.map((to, i) => {
+    result.delegationsTo ? result.delegationsTo.map((to, i) => {
       const {alias, ethAddress} = to.toTxMember
       const weight = to.weight
       delegationsTo.push({
         ethAddress, alias, weight
       })
-    })
+    }) : null
 
     let delegationsFrom = []
-    result.delegationsFrom.map((from, i) => {
+    result.delegationsFrom ? result.delegationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
       const weight = from.weight
       delegationsFrom.push({
         ethAddress, alias, weight
       })
-    })
+    }) : null
 
     const {delegationsToAmount, delegationsFromAmount} = result
     return {delegationsToAmount, delegationsFromAmount, delegationsTo, delegationsFrom}
   } catch (err) {
+    console.log("getStakes: ", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get stakes. Please try again later", reason: 'error' })
   }

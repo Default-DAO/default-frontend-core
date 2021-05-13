@@ -36,10 +36,16 @@ export const registerMember = async ({ params, store }) => {
       member = result;
     }
 
-    store.setMember({...member.apiMember, ...member.txMember})
+    member = member ? member : {}
+    let apiMember = member.apiMember ? member.apiMember : {}
+    let txMember = member.txMember ? member.txMember : {}
+    
+    store.setMember({...apiMember, ...txMember})
     store.setEthAddress(ethAddress)
+
     return {...member.apiMember, ...member.txMember}
   } catch (err) {
+    console.log("registerMember: ", err)
     if (err == 'notWhitelisted') {
       return store.setShowToast({ show: true, text: 'Not whitelisted yet. Please contact support!', reason: 'error' })
     }
@@ -65,7 +71,7 @@ export const addLiquidity = async ({ params, store }) => {
       store.setShowToast({ show: true, text: 'Successfully added liquidity!', reason: 'success' })
     }
   } catch (err) {
-    console.log("ERR: ", err)
+    console.log("addLiquidity: ", err)
     store.setShowToast({ show: true, text: 'Unable to add liquidity', reason: 'error' })
   }
 }
@@ -100,6 +106,7 @@ export const stakeDnt = async ({ params, store }) => {
       store.setShowToast({ show: true, text: 'Successfully staked tokens!', reason: 'success' })
     }
   } catch (err) {
+    console.log("stakeDnt: ", err)
     store.setShowToast({ show: true, text: 'Unable to stake DNT', reason: 'error' })
   }
 }
@@ -128,6 +135,7 @@ export const delegateStakes = async ({ params, store }) => {
       return store.setShowToast({ show: true, text: 'Successfully delegated stakes!', reason: 'success' })
     }
   } catch (err) {
+    console.log("delegateStakes: ", err)
     store.setShowToast({ show: true, text: 'Unable to save delegations', reason: 'error' })
   }
 }
@@ -157,7 +165,7 @@ export const allocateRewards = async ({ params, store }) => {
       store.setShowToast({ show: true, text: 'Successfully allocated rewards!', reason: 'success' })
     }
   } catch (err) {
-    console.log("ERR: ", err)
+    console.log("allocateRewards: ", err)
     store.setShowToast({ show: true, text: 'Unable to save rewards', reason: 'error' })
   }
 }
