@@ -6,19 +6,14 @@ import { mdiAccountQuestionOutline } from '@mdi/js';
 
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
-import Form from '../../reusable/form'
 import Table from '../../reusable/table'
 import Card from '../../reusable/card'
-import Avatar from '../../reusable/avatar'
-import Button from '../../reusable/button'
-import keys from '../../config/keys'
-import { getMembers } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
-import {getCurrentEpoch} from '../../utils/epoch'
 
 const EpochSelector = props => {
+  const { getProtocol } = useStoreApi()
   const { classes, title, open, close, action } = props
-  const currentEpoch = getCurrentEpoch()
+  const currentEpoch = getProtocol().epochNumber
   let epochs = []
   for (let i = 1; i <= currentEpoch; i++) {
     epochs.push(i)

@@ -1,3 +1,10 @@
+import Web3 from 'web3'
+
+export const getWeb3 = () => {
+  var web3 = new Web3(window.ethereum);
+  return web3
+}
+
 export const isMetamask = () => {
   return (window.ethereum && window.ethereum.isMetaMask)
 }
@@ -41,7 +48,7 @@ export const getEthAddress = async () => {
 }
 
 export const registerWallet = async () => {
-  if (!window || !window.ethereum) return
+  if (!isMetamask()) return
 
   try {
     await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -113,17 +120,18 @@ export const setMemberBalance = async (address) => {
   }
 }
 
-export const sendTransaction = async ({ from, to, gas, gasPrice, value }) => {
+export const sendTransaction = async ({ from, to, gas, gasPrice, value, data }) => {
   try {
     let transactionHash = await window.ethereum.request({
       method: 'eth_sendTransaction',
       params: [
         {
           from,
-          to,
-          gas,
-          gasPrice,
-          value
+          to ,
+          data,
+          gas: gas ? gas.toString(16): null,
+          gasPrice: gasPrice ? gasPrice.toString(16) : null,
+          value: value ? value.toString(16) : null
         },
       ],
     })

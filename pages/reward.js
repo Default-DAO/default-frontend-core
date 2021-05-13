@@ -15,16 +15,18 @@ import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
 import { getAllocations } from '../api/get'
 import { allocateRewards } from '../api/post'
-import { getCurrentEpoch } from '../utils/epoch'
+import { format } from '../utils/money'
 
 const Reward = props => {
   const store = useStoreApi()
-  const { member } = store
+  const { getMember, getProtocol } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
-  const [selectedEpoch, setSelectedEpoch] = useState(getCurrentEpoch())
+  const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
   const [allocationsTo, setAllocationsTo] = useState([])
   const [allocationsFrom, setAllocationsFrom] = useState([])
+  const [allocationsToAmount, setAllocationsToAmount] = useState(0)
+  const [allocationsFromAmount, setAllocationsFromAmount] = useState(0)
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
@@ -32,16 +34,23 @@ const Reward = props => {
   }, [])
 
   async function getValueAllocations(page, epoch) {
-    let { allocationsFrom, allocationsTo } = await getAllocations({
+    let { 
+      allocationsFrom, 
+      allocationsTo,
+      allocationsFromAmount, 
+      allocationsToAmount  
+    } = await getAllocations({
       params: {
         page,
         epoch,
-        ethAddress: member.ethAddress
+        ethAddress: getMember().ethAddress
       },
       store
     })
     setAllocationsFrom(allocationsFrom)
     setAllocationsTo(allocationsTo)
+    setAllocationsFromAmount(allocationsFromAmount)
+    setAllocationsToAmount(allocationsToAmount)
   }
 
   async function rewardAllocations() {
@@ -61,7 +70,7 @@ const Reward = props => {
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
-        disabled={selectedEpoch != getCurrentEpoch()}
+        disabled={selectedEpoch != getProtocol().epochNumber}
         value={weight}
         onChange={(weight) => {
           let newAllocationsTo = [...allocationsTo]
@@ -105,7 +114,7 @@ const Reward = props => {
       }
     })
     if (!weightSet) return null
-    if (selectedEpoch != getCurrentEpoch()) return null
+    if (selectedEpoch != getProtocol().epochNumber) return null
     return (
       <span className={classes.buttonContainer}><Button
         gradient
@@ -119,6 +128,7 @@ const Reward = props => {
   }
 
   const { classes } = props
+  // console.log("WHAT")
   return (
     <div className={classes.value}>
       <div className={classes.epoch}>
@@ -132,18 +142,21 @@ const Reward = props => {
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
-            {(selectedEpoch == getCurrentEpoch()) ?<AddIcon
+            {(selectedEpoch == getProtocol().epochNumber) ?<AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
             /> : null}
+          </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsToAmount, 2)}</Text>
           </span>
           <Table
             text="You haven't rewarded anyone"
             list={allocationsTo}
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
-            action={(selectedEpoch != getCurrentEpoch()) ? null : () => {
+            action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
               setShowMemberSearch(true)}
             }
           />
@@ -152,6 +165,9 @@ const Reward = props => {
         <div className={classes.right}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
+          </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 2)}</Text>
           </span>
           <Table
             text='No rewards here'
