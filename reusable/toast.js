@@ -2,12 +2,13 @@ import React from 'react';
 import clsx from 'clsx';
 
 import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
-
 import keys from '../config/keys'
 import { useStoreApi } from '../store/provider'
 
@@ -42,7 +43,18 @@ const Toast = props => {
             <p className={classes.text} id="message-id">{showToast.text}</p>
           </span>
         }
-      />
+      >
+        <SnackbarContent style={{
+            backgroundColor: keys.GRAY,
+          }}
+          message={
+            <span id="client-snackbar" className={classes.message}>
+              <Icon className={clsx(classes.icon, classes.iconVariant)} />
+              <p className={classes.text} id="message-id">{showToast.text}</p>
+            </span>
+          }
+        />
+      </Snackbar>
     </div>
   );
 }
@@ -59,7 +71,8 @@ const useStyles = theme => ({
     zIndex: 999999999999
   },
   icon: {
-    fontSize: 20,
+    color: 'white',
+    fontSize: 20
   },
   iconVariant: {
     opacity: 0.9,
@@ -71,6 +84,7 @@ const useStyles = theme => ({
     justifyContent: 'space-between'
   },
   text: {
+    color: keys.WHITE,
     fontSize: '13px',
     lineHeight: '13px',
     marginBottom: '0px',

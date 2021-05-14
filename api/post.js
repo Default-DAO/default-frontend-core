@@ -1,6 +1,5 @@
 import axios from 'axios'
-import keys from '../config/keys'
-import { getSignedMessage, getMember } from './get'
+import { getSignedMessage, getMember, getProtocol } from './get'
 let http = axios.create({
   baseURL: process.env.API_URL,
   withCredentials: false,
@@ -27,20 +26,22 @@ export const registerMember = async ({ params, store }) => {
         params: {
           ethAddress
         }
-      })
-      await getProtocol({
-        params: {},
-        store
-      })
+      })      
     } else {
       member = result;
     }
 
+    await getProtocol({
+      params: {},
+      store
+    })
+    
     member = member ? member : {}
     let apiMember = member.apiMember ? member.apiMember : {}
     let txMember = member.txMember ? member.txMember : {}
     
     store.setMember({...apiMember, ...txMember})
+    store.setShowRegistration(false)
     store.setEthAddress(ethAddress)
 
     return {...member.apiMember, ...member.txMember}

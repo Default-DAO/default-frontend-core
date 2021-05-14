@@ -35,8 +35,8 @@ const Register = (props) => {
               return setShowToast({show: true, text: "Please make your alias longer than 3 characters!", reason:'error'})
             }
 
-            let newEthAddress = await registerWallet()
-            let member = await registerMember({
+            await registerWallet()
+            await registerMember({
               params: {
                 alias
               },

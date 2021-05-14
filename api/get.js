@@ -46,7 +46,9 @@ export const getMember = async ({ params, store }) => {
     result = result ? result : {}
     let apiMember = result.apiMember ? result.apiMember : {}
     let txMember = result.txMember ? result.txMember : {}
-    return { ...apiMember, ...txMember }
+    let member = { ...apiMember, ...txMember }
+    store.setMember(member)
+    return member
   } catch (err) {
     console.log("getMember: ", err)
     if (!store) return
@@ -104,10 +106,10 @@ export const getProtocol = async ({ params, store }) => {
   }
 }
 
-export const getAllocations = async ({ params, store }) => {
+export const getAllocationsTo = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    let { data: { result } } = await http.get('/api/txValueAllocation', {
+    let { data: { result } } = await http.get('/api/txValueAllocation/to', {
       params: {
         ...params
       }
@@ -123,6 +125,25 @@ export const getAllocations = async ({ params, store }) => {
       })
     }) : null
 
+    const {allocationsToAmount} = result
+    return {allocationsToAmount, allocationsTo}
+  } catch (err) {
+    console.log("getAllocationsTo: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get allocations. Please try again later", reason: 'error' })
+  }
+}
+
+export const getAllocationsFrom = async ({ params, store }) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await http.get('/api/txValueAllocation/from', {
+      params: {
+        ...params
+      }
+    })
+    result = result ? result : {}
+
     let allocationsFrom = []
     result.allocationsFrom ? result.allocationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
@@ -132,8 +153,8 @@ export const getAllocations = async ({ params, store }) => {
       })
     }) : null
 
-    const {allocationsToAmount, allocationsFromAmount} = result
-    return {allocationsToAmount, allocationsFromAmount, allocationsTo, allocationsFrom}
+    const {allocationsFromAmount} = result
+    return {allocationsFromAmount, allocationsFrom}
   } catch (err) {
     console.log("getAllocations: ", err)
     if (!store) return
@@ -141,10 +162,10 @@ export const getAllocations = async ({ params, store }) => {
   }
 }
 
-export const getStakes = async ({ params, store }) => {
+export const getStakesTo = async ({ params, store }) => {
   try {
     //params: ethAddress, page, epoch
-    let { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation', {
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation/to', {
       params: {
         ...params
       }
@@ -160,6 +181,25 @@ export const getStakes = async ({ params, store }) => {
       })
     }) : null
 
+    const {delegationsToAmount} = result
+    return {delegationsToAmount, delegationsTo}
+  } catch (err) {
+    console.log("getStakesTo: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get stakes. Please try again later", reason: 'error' })
+  }
+}
+
+export const getStakesFrom = async ({ params, store }) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/txStakeDelegation/from', {
+      params: {
+        ...params
+      }
+    })
+    result = result ? result : {}
+
     let delegationsFrom = []
     result.delegationsFrom ? result.delegationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
@@ -169,10 +209,10 @@ export const getStakes = async ({ params, store }) => {
       })
     }) : null
 
-    const {delegationsToAmount, delegationsFromAmount} = result
-    return {delegationsToAmount, delegationsFromAmount, delegationsTo, delegationsFrom}
+    const {delegationsFromAmount} = result
+    return {delegationsFromAmount, delegationsFrom}
   } catch (err) {
-    console.log("getStakes: ", err)
+    console.log("getStakesFrom: ", err)
     if (!store) return
     store.setShowToast({ show: true, text: "Couldn't get stakes. Please try again later", reason: 'error' })
   }

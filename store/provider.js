@@ -10,7 +10,8 @@ const initialState = {
   chainId: undefined,
 
   showToast: { show: false, text: '', reason: 'success' },
-  isLoading: false,
+  showRegistration: false,
+  isLoading: true,
   member: {},
   memberPool: {},
   protocol: {},
@@ -47,6 +48,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         showToast: action.showToast
+      }
+    case keys.SHOW_REGISTRATION:
+      return {
+        ...state,
+        showRegistration: action.showRegistration
       }
     case keys.IS_LOADING:
       return {
@@ -141,6 +147,7 @@ export const useStoreApi = () => {
     },
 
     showToast: state.showToast,
+    showRegistration: state.showRegistration,
     isLoading: state.isLoading,
 
     showAddLiquidity: state.showAddLiquidity,
@@ -195,7 +202,7 @@ export const useStoreApi = () => {
       })
     },
 
-    setShowToast: ({show, text, reason}) => {
+    setShowToast: ({ show, text, reason }) => {
       if (!text) text = ''
       if (!reason) reason = 'success'
       dispatch({
@@ -203,6 +210,12 @@ export const useStoreApi = () => {
         showToast: {
           show, text, reason
         }
+      })
+    },
+    setShowRegistration: showRegistration => {
+      dispatch({
+        type: keys.SHOW_REGISTRATION,
+        showRegistration
       })
     },
     setIsLoading: isLoading => {

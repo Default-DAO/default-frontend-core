@@ -31,9 +31,12 @@ const AddLiquidity = (props) => {
       />
       <Button
         onClick={async () => { 
+          if (!value || value <= 0) {
+            return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
+          }
           let member = getMember()
           if (value > member.liquidityCapUsdc) {
-            return store.setShowToast({show: true, text:"This amount is over the limit!"})
+            return store.setShowToast({show: true, text:"This amount is over the limit!", reason: 'error'})
           }
           var web3 = getWeb3();
           let contract = new web3.eth.Contract(abi, process.env.USDC_CONTRACT_ADDRESS);

@@ -31,7 +31,6 @@ const StakeReward = props => {
       },
       store
     })
-    console.log("PO: ", pool)
     setPool(pool)
   }
 
@@ -50,6 +49,9 @@ const StakeReward = props => {
       />
       <Button
         onClick={() => { 
+          if (!value || value <= 0) {
+            return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
+          }
           if (value > (pool.dnt - pool.dntStaked)) {
             return setShowToast({show: true, text: 'Not enough DNT!', reason: 'error'})
           }

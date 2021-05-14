@@ -10,10 +10,10 @@ import Text from '../../reusable/text'
 import { useStoreApi } from '../../store/provider'
 
 const routes = [
-  // {
-  //   route: '/pool',
-  //   text: "Pool"
-  // },
+  {
+    route: '/pool',
+    text: "Pool"
+  },
   {
     route: '/stake',
     text: "Stake"

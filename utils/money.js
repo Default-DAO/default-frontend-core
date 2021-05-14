@@ -1,4 +1,5 @@
 export function format(money, decimal) {
+  if (!money) return 0
   if (decimal) {
     money = Math.round(money * 100) / 100
   }

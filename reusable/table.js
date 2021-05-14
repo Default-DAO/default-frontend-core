@@ -19,9 +19,16 @@ const Table = props => {
     }
   }
 
+  function handleScroll(e) {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && props.onScroll) {
+      props.onScroll()
+    }
+  }
+
   const { classes } = props
   return (
-    <div className={classes.table}>
+    <div onScroll={handleScroll} className={classes.table}>
       {renderEmptyTable()}
       {props.list.map((object, index) => {
         return <span key={index}>
