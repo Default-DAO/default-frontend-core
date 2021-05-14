@@ -4,7 +4,6 @@ if (dev) {
 }
 //koa and koa-session will take care of Shopify OAuth
 const Koa = require('koa');
-const cors = require('@koa/cors');
 const next = require('next');
 const koaConnect = require('koa-connect');
 const compression = require('compression') 
@@ -21,10 +20,6 @@ async function handleRender(ctx) {
     return
 }
 
-const corsOptions = {
-    origin: process.env.API_URL,
-};
-
 //Prepare next.js react app
 app.prepare().then(() => {
 
@@ -32,7 +27,6 @@ app.prepare().then(() => {
     const server = new Koa();    
     
     server.use(koaConnect(compression()))
-    server.use(cors(corsOptions));
     
     server.use(handleRender);    
 
