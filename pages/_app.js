@@ -34,12 +34,14 @@ const App = (props) => {
   let { reset, isLoading, setIsLoading, setMember, getProtocol, getMember, showRegistration, setShowRegistration } = store
   React.useEffect(() => {
     if (!isMetamask()) {
-      return reset()
+      reset()
+      setShowRegistration(true)
+      setIsLoading(false)
     }
 
-    handleChainChange((chainId) => {
+    handleChainChange(async (chainId) => {
       reset()
-      window.location.reload();
+      await loadInfo()
     })
 
     handleAccountChange(async (account) => {
@@ -82,13 +84,13 @@ const App = (props) => {
     setIsLoading(false)
   }
 
-  function renderApp() {
-    if (isLoading) {
-      return <Loading />
-    }
-  
+  function renderApp() {  
     if (showRegistration) {
       return <Register />
+    }
+
+    if (isLoading) {
+      return <Loading />
     }
 
     return <Layout
