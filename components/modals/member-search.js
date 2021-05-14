@@ -19,6 +19,7 @@ const SearchModal = props => {
   const { classes, title, open, close, action, disabled } = props
 
   const store = useStoreApi()
+  const { getMember } = store
   const [members, setMembers] = useState([])
   const [searchText, setSearchText] = useState('')
   const [selected, setSelected] = useState([])
@@ -30,7 +31,8 @@ const SearchModal = props => {
 
   async function searchMembers(page) {
     let members = await getMembers({params: {
-      page
+      page,
+      excludeEthAddress: getMember().ethAddress,
     }})
     setMembers(members)
   }
