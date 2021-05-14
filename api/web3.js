@@ -17,6 +17,7 @@ export const isConnected = () => {
 }
 
 export const handleAccountChange = (callback) => {
+  if (!window || !window.ethereum) return
   window.ethereum.on('accountsChanged', (accounts) => {
     // Handle the new accounts, or lack thereof.
     // "accounts" will always be an array, but it can be empty.
@@ -25,6 +26,7 @@ export const handleAccountChange = (callback) => {
 }
 
 export const handleChainChange = (callback) => {
+  if (!window || !window.ethereum) return
   window.ethereum.on('chainChanged', (chainId) => {
     // Handle the new chain.
     // Correctly handling chain changes can be complicated.
@@ -36,6 +38,7 @@ export const handleChainChange = (callback) => {
 
 export const getChainId = async (callback) => {
   try {
+    if (!window || !window.ethereum) return
     let chainId = await window.ethereum.request({ method: 'eth_chainId' })
     if (callback) callback(chainId)
     return chainId
@@ -45,6 +48,7 @@ export const getChainId = async (callback) => {
 }
 
 export const getEthAddress = async () => {
+  if (!window || !window.ethereum) return
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   let account = accounts[0]
   return checkSumAddress(account)
@@ -69,6 +73,7 @@ export const registerWallet = async () => {
 
 export const requestPermission = async () => {
   try {
+    if (!window || !window.ethereum) return
     let permissions = await window.ethereum.request({
       method: 'wallet_requestPermissions',
       params: [{ eth_accounts: {} }],
@@ -90,6 +95,7 @@ export const requestPermission = async () => {
 
 export const addTokenToMetamask = async () => {
   try {
+    if (!window || !window.ethereum) return
     let success = await window.ethereum.request({
       method: 'wallet_watchAsset',
       params: {
@@ -110,6 +116,7 @@ export const addTokenToMetamask = async () => {
 
 export const setMemberBalance = async (address) => {
   try {
+    if (!window || !window.ethereum) return
     let balance = await window.ethereum.request({
       method: 'eth_getBalance',
       params: [
@@ -125,6 +132,7 @@ export const setMemberBalance = async (address) => {
 
 export const sendTransaction = async ({ from, to, gas, gasPrice, value, data }) => {
   try {
+    if (!window || !window.ethereum) return
     let transactionHash = await window.ethereum.request({
       method: 'eth_sendTransaction',
       params: [
@@ -146,6 +154,7 @@ export const sendTransaction = async ({ from, to, gas, gasPrice, value, data }) 
 
 export const getSignedMessage = async (ethAddress, authMsg) => {
   try {
+    if (!window || !window.ethereum) return
     return await window.ethereum.request({
       method: 'eth_signTypedData_v4',
       params: [ethAddress, JSON.stringify(authMsg)],
