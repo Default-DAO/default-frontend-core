@@ -15,7 +15,7 @@ import StakeModal from '../components/liquidity/stake'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
-import { getStakes } from '../api/get'
+import { getStakesTo, getStakesFrom } from '../api/get'
 import { delegateStakes } from '../api/post'
 import { format } from '../utils/money'
 
@@ -33,27 +33,38 @@ const Stake = props => {
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
-    getStakeDelegations(0, selectedEpoch)
+    getStakeDelegationsTo(0, selectedEpoch)
+    getStakeDelegationsFrom(0, selectedEpoch)
   }, [])
 
-  async function getStakeDelegations(page, epoch) {
-    let { 
-      delegationsFrom, 
-      delegationsTo, 
-      delegationsFromAmount, 
-      delegationsToAmount 
-    } = await getStakes({
+  //No pagination on the "To" table
+  async function getStakeDelegationsTo(skip, epoch) {
+    let data = await getStakesTo({
       params: {
-        page,
         epoch,
         ethAddress: getMember().ethAddress
       },
       store
     })
-    setDelegationsFrom(delegationsFrom)
-    setDelegationsTo(delegationsTo)
-    setDelegationsFromAmount(delegationsFromAmount)
-    setDelegationsToAmount(delegationsToAmount)
+    if (!data) return
+    let newTable = skip == 0 ? [...data.delegationsTo] : [...delegationsTo, ...data.delegationsTo]
+    setDelegationsTo(newTable)
+    setDelegationsToAmount(data.delegationsToAmount)
+  }
+
+  async function getStakeDelegationsFrom(skip, epoch) {
+    let data = await getStakesFrom({
+      params: {
+        skip,
+        epoch,
+        ethAddress: getMember().ethAddress
+      },
+      store
+    })
+    if (!data) return
+    let newTable = skip == 0 ? [...data.delegationsFrom] : [...delegationsFrom, ...data.delegationsFrom]
+    setDelegationsFrom(newTable)
+    setDelegationsFromAmount(data.delegationsFromAmount)
   }
 
   async function stakeDelegations() {
@@ -116,14 +127,7 @@ const Stake = props => {
 
   function renderStakeButton() {
     const { classes } = props
-    let weightSet = false
-    delegationsTo.forEach(member => {
-      if (member && member.weight && member.weight > 0) {
-        weightSet = true
-        return
-      }
-    })
-    if (selectedEpoch != getProtocol().epochNumber || !weightSet) return null 
+    if (selectedEpoch != getProtocol().epochNumber || delegationsTo.length <= 0) return null
     
     return (
       <span className={classes.buttonContainer}><Button
@@ -172,8 +176,7 @@ const Stake = props => {
             icon={mdiWalletGiftcard}
             action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
               setShowMemberSearch(true)
-            }
-            }
+            }}
           />
           {renderStakeButton()}
         </div>
@@ -189,6 +192,9 @@ const Stake = props => {
             list={delegationsFrom}
             renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
+            onScroll={async () => {
+              await getStakeDelegationsFrom(delegationsFrom.length, selectedEpoch)
+            }}
           />
         </div>
       </div>
@@ -222,7 +228,8 @@ const Stake = props => {
         title={'Select epoch'}
         action={(selected) => {
           setSelectedEpoch(selected)
-          getStakeDelegations(0, selected)
+          getStakeDelegationsTo(0, selected)
+          getStakeDelegationsFrom(0, selected)
           setEpochSelectorOpen(false)
         }}
       />

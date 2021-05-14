@@ -44,6 +44,7 @@ const Pool = props => {
   }
 
   function calculateShare(total, owned) {
+    if (!total) return 0
     return Math.round(owned / total * 100 * 100) / 100
   }
 
@@ -56,20 +57,20 @@ const Pool = props => {
             <Text type="paragraph" fontSize={20} fontWeight={700}>Total DNT</Text>
           </span>
           <Text type="heading" fontSize={70} fontWeight={700}>Ð {format(pool.dnt)}</Text>
-          <Button
+          {/* <Button
             onClick={() => setShowAddLiquidity(true)}
             gradient width={200} height={50}>
-            ADD LIQUIDITY</Button>
+            ADD LIQUIDITY</Button> */}
         </Card>
         <Card className={classes.card}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Total USDC</Text>
           </span>
           <Text type="heading" fontSize={70} fontWeight={700}>$ {format(pool.usdc)}</Text>
-          <Button
+          {/* <Button
             gradient width={200} height={50}
             onClick={() => setShowSwapLiquidity(true)}
-          >SWAP</Button>
+          >SWAP</Button> */}
         </Card>
       </div>
       <div className={classes.right}>

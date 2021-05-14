@@ -13,7 +13,7 @@ import Button from '../reusable/button'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
-import { getAllocations } from '../api/get'
+import { getAllocationsTo, getAllocationsFrom } from '../api/get'
 import { allocateRewards } from '../api/post'
 import { format } from '../utils/money'
 
@@ -30,32 +30,43 @@ const Reward = props => {
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
-    getValueAllocations(0, selectedEpoch)
+    getValueAllocationsTo(0, selectedEpoch)
+    getValueAllocationsFrom(0, selectedEpoch)
   }, [])
 
-  async function getValueAllocations(page, epoch) {
-    let { 
-      allocationsFrom, 
-      allocationsTo,
-      allocationsFromAmount, 
-      allocationsToAmount  
-    } = await getAllocations({
+  //No pagination on the "To" table
+  async function getValueAllocationsTo(skip, epoch) {
+    let data = await getAllocationsTo({
       params: {
-        page,
         epoch,
         ethAddress: getMember().ethAddress
       },
       store
     })
-    setAllocationsFrom(allocationsFrom)
-    setAllocationsTo(allocationsTo)
-    setAllocationsFromAmount(allocationsFromAmount)
-    setAllocationsToAmount(allocationsToAmount)
+    if (!data) return
+    let newTable = skip == 0 ? [...data.allocationsTo] : [...allocationsTo, ...data.allocationsTo]
+    setAllocationsTo(newTable)
+    setAllocationsToAmount(data.allocationsToAmount)
+  }
+
+  async function getValueAllocationsFrom(skip, epoch) {
+    let data = await getAllocationsFrom({
+      params: {
+        skip,
+        epoch,
+        ethAddress: getMember().ethAddress
+      },
+      store
+    })
+    if (!data) return
+    let newTable = skip == 0 ? [...data.allocationsFrom] : [...allocationsFrom, ...data.allocationsFrom]
+    setAllocationsFrom(newTable)
+    setAllocationsFromAmount(data.allocationsFromAmount)
   }
 
   async function rewardAllocations() {
     await allocateRewards({
-      params: {allocations: allocationsTo},
+      params: { allocations: allocationsTo },
       store
     })
   }
@@ -106,15 +117,8 @@ const Reward = props => {
 
   function renderAllocationButton() {
     const { classes } = props
-    let weightSet = false
-    allocationsTo.forEach(member => {
-      if (member && member.weight && member.weight > 0) {
-        weightSet = true
-        return
-      }
-    })
-    if (!weightSet) return null
-    if (selectedEpoch != getProtocol().epochNumber) return null
+    if (selectedEpoch != getProtocol().epochNumber || allocationsTo.length <= 0) return null
+
     return (
       <span className={classes.buttonContainer}><Button
         gradient
@@ -128,7 +132,6 @@ const Reward = props => {
   }
 
   const { classes } = props
-  // console.log("WHAT")
   return (
     <div className={classes.value}>
       <div className={classes.epoch}>
@@ -142,7 +145,7 @@ const Reward = props => {
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
-            {(selectedEpoch == getProtocol().epochNumber) ?<AddIcon
+            {(selectedEpoch == getProtocol().epochNumber) ? <AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
@@ -157,8 +160,8 @@ const Reward = props => {
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
             action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
-              setShowMemberSearch(true)}
-            }
+              setShowMemberSearch(true)
+            }}
           />
           {renderAllocationButton()}
         </div>
@@ -174,6 +177,9 @@ const Reward = props => {
             list={allocationsFrom}
             renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
+            onScroll={async () => {
+              await getValueAllocationsFrom(allocationsFrom.length, selectedEpoch)
+            }}
           />
           <MemberSearch
             open={showMemberSearch}
@@ -182,7 +188,7 @@ const Reward = props => {
             title={'Choose people to reward'}
             action={(selected) => {
               let newSelected = [...allocationsTo]
-              for (let i = 0; i < selected.length; i ++) {
+              for (let i = 0; i < selected.length; i++) {
                 if (selected[i].weight == undefined) selected[i].weight = 0
                 if (!newSelected.includes(selected[i])) {
                   newSelected.push(selected[i])
@@ -198,7 +204,8 @@ const Reward = props => {
             title={'Select epoch'}
             action={(selected) => {
               setSelectedEpoch(selected)
-              getValueAllocations(0, selected)
+              getValueAllocationsTo(0, selected)
+              getValueAllocationsFrom(0, selected)
               setEpochSelectorOpen(false)
             }}
           />

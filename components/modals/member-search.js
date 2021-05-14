@@ -6,12 +6,10 @@ import { mdiAccountQuestionOutline } from '@mdi/js';
 
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
-import Form from '../../reusable/form'
 import Table from '../../reusable/table'
 import Card from '../../reusable/card'
 import Avatar from '../../reusable/avatar'
 import Button from '../../reusable/button'
-import keys from '../../config/keys'
 import { getMembers } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
 
@@ -19,20 +17,24 @@ const SearchModal = props => {
   const { classes, title, open, close, action, disabled } = props
 
   const store = useStoreApi()
+  const {getMember} = store
   const [members, setMembers] = useState([])
   const [searchText, setSearchText] = useState('')
   const [selected, setSelected] = useState([])
-
 
   useEffect(() => {
     searchMembers(0)
   }, [])
 
-  async function searchMembers(page) {
-    let members = await getMembers({params: {
-      page
+  async function searchMembers(skip) {
+    let newMembers = await getMembers({params: {
+      skip,
+      excludeEthAddress: getMember().ethAddress
     }})
-    setMembers(members)
+    if (newMembers && newMembers.length) {
+      let newTable = skip == 0 ? [...newMembers] : [...members, ...newMembers]
+      setMembers(newTable)
+    }
   }
 
   function closeSearch() {
@@ -80,6 +82,9 @@ const SearchModal = props => {
         actionText="Close"
         action={closeSearch}
         icon={mdiAccountQuestionOutline}
+        onScroll={async () => {
+          await searchMembers(members.length)
+        }}
       ></Table>
       {selected.length > 0 ? <Button
         onClick={() => {
