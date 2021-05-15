@@ -21,6 +21,10 @@ const routes = [
   {
     route: '/reward',
     text: "Reward"
+  },
+  {
+    route: '/network',
+    text: "Network"
   }
 ]
 
