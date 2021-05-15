@@ -46,7 +46,6 @@ const useStyles = theme => ({
       height: height ? height : '75vh',
       width: width ? width : 400,
       overflowY: 'auto',
-      paddingRight: 10,
       marginTop: 20,
       borderRadius: 15
     }

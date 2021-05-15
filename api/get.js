@@ -217,3 +217,21 @@ export const getStakesFrom = async ({ params, store }) => {
     store.setShowToast({ show: true, text: "Couldn't get stakes. Please try again later", reason: 'error' })
   }
 }
+
+export const getNetwork = async ({params, store}) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctNetwork/network', {
+      params: {
+        ...params
+      }
+    })
+    console.log("RES: ", result)
+
+    return result
+  } catch (err) {
+    console.log("getNetwork: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get network. Please try again later", reason: 'error' })
+  }
+}
