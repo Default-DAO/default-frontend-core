@@ -1,6 +1,3 @@
-const shortid = require('shortid')
-
-const API_URL = 'http://localhost:8000'
 const APP_NAME = 'Default'
 const BACKGROUND_COLOR = '#1c1c1c'
 const PRIMARY_COLOR = '#9d26ff'
@@ -18,118 +15,20 @@ const ETH_BALANCE = "ETH_BALANCE"
 const CHAIN_ID = "CHAIN_ID"
 
 const SHOW_TOAST = 'SHOW_TOAST'
+const SHOW_PROFILE = 'SHOW_PROFILE'
+const SHOW_REGISTRATION = 'SHOW_REGISTRATION'
 const IS_LOADING = 'IS_LOADING'
 const MEMBER = 'MEMBER'
-const POOL = 'POOL'
+const MEMBER_POOL = 'MEMBER_POOL'
 const PROTOCOL = 'PROTOCOL'
 const SHOW_ADD_LIQUIDITY = 'SHOW_ADD_LIQUIDITY'
 const SHOW_SWAP_LIQUIDITY = 'SHOW_SWAP_LIQUIDITY'
 const SHOW_WITHDRAW_LIQUIDITY = 'SHOW_WITHDRAW_LIQUIDITY'
 const SHOW_ADD_STAKE_NETWORK = 'SHOW_ADD_STAKE_NETWORK'
 const SHOW_ADD_VALUE_NETWORK = 'SHOW_ADD_VALUE_NETWORK'
-
-const DUMMY_MEMBERS = [
-  {
-    ethAddress: shortid.generate(),
-    alias: "zaz",
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "fullyallocated"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "soma"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "melloone"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "maximillius"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "scottsgc"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "zaz"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "fullyallocated"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "soma"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "melloone"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "maximillius"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "scottsgc"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "zaz"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "fullyallocated"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "soma"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "melloone"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "maximillius"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "scottsgc"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "zaz"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "fullyallocated"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "soma"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "melloone"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "maximillius"
-  },
-  {
-    ethAddress: shortid.generate(),
-    alias: "scottsgc"
-  }
-]
+const RESET = 'RESET'
 
 module.exports = {
-  API_URL,
-
   APP_NAME,
   BACKGROUND_COLOR,
   PRIMARY_COLOR,
@@ -146,15 +45,16 @@ module.exports = {
   ETH_BALANCE,
   CHAIN_ID,
   SHOW_TOAST,
+  SHOW_PROFILE,
+  SHOW_REGISTRATION,
   IS_LOADING,
   MEMBER,
-  POOL,
+  MEMBER_POOL,
   PROTOCOL,
   SHOW_ADD_LIQUIDITY,
   SHOW_SWAP_LIQUIDITY,
   SHOW_WITHDRAW_LIQUIDITY,
   SHOW_ADD_STAKE_NETWORK,
   SHOW_ADD_VALUE_NETWORK,
-
-  DUMMY_MEMBERS,
+  RESET  
 }

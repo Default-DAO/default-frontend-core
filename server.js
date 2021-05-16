@@ -20,14 +20,6 @@ async function handleRender(ctx) {
     return
 }
 
-async function cors(ctx, next) {
-    ctx.set('Access-Control-Allow-Origin', '*');
-    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-No-CORS-Reason, Content-Type, Accept');
-    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-    ctx.set('Access-Control-Allow-Credentials', true);
-    await next();
-}
-
 //Prepare next.js react app
 app.prepare().then(() => {
 
@@ -35,11 +27,12 @@ app.prepare().then(() => {
     const server = new Koa();    
     
     server.use(koaConnect(compression()))
-    server.use(cors);
     
     server.use(handleRender);    
 
     server.listen(port, () => {
         console.log(`Running on port: ${port}`);
+        console.log(`NODE_ENV === ${process.env.NODE_ENV}`);
+        console.log(`API_URL === ${process.env.API_URL}`)
     });
 });

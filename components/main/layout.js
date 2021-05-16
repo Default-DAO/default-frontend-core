@@ -8,17 +8,16 @@ import AddLiquidity from '../liquidity/add'
 import SwapLiquidity from '../liquidity/swap'
 import WithdrawLiquidity from '../liquidity/withdraw'
 import { useStoreApi } from '../../store/provider'
+import Profile from '../profile'
+import { getMemberPool, getProtocol } from '../../api/get'
 const Layout = (props) => {
   const store = useStoreApi()
-  useEffect(() => {
-    
-  }, [])
 
   const { classes, Component, route } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Header/>
+      <Header />
       <div className={classes.main}>
         {Component()}
       </div>
@@ -34,6 +33,7 @@ const Layout = (props) => {
         open={store.showWithdrawLiquidity}
         close={() => store.setShowWithdrawLiquidity(false)}
       />
+      <Profile/>
     </div>
   );
 }

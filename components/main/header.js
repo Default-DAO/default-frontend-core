@@ -8,13 +8,12 @@ import Button from '../../reusable/button'
 import Avatar from '../../reusable/avatar'
 import Text from '../../reusable/text'
 import { useStoreApi } from '../../store/provider'
-import { getCurrentEpoch } from '../../utils/epoch';
 
 const routes = [
-  // {
-  //   route: '/pool',
-  //   text: "Pool"
-  // },
+  {
+    route: '/pool',
+    text: "Pool"
+  },
   {
     route: '/stake',
     text: "Stake"
@@ -22,6 +21,10 @@ const routes = [
   {
     route: '/reward',
     text: "Reward"
+  },
+  {
+    route: '/network',
+    text: "Network"
   }
 ]
 
@@ -58,7 +61,7 @@ const Header = (props) => {
           onClick={() => store.setShowAddLiquidity(true)}
         >
           Add
-            </a> */}
+        </a> */}
         {/* <a
           className={classes.link}
           onClick={() => store.setShowSwapLiquidity(true)}
@@ -71,6 +74,8 @@ const Header = (props) => {
 
   function renderProfile() {
     const { classes } = props
+    let member = store.getMember()
+    let protocol = store.getProtocol()
     return (
       <div className={classes.profile}>
         <Button
@@ -86,17 +91,25 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 14px'
-        >Epoch {getCurrentEpoch()}</Text>
-        <Avatar
-          member={store.member}
-          size={30}
-          margin='0px 0px 0px 14px'
-        ></Avatar>
-        <Text
-          fontSize={14}
-          fontWeight={700}
-          margin='0px 0px 0px 8px'
-        >@{store.member.alias}</Text>
+        >Epoch {protocol.epochNumber}</Text>
+        <span className={classes.memberProfile} onClick={() => {
+          store.setShowProfile({
+            ethAddress: member.ethAddress,
+            alias: member.alias,
+            selectedEpoch: protocol.epochNumber
+          })
+        }}>
+          <Avatar
+            member={member}
+            size={30}
+            margin='0px 0px 0px 14px'
+          ></Avatar>
+          <Text
+            fontSize={14}
+            fontWeight={700}
+            margin='0px 0px 0px 8px'
+          >@{member.alias}</Text>
+        </span>
       </div>
     )
   }
@@ -169,7 +182,18 @@ const useStyles = theme => ({
   profile: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  memberProfile: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    cursor: 'pointer',
+    transition: '0.2s',
+    '&:hover': {
+      opacity: 0.8,
+      transition: '0.2s'
+    }
   }
 })
 

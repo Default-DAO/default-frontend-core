@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -19,9 +20,16 @@ const Table = props => {
     }
   }
 
-  const { classes } = props
+  function handleScroll(e) {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && props.onScroll) {
+      props.onScroll()
+    }
+  }
+
+  const { classes, className } = props
   return (
-    <div className={classes.table}>
+    <div onScroll={handleScroll} className={clsx(classes.table, className ? className : '')}>
       {renderEmptyTable()}
       {props.list.map((object, index) => {
         return <span key={index}>
@@ -39,7 +47,6 @@ const useStyles = theme => ({
       height: height ? height : '75vh',
       width: width ? width : 400,
       overflowY: 'auto',
-      paddingRight: 10,
       marginTop: 20,
       borderRadius: 15
     }

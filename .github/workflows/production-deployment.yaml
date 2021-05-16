@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Generate deployment package
-        run: zip -r deploy.zip Procfile api/* buildspec.yml components/* config/* ecosystem.json imagedefinitions.json package-lock.json package.json pages/* reusable/* scripts/* server.js static/* store/* utils/*
+        run: zip -r deploy.zip Procfile api/* buildspec.yml components/* config/* ecosystem.json imagedefinitions.json package-lock.json package.json pages/* reusable/* scripts/* server.js static/* store/* utils/* next.config.js
        
       - name: Set version
         id: generate-uuid

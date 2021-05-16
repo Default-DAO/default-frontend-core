@@ -13,41 +13,71 @@ import Button from '../reusable/button'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
-import { getAllocations } from '../api/get'
+import { getAllocationsTo, getAllocationsFrom } from '../api/get'
 import { allocateRewards } from '../api/post'
-import { getCurrentEpoch } from '../utils/epoch'
+import { format } from '../utils/money'
 
 const Reward = props => {
   const store = useStoreApi()
-  const { member } = store
+  const { getMember, getProtocol, setShowProfile } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
-  const [selectedEpoch, setSelectedEpoch] = useState(getCurrentEpoch())
+  const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
   const [allocationsTo, setAllocationsTo] = useState([])
   const [allocationsFrom, setAllocationsFrom] = useState([])
+  const [allocationsToAmount, setAllocationsToAmount] = useState(0)
+  const [allocationsFromAmount, setAllocationsFromAmount] = useState(0)
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
-    getValueAllocations(0, selectedEpoch)
+    getValueAllocationsTo(0, selectedEpoch)
+    getValueAllocationsFrom(0, selectedEpoch)
   }, [])
 
-  async function getValueAllocations(page, epoch) {
-    let { allocationsFrom, allocationsTo } = await getAllocations({
+  //No pagination on the "To" table
+  async function getValueAllocationsTo(skip, epoch) {
+    let data = await getAllocationsTo({
       params: {
-        page,
         epoch,
-        ethAddress: member.ethAddress
+        ethAddress: getMember().ethAddress
       },
       store
     })
-    setAllocationsFrom(allocationsFrom)
-    setAllocationsTo(allocationsTo)
+    if (!data) return
+    let newTable = skip == 0 ? [...data.allocationsTo] : [...allocationsTo, ...data.allocationsTo]
+    setAllocationsTo(newTable)
+    setAllocationsToAmount(data.allocationsToAmount)
+  }
+
+  async function getValueAllocationsFrom(skip, epoch) {
+    let data = await getAllocationsFrom({
+      params: {
+        skip,
+        epoch,
+        ethAddress: getMember().ethAddress
+      },
+      store
+    })
+    if (!data) return
+    let newTable = skip == 0 ? [...data.allocationsFrom] : [...allocationsFrom, ...data.allocationsFrom]
+    setAllocationsFrom(newTable)
+    setAllocationsFromAmount(data.allocationsFromAmount)
   }
 
   async function rewardAllocations() {
     await allocateRewards({
-      params: {allocations: allocationsTo},
+      params: { allocations: allocationsTo },
       store
+    })
+  }
+
+  function handleCellClick(cell) {
+    const {ethAddress, alias} = cell
+    setShowProfile({
+      selectedTab: 1,
+      selectedEpoch, 
+      ethAddress, 
+      alias
     })
   }
 
@@ -55,13 +85,13 @@ const Reward = props => {
     const { classes } = props
     const { alias, weight } = cell
 
-    return <Card className={classes.cell}>
+    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <Weight
-        disabled={selectedEpoch != getCurrentEpoch()}
+        disabled={selectedEpoch != getProtocol().epochNumber}
         value={weight}
         onChange={(weight) => {
           let newAllocationsTo = [...allocationsTo]
@@ -83,7 +113,7 @@ const Reward = props => {
     const { classes } = props
     const { alias, weight } = cell
 
-    return <Card className={classes.cell}>
+    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
@@ -97,15 +127,8 @@ const Reward = props => {
 
   function renderAllocationButton() {
     const { classes } = props
-    let weightSet = false
-    allocationsTo.forEach(member => {
-      if (member && member.weight && member.weight > 0) {
-        weightSet = true
-        return
-      }
-    })
-    if (!weightSet) return null
-    if (selectedEpoch != getCurrentEpoch()) return null
+    if (selectedEpoch != getProtocol().epochNumber || allocationsTo.length <= 0) return null
+
     return (
       <span className={classes.buttonContainer}><Button
         gradient
@@ -132,20 +155,23 @@ const Reward = props => {
         <div className={classes.left}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value To</Text>
-            {(selectedEpoch == getCurrentEpoch()) ?<AddIcon
+            {(selectedEpoch == getProtocol().epochNumber) ? <AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
               fontSize="small"
             /> : null}
+          </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsToAmount, 2)}</Text>
           </span>
           <Table
             text="You haven't rewarded anyone"
             list={allocationsTo}
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
-            action={(selectedEpoch != getCurrentEpoch()) ? null : () => {
-              setShowMemberSearch(true)}
-            }
+            action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
+              setShowMemberSearch(true)
+            }}
           />
           {renderAllocationButton()}
         </div>
@@ -153,11 +179,17 @@ const Reward = props => {
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
           </span>
+          <span className={classes.textContainer}>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 2)}</Text>
+          </span>
           <Table
             text='No rewards here'
             list={allocationsFrom}
             renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
+            onScroll={async () => {
+              await getValueAllocationsFrom(allocationsFrom.length, selectedEpoch)
+            }}
           />
           <MemberSearch
             open={showMemberSearch}
@@ -166,7 +198,7 @@ const Reward = props => {
             title={'Choose people to reward'}
             action={(selected) => {
               let newSelected = [...allocationsTo]
-              for (let i = 0; i < selected.length; i ++) {
+              for (let i = 0; i < selected.length; i++) {
                 if (selected[i].weight == undefined) selected[i].weight = 0
                 if (!newSelected.includes(selected[i])) {
                   newSelected.push(selected[i])
@@ -182,7 +214,8 @@ const Reward = props => {
             title={'Select epoch'}
             action={(selected) => {
               setSelectedEpoch(selected)
-              getValueAllocations(0, selected)
+              getValueAllocationsTo(0, selected)
+              getValueAllocationsFrom(0, selected)
               setEpochSelectorOpen(false)
             }}
           />

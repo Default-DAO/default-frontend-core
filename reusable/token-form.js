@@ -8,6 +8,7 @@ import Button from './button'
 import Card from './card'
 import Popover from './popover'
 import keys from '../config/keys'
+import {format} from '../utils/money'
 
 const Tokens = [
   {
@@ -76,9 +77,9 @@ const TokenForm = props => {
         <Text>
           {label ? label : 'Tokens'}
         </Text>
-        <Text>
-          Balance: {balance ? balance : symbol + 0.0}
-        </Text>
+        {balance != undefined ? <Text>
+          Limit: {symbol + format(balance ? balance : 0.0)}
+        </Text> : null}
       </span>
       <div className={classes.formContainer}>
         <Form
