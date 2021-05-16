@@ -18,7 +18,7 @@ import { format } from '../utils/money'
 
 const Network = props => {
   const store = useStoreApi()
-  const { getProtocol } = store
+  const { getProtocol, setShowProfile } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
@@ -49,19 +49,29 @@ const Network = props => {
       </span>
     </span>
   }
- 
+
+  function handleCellClick(cell) {
+    const { ethAddress, alias } = cell
+    setShowProfile({
+      selectedTab: 1,
+      selectedEpoch,
+      ethAddress,
+      alias
+    })
+  }
+
   function renderNetworkCell(cell) {
     const { classes } = props
     const { alias, amountDnt, percentTotal } = cell
 
-    return <Card className={classes.cell}>
+    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <span className={classes.cellInfoContainer}>
         <Text className={classes.dntAmount}>Ð {format(amountDnt)}</Text>
-        <Text className={classes.percentage}>{percentTotal} %</Text>
+        <Text className={classes.percentage}>{percentTotal * 100} %</Text>
       </span>
     </Card>
   }

@@ -21,7 +21,7 @@ import { format } from '../utils/money'
 
 const Stake = props => {
   const store = useStoreApi()
-  const { getMember, getProtocol } = store
+  const { getMember, getProtocol, setShowProfile } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
@@ -81,11 +81,21 @@ const Stake = props => {
     return false
   }
 
+  function handleCellClick(cell) {
+    const {ethAddress, alias} = cell
+    setShowProfile({
+      selectedTab: 0,
+      selectedEpoch, 
+      ethAddress, 
+      alias
+    })
+  }
+
   function renderToCell(cell, i) {
     const { classes } = props
     const { alias, weight } = cell
 
-    return <Card className={classes.cell}>
+    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
@@ -113,7 +123,7 @@ const Stake = props => {
     const { classes } = props
     const { alias, weight } = cell
 
-    return <Card className={classes.cell}>
+    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>

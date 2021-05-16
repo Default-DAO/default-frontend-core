@@ -19,7 +19,10 @@ import Loading from '../components/loading'
 export const theme = createMuiTheme({
   palette: {
     background: {
-      default: keys.BACKGROUND_COLOR,
+      default: keys.BACKGROUND_COLOR
+    },
+    primary: {
+      main: keys.PRIMARY_COLOR
     }
   },
   typography: {

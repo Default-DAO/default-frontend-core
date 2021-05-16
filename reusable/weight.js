@@ -8,7 +8,7 @@ import keys from '../config/keys'
 
 const Weight = props => {
 
-  const { classes, value, onChange, disabled } = props
+  const { classes, value, onChange, disabled, height } = props
   return (
     <Card className={classes.card} height={30}>
       <Form

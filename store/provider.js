@@ -9,6 +9,7 @@ const initialState = {
   ethBalance: undefined,
   chainId: undefined,
 
+  showProfile: { selectedTab: 0, selectedEpoch: 0, ethAddress: undefined, alias: '' },
   showToast: { show: false, text: '', reason: 'success' },
   showRegistration: false,
   isLoading: true,
@@ -48,6 +49,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         showToast: action.showToast
+      }
+    case keys.SHOW_PROFILE:
+      return {
+        ...state,
+        showProfile: action.showProfile
       }
     case keys.SHOW_REGISTRATION:
       return {
@@ -147,6 +153,7 @@ export const useStoreApi = () => {
     },
 
     showToast: state.showToast,
+    showProfile: state.showProfile,
     showRegistration: state.showRegistration,
     isLoading: state.isLoading,
 
@@ -209,6 +216,16 @@ export const useStoreApi = () => {
         type: keys.SHOW_TOAST,
         showToast: {
           show, text, reason
+        }
+      })
+    },
+    setShowProfile: ({ selectedTab, selectedEpoch, ethAddress, alias }) => {
+      if (!selectedEpoch) selectedEpoch = 0
+      if (!selectedTab) selectedTab = 0
+      dispatch({
+        type: keys.SHOW_PROFILE,
+        showProfile: {
+          selectedTab, selectedEpoch, ethAddress, alias
         }
       })
     },
