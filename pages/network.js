@@ -60,6 +60,10 @@ const Network = props => {
     })
   }
 
+  function roundDecimal(value) {
+    return Math.round(value * 100) / 100
+  }
+
   function renderNetworkCell(cell) {
     const { classes } = props
     const { alias, amountDnt, percentTotal } = cell
@@ -70,8 +74,8 @@ const Network = props => {
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <span className={classes.cellInfoContainer}>
-        <Text className={classes.dntAmount}>Ð {format(amountDnt)}</Text>
-        <Text className={classes.percentage}>{percentTotal * 100} %</Text>
+        <Text className={classes.dntAmount}>Ð {roundDecimal(format(amountDnt))}</Text>
+        <Text className={classes.percentage}>{roundDecimal(percentTotal * 100)} %</Text>
       </span>
     </Card>
   }
