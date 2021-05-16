@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -26,9 +27,9 @@ const Table = props => {
     }
   }
 
-  const { classes } = props
+  const { classes, className } = props
   return (
-    <div onScroll={handleScroll} className={classes.table}>
+    <div onScroll={handleScroll} className={clsx(classes.table, className ? className : '')}>
       {renderEmptyTable()}
       {props.list.map((object, index) => {
         return <span key={index}>

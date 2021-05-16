@@ -74,6 +74,8 @@ const Header = (props) => {
 
   function renderProfile() {
     const { classes } = props
+    let member = store.getMember()
+    let protocol = store.getProtocol()
     return (
       <div className={classes.profile}>
         <Button
@@ -89,17 +91,25 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 14px'
-        >Epoch {store.getProtocol().epochNumber}</Text>
-        <Avatar
-          member={store.getMember()}
-          size={30}
-          margin='0px 0px 0px 14px'
-        ></Avatar>
-        <Text
-          fontSize={14}
-          fontWeight={700}
-          margin='0px 0px 0px 8px'
-        >@{store.getMember().alias}</Text>
+        >Epoch {protocol.epochNumber}</Text>
+        <span className={classes.memberProfile} onClick={() => {
+          store.setShowProfile({
+            ethAddress: member.ethAddress,
+            alias: member.alias,
+            selectedEpoch: protocol.epochNumber
+          })
+        }}>
+          <Avatar
+            member={member}
+            size={30}
+            margin='0px 0px 0px 14px'
+          ></Avatar>
+          <Text
+            fontSize={14}
+            fontWeight={700}
+            margin='0px 0px 0px 8px'
+          >@{member.alias}</Text>
+        </span>
       </div>
     )
   }
@@ -172,7 +182,18 @@ const useStyles = theme => ({
   profile: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  memberProfile: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    cursor: 'pointer',
+    transition: '0.2s',
+    '&:hover': {
+      opacity: 0.8,
+      transition: '0.2s'
+    }
   }
 })
 
