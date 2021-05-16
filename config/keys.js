@@ -1,4 +1,3 @@
-const API_URL = 'http://localhost:8000'
 const APP_NAME = 'Default'
 const BACKGROUND_COLOR = '#1c1c1c'
 const PRIMARY_COLOR = '#9d26ff'
@@ -30,8 +29,6 @@ const SHOW_ADD_VALUE_NETWORK = 'SHOW_ADD_VALUE_NETWORK'
 const RESET = 'RESET'
 
 module.exports = {
-  API_URL,
-
   APP_NAME,
   BACKGROUND_COLOR,
   PRIMARY_COLOR,
