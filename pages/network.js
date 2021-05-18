@@ -71,7 +71,7 @@ const Network = props => {
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <span className={classes.cellInfoContainer}>
-        <Text className={classes.dntAmount}>Ð {roundDecimal(format(amountDnt))}</Text>
+        <Text className={classes.dntAmount}>Ð {format(roundDecimal(amountDnt))}</Text>
         <Text className={classes.percentage}>{roundDecimal(percentTotal * 100)} %</Text>
       </span>
     </Card>
