@@ -25,8 +25,8 @@ const Stake = props => {
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
-  const [delegationsTo, setDelegationsTo] = useState([])
-  const [delegationsFrom, setDelegationsFrom] = useState([])
+  const [delegationsTo, setDelegationsTo] = useState(undefined)
+  const [delegationsFrom, setDelegationsFrom] = useState(undefined)
   const [delegationsToAmount, setDelegationsToAmount] = useState(0)
   const [delegationsFromAmount, setDelegationsFromAmount] = useState(0)
   const [stakeDntOpen, setStakeDntOpen] = useState(false)
@@ -137,7 +137,9 @@ const Stake = props => {
 
   function renderStakeButton() {
     const { classes } = props
-    if (selectedEpoch != getProtocol().epochNumber || delegationsTo.length <= 0) return null
+    if (delegationsTo && 
+      (selectedEpoch != getProtocol().epochNumber 
+      || delegationsTo.length <= 0)) return null
     
     return (
       <span className={classes.buttonContainer}><Button

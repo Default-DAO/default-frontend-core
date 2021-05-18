@@ -17,8 +17,8 @@ const ProfileStakes = props => {
   const {ethAddress, selectedEpoch} = props
   const store = useStoreApi()
 
-  const [delegationsTo, setDelegationsTo] = useState([])
-  const [delegationsFrom, setDelegationsFrom] = useState([])
+  const [delegationsTo, setDelegationsTo] = useState(undefined)
+  const [delegationsFrom, setDelegationsFrom] = useState(undefined)
   const [delegationsToAmount, setDelegationsToAmount] = useState(0)
   const [delegationsFromAmount, setDelegationsFromAmount] = useState(0)
 

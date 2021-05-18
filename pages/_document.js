@@ -17,7 +17,6 @@ class DefaultDocument extends Document {
     
     renderHead() {
         return (
-            //link files to load when member is on the landing page before signup
             <Head>
             	<meta charSet="UTF-8"/>
             </Head>
