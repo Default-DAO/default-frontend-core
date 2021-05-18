@@ -17,8 +17,8 @@ const ProfileRewards = props => {
   const {ethAddress, selectedEpoch} = props
   const store = useStoreApi()
 
-  const [allocationsTo, setAllocationsTo] = useState([])
-  const [allocationsFrom, setAllocationsFrom] = useState([])
+  const [allocationsTo, setAllocationsTo] = useState(undefined)
+  const [allocationsFrom, setAllocationsFrom] = useState(undefined)
   const [allocationsToAmount, setallocationsToAmount] = useState(0)
   const [allocationsFromAmount, setallocationsFromAmount] = useState(0)
 

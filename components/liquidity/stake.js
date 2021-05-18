@@ -45,7 +45,7 @@ const StakeReward = props => {
         selectedToken="dnt"
         onSelectedTokenChange={() => { }}
         label={label}
-        balance={pool.dnt - pool.dntStaked}
+        balance={pool.dnt - pool.dntStaked > 0 ? pool.dnt - pool.dntStaked : 0}
       />
       <Button
         onClick={() => { 

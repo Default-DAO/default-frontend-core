@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/AddCircleOutline';
 import { mdiShareVariantOutline } from '@mdi/js';
 
 import keys from '../config/keys'
@@ -8,9 +7,7 @@ import Text from '../reusable/text'
 import Avatar from '../reusable/avatar'
 import Card from '../reusable/card'
 import Table from '../reusable/table'
-import Weight from '../reusable/weight'
 import Button from '../reusable/button'
-import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
 import { getNetwork } from '../api/get'
@@ -22,7 +19,7 @@ const Network = props => {
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
-  const [network, setNetwork] = useState([])
+  const [network, setNetwork] = useState(undefined)
 
   useEffect(() => {
     loadNework(selectedEpoch)

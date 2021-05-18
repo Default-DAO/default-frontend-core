@@ -4,12 +4,18 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 
 import NoContent from './no-content'
-
+import Spinner from './spinner'
 const Table = props => {
+  const { classes, className, text, subText, actionText, action, icon, list } = props
 
   function renderEmptyTable() {
-    const { text, subText, actionText, action, icon } = props
-    if (!props.list || props.list.length <= 0) {
+    if (list == undefined) {
+      return <span className={classes.loadingContainer}>
+        <Spinner size={30}/>
+      </span>
+    }
+
+    if (!list || list.length <= 0) {
       return <NoContent
         text={text}
         subText={subText}
@@ -27,20 +33,26 @@ const Table = props => {
     }
   }
 
-  const { classes, className } = props
   return (
     <div onScroll={handleScroll} className={clsx(classes.table, className ? className : '')}>
       {renderEmptyTable()}
-      {props.list.map((object, index) => {
+      {list ? list.map((object, index) => {
         return <span key={index}>
           {props.renderCell(object, index)}
         </span>
-      })}
+      }) : null}
     </div>
   )
 }
 
 const useStyles = theme => ({
+  loadingContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
   table: props => {
     const { height, width } = props
     return {

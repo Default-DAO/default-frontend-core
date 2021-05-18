@@ -7,7 +7,9 @@ import keys from '../config/keys'
 
 const Form = (props) => {
 
-  function handleChange(value) {
+  function handleChange(e) {
+    e.stopPropagation()
+    let value = e.target.value
     const { number, onChange, max } = props
     if (number) {
       if (max != undefined && Number(value) > max) return
@@ -22,11 +24,12 @@ const Form = (props) => {
     <div className={classes.container}>
       {label ? <p className={classes.label}>{label}</p> : null}
       <input
+        onClick={(e) => e.stopPropagation()}
         type={number ? 'number' : 'text'}
         className={clsx(classes.form, className ? className : '')}
         placeholder={placeholder}
         value={value || value == 0 ? value : ''}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(e) => handleChange(e)}
         disabled={disabled ? disabled : false}
       />
     </div>

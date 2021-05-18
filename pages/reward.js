@@ -23,8 +23,8 @@ const Reward = props => {
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
-  const [allocationsTo, setAllocationsTo] = useState([])
-  const [allocationsFrom, setAllocationsFrom] = useState([])
+  const [allocationsTo, setAllocationsTo] = useState(undefined)
+  const [allocationsFrom, setAllocationsFrom] = useState(undefined)
   const [allocationsToAmount, setAllocationsToAmount] = useState(0)
   const [allocationsFromAmount, setAllocationsFromAmount] = useState(0)
   const [showMemberSearch, setShowMemberSearch] = useState(false)
@@ -127,7 +127,9 @@ const Reward = props => {
 
   function renderAllocationButton() {
     const { classes } = props
-    if (selectedEpoch != getProtocol().epochNumber || allocationsTo.length <= 0) return null
+    if (allocationsTo &&
+       (selectedEpoch != getProtocol().epochNumber 
+       || allocationsTo.length <= 0)) return null
 
     return (
       <span className={classes.buttonContainer}><Button
