@@ -57,7 +57,7 @@ const StakeReward = props => {
             return setShowToast({show: true, text: 'Not enough DNT!', reason: 'error'})
           }
           stakeDnt({
-            params: { amountDnt: value },
+            params: { amount: value },
             store
           })
         }}
