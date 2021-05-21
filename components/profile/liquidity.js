@@ -39,19 +39,19 @@ const Liquidity = props => {
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={15} fontWeight={700}>DNT</Text>
           </span>
-          <Text type="heading" fontSize={25} fontWeight={700}>Ð {format(memberPool.dnt)}</Text>
+          <Text type="heading" fontSize={25} fontWeight={700}>Ð {format(memberPool.dnt, 3)}</Text>
         </Card>
         <Card className={classes.card}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={15} fontWeight={700}>Staked DNT</Text>
           </span>
-          <Text type="heading" fontSize={25} fontWeight={700}>Ð {format(memberPool.dntStaked)}</Text>
+          <Text type="heading" fontSize={25} fontWeight={700}>Ð {format(memberPool.dntStaked, 3)}</Text>
         </Card>
         <Card className={classes.card}>
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={15} fontWeight={700}>USDC</Text>
           </span>
-          <Text type="heading" fontSize={25} fontWeight={700}>$ {format(memberPool.usdc)}</Text>
+          <Text type="heading" fontSize={25} fontWeight={700}>$ {format(memberPool.usdc, 3)}</Text>
         </Card>
       </div>
     </div>

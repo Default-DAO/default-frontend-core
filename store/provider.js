@@ -18,9 +18,9 @@ const initialState = {
   protocol: {},
 
   showAddLiquidity: false,
-  showSwapLiquidity: false,
-  showWitdhrawLiquidity: false,
   showStakeLiquidity: false,
+  showSwapLiquidity: false,
+  showWitdhrawLiquidity: false
 }
 
 const reducer = (state, action) => {
@@ -84,6 +84,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         showAddLiquidity: action.showAddLiquidity
+      }
+    case keys.SHOW_STAKE_LIQUIDITY:
+      return {
+        ...state,
+        showStakeLiquidity: action.showStakeLiquidity
       }
     case keys.SHOW_SWAP_LIQUIDITY:
       return {
@@ -158,6 +163,7 @@ export const useStoreApi = () => {
     isLoading: state.isLoading,
 
     showAddLiquidity: state.showAddLiquidity,
+    showStakeLiquidity: state.showStakeLiquidity,
     showSwapLiquidity: state.showSwapLiquidity,
     showWitdhrawLiquidity: state.showWitdhrawLiquidity,
     showStakeLiquidity: state.showStakeLiquidity,
@@ -246,6 +252,12 @@ export const useStoreApi = () => {
       dispatch({
         type: keys.SHOW_ADD_LIQUIDITY,
         showAddLiquidity
+      })
+    },
+    setShowStakeLiquidity: showStakeLiquidity => {
+      dispatch({
+        type: keys.SHOW_STAKE_LIQUIDITY,
+        showStakeLiquidity
       })
     },
     setShowSwapLiquidity: showSwapLiquidity => {

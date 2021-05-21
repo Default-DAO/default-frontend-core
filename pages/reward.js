@@ -164,7 +164,7 @@ const Reward = props => {
             /> : null}
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsToAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsToAmount, 3)}</Text>
           </span>
           <Table
             text="You haven't rewarded anyone"
@@ -182,7 +182,7 @@ const Reward = props => {
             <Text type="paragraph" fontSize={20} fontWeight={700}>Value From</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 3)}</Text>
           </span>
           <Table
             text='No rewards here'

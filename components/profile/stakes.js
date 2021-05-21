@@ -82,7 +82,7 @@ const ProfileStakes = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Stake To</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsToAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsToAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
@@ -97,7 +97,7 @@ const ProfileStakes = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Stake From</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsFromAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsFromAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
@@ -127,7 +127,7 @@ const useStyles = theme => ({
     height: '100%',
   },
   table: {
-    height: '100%',
+    height: 400,
     width: 350
   },
   left: {

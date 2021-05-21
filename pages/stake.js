@@ -11,7 +11,6 @@ import Card from '../reusable/card'
 import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
-import StakeModal from '../components/liquidity/stake'
 import MemberSearch from '../components/modals/member-search'
 import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
@@ -162,11 +161,6 @@ const Stake = props => {
           type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
           Epoch {selectedEpoch}
         </Button>
-        {(selectedEpoch == getProtocol().epochNumber) ? <Button
-          onClick={() => setStakeDntOpen(true)}
-          gradient className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
-          Stake DNT!
-        </Button> : null}
       </div>
       <div className={classes.tables}>
         <div className={classes.left}>
@@ -179,7 +173,7 @@ const Stake = props => {
             /> : null}
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsToAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsToAmount, 3)}</Text>
           </span>
           <Table
             text="You haven't staked anyone"
@@ -197,7 +191,7 @@ const Stake = props => {
             <Text type="paragraph" fontSize={20} fontWeight={700}>Stake From</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsFromAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsFromAmount, 3)}</Text>
           </span>
           <Table
             text='No stakes here!'
@@ -210,13 +204,6 @@ const Stake = props => {
           />
         </div>
       </div>
-      <StakeModal
-        open={stakeDntOpen}
-        close={() => setStakeDntOpen(false)}
-        title="Stake Your DNT"
-        label="Stake DNT"
-        buttonLabel="Stake"
-      />
       <MemberSearch
         selected={delegationsTo}
         open={showMemberSearch}

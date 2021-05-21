@@ -12,7 +12,7 @@ import { format } from '../utils/money'
 
 const Pool = props => {
   const store = useStoreApi()
-  const {setShowAddLiquidity, setShowSwapLiquidity, getMember} = store
+  const {setShowAddLiquidity, setShowSwapLiquidity, setShowStakeLiquidity, getMember} = store
   const [pool, setPool] = useState({
     usdc: 0,
     dnt: 0,
@@ -56,7 +56,7 @@ const Pool = props => {
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Total DNT</Text>
           </span>
-          <Text type="heading" fontSize={70} fontWeight={700}>Ð {format(pool.dnt)}</Text>
+          <Text type="heading" fontSize={70} fontWeight={700}>Ð {format(pool.dnt, 3)}</Text>
           {/* <Button
             onClick={() => setShowAddLiquidity(true)}
             gradient width={200} height={50}>
@@ -66,7 +66,7 @@ const Pool = props => {
           <span className={classes.textContainer}>
             <Text type="paragraph" fontSize={20} fontWeight={700}>Total USDC</Text>
           </span>
-          <Text type="heading" fontSize={70} fontWeight={700}>$ {format(pool.usdc)}</Text>
+          <Text type="heading" fontSize={70} fontWeight={700}>$ {format(pool.usdc, 3)}</Text>
           {/* <Button
             gradient width={200} height={50}
             onClick={() => setShowSwapLiquidity(true)}
@@ -81,11 +81,11 @@ const Pool = props => {
               {calculateShare(pool.dnt, memberPool.dnt)} %
             </Text>
           </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dnt)}</Text>
+          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dnt, 3)}</Text>
           <span className={classes.buttonContainer}>
             <Button
               onClick={() => {
-                window.location.replace("/stake")
+                setShowStakeLiquidity(true)
               }}
               gradient width={100} height={30}>
               STAKE</Button>
@@ -98,7 +98,7 @@ const Pool = props => {
               {calculateShare(memberPool.dnt, memberPool.dntStaked)} %
             </Text>
           </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dntStaked)}</Text>
+          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dntStaked, 3)}</Text>
         </Card>
         <Card className={classes.card}>
           <span className={classes.textContainer}>
@@ -107,7 +107,7 @@ const Pool = props => {
               {calculateShare(pool.usdc, memberPool.usdc)} %
             </Text>
           </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>$ {format(memberPool.usdc)}</Text>
+          <Text type="heading" fontSize={40} fontWeight={700}>$ {format(memberPool.usdc, 3)}</Text>
         </Card>
       </div>
     </div>
