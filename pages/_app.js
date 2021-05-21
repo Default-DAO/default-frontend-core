@@ -51,11 +51,8 @@ const App = (props) => {
       await loadInfo()
     })
 
-    if (!getMember() || !getMember().claimed || getProtocol().epochNumber == undefined) {
-      loadInfo()
-    } else {
-      setIsLoading(false)
-    }
+    
+    loadInfo()
   }, []);
 
   async function loadInfo() {
