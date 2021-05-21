@@ -92,7 +92,7 @@ export const stakeDnt = async ({ params, store }) => {
       signature,
       ethAddress,
       chainId,
-      amountDnt: parseFloat(params.amountDnt)
+      amount: parseFloat(params.amount)
     })
 
     if (result.error && result.errorCode == 'alreadyOccurred') {
