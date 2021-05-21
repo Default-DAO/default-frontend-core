@@ -99,7 +99,6 @@ export const getProtocol = async ({ params, store }) => {
     console.log("GET PROTOCOL")
     const { data: { result } } = await http.get('/api/ctProtocol')
     let protocol = result.protocol ? result.protocol : {}
-    console.log("GOT PROTOCOL DATA: ", data)
     console.log("GOT PROTOCOL: ", result)
     store.setProtocol(protocol)
     return protocol
