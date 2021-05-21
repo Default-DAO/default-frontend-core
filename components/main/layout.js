@@ -10,6 +10,8 @@ import WithdrawLiquidity from '../liquidity/withdraw'
 import { useStoreApi } from '../../store/provider'
 import Profile from '../profile'
 import { getMemberPool, getProtocol } from '../../api/get'
+import StakeModal from '../../components/liquidity/stake'
+
 const Layout = (props) => {
   const store = useStoreApi()
 
@@ -32,6 +34,13 @@ const Layout = (props) => {
       <WithdrawLiquidity
         open={store.showWithdrawLiquidity}
         close={() => store.setShowWithdrawLiquidity(false)}
+      />
+      <StakeModal
+        open={store.showStakeLiquidity}
+        close={() => store.setShowStakeLiquidity(false)}
+        title="Stake Your DNT"
+        label="Stake DNT"
+        buttonLabel="Stake"
       />
       <Profile/>
     </div>

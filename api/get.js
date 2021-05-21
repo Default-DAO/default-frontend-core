@@ -96,9 +96,11 @@ export const getMemberPool = async ({ params, store }) => {
 
 export const getProtocol = async ({ params, store }) => {
   try {
+    console.log("GET PROTOCOL")
     const { data: { result } } = await http.get('/api/ctProtocol')
     let protocol = result.protocol ? result.protocol : {}
-
+    console.log("GOT PROTOCOL DATA: ", data)
+    console.log("GOT PROTOCOL: ", result)
     store.setProtocol(protocol)
     return protocol
   } catch(err) {
@@ -226,7 +228,6 @@ export const getNetwork = async ({params, store}) => {
         ...params
       }
     })
-    console.log("RES: ", result)
 
     return result
   } catch (err) {

@@ -31,6 +31,7 @@ const StakeReward = props => {
       },
       store
     })
+    console.log("PP ", pool)
     setPool(pool)
   }
 

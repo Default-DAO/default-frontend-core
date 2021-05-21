@@ -82,7 +82,7 @@ const ProfileRewards = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Reward To</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Rewarded: {format(allocationsToAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Rewarded: {format(allocationsToAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
@@ -97,7 +97,7 @@ const ProfileRewards = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Reward From</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Rewarded: {format(allocationsFromAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
@@ -127,7 +127,7 @@ const useStyles = theme => ({
     height: '100%',
   },
   table: {
-    height: '100%',
+    height: 400,
     width: 350
   },
   left: {

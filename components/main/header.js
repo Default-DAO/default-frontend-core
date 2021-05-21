@@ -16,7 +16,7 @@ const routes = [
   },
   {
     route: '/stake',
-    text: "Stake"
+    text: "Delegate"
   },
   {
     route: '/reward',
@@ -62,12 +62,12 @@ const Header = (props) => {
         >
           Add
         </a> */}
-        {/* <a
+        <a
           className={classes.link}
-          onClick={() => store.setShowSwapLiquidity(true)}
+          onClick={() => store.setShowStakeLiquidity(true)}
         >
-          Swap
-            </a> */}
+          Stake
+            </a>
       </div>
     );
   }
@@ -93,6 +93,7 @@ const Header = (props) => {
           margin='0px 0px 0px 14px'
         >Epoch {protocol.epochNumber}</Text>
         <span className={classes.memberProfile} onClick={() => {
+          console.log("?????? ")
           store.setShowProfile({
             ethAddress: member.ethAddress,
             alias: member.alias,
