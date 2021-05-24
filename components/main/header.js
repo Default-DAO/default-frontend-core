@@ -56,12 +56,12 @@ const Header = (props) => {
             </a>
           )
         })}
-        {/* <a
+        <a
           className={classes.link}
           onClick={() => store.setShowAddLiquidity(true)}
         >
           Add
-        </a> */}
+        </a>
         <a
           className={classes.link}
           onClick={() => store.setShowStakeLiquidity(true)}
