@@ -9,5 +9,7 @@ console.log(`API_URL===${process.env.API_URL}`);
 module.exports = {
   env: {
     API_URL: process.env.API_URL,
+    DEFAULT_CONTRACT_ADDRESS: process.env.DEFAULT_CONTRACT_ADDRESS,
+    USDC_CONTRACT_ADDRESS: process.env.USDC_CONTRACT_ADDRESS,
   }
 }

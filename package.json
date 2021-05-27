@@ -32,6 +32,7 @@
 				"clsx": "^1.0.4",
 				"compression": "^1.7.4",
 				"dotenv": "^8.2.0",
+				"erc-20-abi": "^1.0.0",
 				"ethereumjs-util": "^7.0.10",
 				"koa": "^2.7.0",
 				"koa-bodyparser": "^4.2.1",
