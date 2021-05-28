@@ -8,6 +8,9 @@ const GRADIENT = `radial-gradient(174.47% 188.91% at 1.84% 0%, ${PRIMARY_COLOR} 
 const GRAY = '#212121'
 const DARK_GRAY = '#141414'
 const WHITE = '#ffffff'
+const GREEN = '#89ed6d'
+const RED = '#f74a5c'
+const BLUE = '#4caef5'
 
 const WEB_3 = 'WEB_3'
 const ETH_ADDRESS = "ETH_ADDRESS"
@@ -40,6 +43,9 @@ module.exports = {
   GRAY,
   DARK_GRAY,
   WHITE,
+  GREEN,
+  RED,
+  BLUE,
 
   WEB_3,
   ETH_ADDRESS,

@@ -15,8 +15,12 @@ const routes = [
     text: "Pool"
   },
   {
+    route: '/dnt',
+    text: "DNT"
+  },
+  {
     route: '/stake',
-    text: "Delegate"
+    text: "Elect"
   },
   {
     route: '/reward',
@@ -24,7 +28,7 @@ const routes = [
   },
   {
     route: '/network',
-    text: "Network"
+    text: "History"
   }
 ]
 
@@ -56,18 +60,6 @@ const Header = (props) => {
             </a>
           )
         })}
-        <a
-          className={classes.link}
-          onClick={() => store.setShowAddLiquidity(true)}
-        >
-          Add
-        </a>
-        <a
-          className={classes.link}
-          onClick={() => store.setShowStakeLiquidity(true)}
-        >
-          Stake
-            </a>
       </div>
     );
   }

@@ -15,10 +15,10 @@ import { format } from '../utils/money'
 
 const Network = props => {
   const store = useStoreApi()
-  const { getProtocol, setShowProfile } = store
+  const { getProtocol, setShowProfile, getMember } = store
 
   const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
-  const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
+  const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber - 1)
   const [network, setNetwork] = useState(undefined)
 
   useEffect(() => {
@@ -28,10 +28,12 @@ const Network = props => {
   async function loadNework(epoch) {
     let network = await getNetwork({
       params: {
-        epoch
+        epoch,
+        ethAddress: getMember().ethAddress
       },
       store
     })
+    console.log("N: ", network)
     if (!network) return
     setNetwork(network)
   }
@@ -41,8 +43,8 @@ const Network = props => {
       <span className={classes.profileContainer}>
       </span>
       <span className={classes.cellInfoContainer}>
-        <Text fontWeight={700} className={classes.dntAmount}>Dnt Amount</Text>
-        <Text fontWeight={700} className={classes.percentage}>Percentage</Text>
+        <Text fontWeight={700} className={classes.dntAmount}>Contributor Reward</Text>
+        <Text fontWeight={700} className={classes.percentage}>% of Total</Text>
       </span>
     </span>
   }
@@ -82,7 +84,7 @@ const Network = props => {
     <div className={classes.container}>
       <div className={classes.network}>
         <div className={classes.header}>
-          <Text type="paragraph" fontSize={20} fontWeight={700}>Network</Text>
+          <Text type="paragraph" fontSize={20} fontWeight={700}>History</Text>
           <Button
             onClick={() => setEpochSelectorOpen(true)}
             type="secondary" className={classes.epochButton} width={110}>
@@ -112,6 +114,7 @@ const Network = props => {
             loadNework(selected)
             setEpochSelectorOpen(false)
           }}
+          maxEpoch={getProtocol().epochNumber - 1}
         />
       </div>
     </div>
@@ -123,25 +126,18 @@ const useStyles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%'
+    height: '100%',
+    width: '100%',
+    padding: '0px 200px'
   },
   network: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
     overflowY: 'hidden',
-    width: '50vw',
+    width: '100%',
     padding: '30px 0px',
     // height: '80vh'
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "space-between",
-    marginBottom: 25,
-    padding: '0px 10px',
-    width: '100%'
   },
   epochButton: {
     fontWeight: 700,
@@ -173,7 +169,7 @@ const useStyles = theme => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '17px 20px'
+    padding: '17px 20px 10px 20px'
   },
   cellInfoContainer: {
     display: 'flex',
