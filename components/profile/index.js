@@ -66,11 +66,11 @@ const Profile = props => {
         <Tab label="Rewards" id="rewards" />
         <Tab label="Liquidity" id="liquidity" />
       </Tabs>
-      <Button
+      {selectedTab != 2 ? <Button
         onClick={() => setEpochSelectorOpen(true)}
         type="secondary" className={classes.epochButton} width={110}>
         Epoch {selectedEpoch}
-      </Button>
+      </Button> : null}
     </span>
   }
 
@@ -110,7 +110,7 @@ const useStyles = theme => ({
   modal: {
     padding: '30px 20px',
     height: '90vh',
-    width: 900
+    width: '80vw'
   },
   headerContainer: {
     display: 'flex',

@@ -14,7 +14,7 @@ import { getAllocationsTo, getAllocationsFrom } from '../../api/get'
 import { format } from '../../utils/money'
 
 const ProfileRewards = props => {
-  const {ethAddress, selectedEpoch} = props
+  const { ethAddress, selectedEpoch } = props
   const store = useStoreApi()
 
   const [allocationsTo, setAllocationsTo] = useState(undefined)
@@ -57,19 +57,35 @@ const ProfileRewards = props => {
     setallocationsFromAmount(data.allocationsFromAmount)
   }
 
-  function renderCell(cell) {
+  function renderToCell(cell) {
     const { classes } = props
-    const { alias, weight } = cell
+    const { alias, weight, points } = cell
 
     return <Card className={classes.cell}>
-      <span className={classes.profileContainer}>
-        <Avatar member={cell} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
+      <span className={classes.cellWrapper}>
+        <Avatar member={cell} size={30}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={16}>{alias}</Text>
       </span>
-      <Weight
-        value={weight}
-        disabled
-      />
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 15px 0px 0px" fontSize={16}>{format(points, 3)} Points</Text>
+        <Weight
+          value={weight}
+          disabled
+        />
+      </span>
+    </Card>
+  }
+
+  function renderFromCell(cell) {
+    const { classes } = props
+    const { alias, weight, points } = cell
+
+    return <Card className={classes.cell}>
+      <span className={classes.cellWrapper}>
+        <Avatar member={cell} size={30}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={16}>{alias}</Text>
+      </span>
+      <Text margin="0px 0px 0px 15px" fontSize={16}>{format(points, 3)} Points</Text>
     </Card>
   }
 
@@ -88,7 +104,7 @@ const ProfileRewards = props => {
             className={classes.table}
             text="No rewards sent"
             list={allocationsTo}
-            renderCell={(value, i) => renderCell(value, i)}
+            renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
           />
         </div>
@@ -103,7 +119,7 @@ const ProfileRewards = props => {
             className={classes.table}
             text='No rewards received'
             list={allocationsFrom}
-            renderCell={value => renderCell(value)}
+            renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
             onScroll={async () => {
               await getRewardAllocationsFrom(allocationsFrom.length, selectedEpoch)
@@ -128,7 +144,7 @@ const useStyles = theme => ({
   },
   table: {
     height: 400,
-    width: 350
+    width: 420
   },
   left: {
     flex: 1,
@@ -150,10 +166,10 @@ const useStyles = theme => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    transition: '0.2s',    
+    transition: '0.2s',
     padding: '14px 20px',
   },
-  profileContainer: {
+  cellWrapper: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

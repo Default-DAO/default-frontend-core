@@ -13,7 +13,7 @@ import { useStoreApi } from '../../store/provider'
 const EpochSelector = props => {
   const { getProtocol } = useStoreApi()
   const { classes, title, open, close, action } = props
-  const currentEpoch = getProtocol().epochNumber
+  const currentEpoch = props.maxEpoch ? props.maxEpoch : getProtocol().epochNumber
   let epochs = []
   for (let i = 1; i <= currentEpoch; i++) {
     epochs.push(i)
