@@ -43,6 +43,7 @@ const Network = props => {
       <span className={classes.profileContainer}>
       </span>
       <span className={classes.cellInfoContainer}>
+        <Text fontWeight={700} className={classes.points}>Points</Text>
         <Text fontWeight={700} className={classes.dntAmount}>Contributor Reward</Text>
         <Text fontWeight={700} className={classes.percentage}>% of Total</Text>
       </span>
@@ -65,7 +66,7 @@ const Network = props => {
 
   function renderNetworkCell(cell) {
     const { classes } = props
-    const { alias, amountDnt, percentTotal } = cell
+    const { alias, points, amountDnt, percentTotal } = cell
 
     return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
       <span className={classes.profileContainer}>
@@ -73,6 +74,7 @@ const Network = props => {
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
       <span className={classes.cellInfoContainer}>
+        <Text className={classes.points}>Ð {format(points, 3)}</Text>
         <Text className={classes.dntAmount}>Ð {format(amountDnt, 3)}</Text>
         <Text className={classes.percentage}>{roundDecimal(percentTotal * 100)} %</Text>
       </span>
@@ -177,6 +179,10 @@ const useStyles = theme => ({
     justifyContent: 'flex-end'
   },
   profile: {
+    width: 150,
+    textAlign: 'left'
+  },
+  points: {
     width: 150,
     textAlign: 'left'
   },

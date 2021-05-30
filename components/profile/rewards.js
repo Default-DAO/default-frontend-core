@@ -79,7 +79,7 @@ const ProfileRewards = props => {
   function renderFromCell(cell) {
     const { classes } = props
     const { alias, weight, points } = cell
-
+    console.log(cell)
     return <Card className={classes.cell}>
       <span className={classes.cellWrapper}>
         <Avatar member={cell} size={30}></Avatar>

@@ -14,12 +14,12 @@ import Button from '../reusable/button'
 import MemberSearch from '../components/modals/member-search'
 import { useStoreApi } from '../store/provider'
 import { getAllocationsTo, getAllocationsFrom, getPool } from '../api/get'
-import { delegateStakes } from '../api/post'
+import { allocateRewards } from '../api/post'
 import { format, round } from '../utils/money'
 
 const Stake = props => {
   const store = useStoreApi()
-  const { getMember, getProtocol, setShowProfile } = store
+  const { getMember, getProtocol, setShowProfile, setShowToast } = store
 
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
   const [allocationsTo, setAllocationsTo] = useState(undefined)
@@ -38,7 +38,9 @@ const Stake = props => {
 
   async function fetchPool() {
     let pool = await getPool({
-      params: {},
+      params: {
+        epoch: getProtocol().epochNumber
+      },
       store
     })
     setPool(pool)
@@ -74,9 +76,12 @@ const Stake = props => {
     setAllocationsFromAmount(data.allocationsFromAmount)
   }
 
-  async function stakeDelegations() {
-    await delegateStakes({
-      params: { delegations: allocationsTo },
+  async function handleRewardAllocation() {
+    if (!allocationsToAmount) {
+      return setShowToast({ show: true, text: 'Can not reward without points!', reason: 'success' })
+    }
+    await allocateRewards({
+      params: { allocations: allocationsTo },
       store
     })
   }
@@ -100,8 +105,8 @@ const Stake = props => {
 
   function calculateToPoints(weight) {
     let weights = allocationsTo.reduce((accumulator, reducer) => {
-      return accumulator.weight + reducer.weight
-    })
+      return accumulator + reducer.weight
+    }, 0)
     return format(round(allocationsToAmount * (weight / weights), 3))
   }
 
@@ -171,7 +176,7 @@ const Stake = props => {
     </Card>
   }
 
-  function renderStakeButton() {
+  function renderRewardButton() {
     const { classes } = props
     if (allocationsTo &&
       (selectedEpoch != getProtocol().epochNumber
@@ -182,18 +187,20 @@ const Stake = props => {
         gradient
         width={200}
         height={50}
-        onClick={() => stakeDelegations()}
+        onClick={() => handleRewardAllocation()}
       >
-        Stake!
+        Reward!
       </Button></span>
     )
   }
 
   function calculatePointWorth() {
-    return getProtocol().dntEpochRewardIssuanceAmount / 2
+    console.log('POOL ',pool)
+    const contributorIssuance = getProtocol().dntEpochRewardIssuanceAmount
+    const dntPerPoint = pool.dntStaked ? (contributorIssuance / 2) / pool.dntStaked : 0
+    return format(dntPerPoint, 3)
   }
 
-  console.log(getProtocol())
   const { classes } = props
   return (
     <div className={classes.stake}>
@@ -235,7 +242,7 @@ const Stake = props => {
               setShowMemberSearch(true)
             }}
           />
-          {renderStakeButton()}
+          {renderRewardButton()}
         </div>
         <div className={classes.right}>
           <Text type="paragraph" fontSize={17} fontWeight={700}>Rewarded by</Text>
