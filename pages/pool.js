@@ -85,11 +85,6 @@ const Pool = props => {
     setDntHistory(newTable)
   }
 
-  function calculateShare(total, owned) {
-    if (!total) return 0
-    return Math.round(owned / total * 100 * 100) / 100
-  }
-
   function renderUsdcHistoryHeader() {
     return <div className={classes.header}>
       <p className={classes.headerText} style={{ flex: 2 }}>Amount</p>
@@ -125,6 +120,7 @@ const Pool = props => {
 
   function renderDntHistoryCell(cell) {
     let { amount, createdEpoch, transactionType } = cell
+    if (transactionType == 'STAKE') amount *= -1
     transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
     return <div className={classes.historyCell}>
       <p className={classes.historyText} style={{ flex: 1.5 }}>{format(round(amount, 3))} DNT</p>
@@ -162,7 +158,6 @@ const Pool = props => {
             <span className={classes.bottomTextWrapper}>
               <Text type="paragraph" fontSize={18} fontWeight={700}>
                 $ {format(memberPool.usdc, 3)}
-                {/* ( {calculateShare(pool.usdc, memberPool.usdc)} % ) */}
               </Text>
               <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
                 In LP Pool
@@ -208,7 +203,6 @@ const Pool = props => {
             <span className={classes.bottomTextWrapper}>
               <Text type="paragraph" fontSize={18} fontWeight={700}>
                 $ {format(memberPool.dnt, 3)}
-                {/* ( {calculateShare(pool.usdc, memberPool.usdc)} % ) */}
               </Text>
               <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
                 In LP Pool

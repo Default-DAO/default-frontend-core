@@ -74,7 +74,11 @@ export const getMembers = async ({ params, store }) => {
 
 export const getPool = async ({ params, store }) => {
   try {
-    const { data: { result } } = await http.get('/api/ctPools')
+    const { data: { result } } = await http.get('/api/ctPools', {
+      params: {
+        ...params
+      }
+    })
     return result ? result : {}
   } catch(err) {
     console.log("getPool: ", err)

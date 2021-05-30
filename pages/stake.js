@@ -89,9 +89,10 @@ const Stake = props => {
 
   function calculateToVotes(weight) {
     let weights = delegationsTo.reduce((accumulator, reducer) => {
-      return accumulator.weight + reducer.weight
-    })
-    return format(round(delegationsToAmount * (weight / weights), 3))
+      return accumulator + reducer.weight
+    }, 0)
+    console.log(weights, delegationsToAmount, weight)
+    return format(delegationsToAmount * (weight / weights), 3)
   }
 
   function renderToTableHeader() {
