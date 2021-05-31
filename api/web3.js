@@ -93,43 +93,6 @@ export const requestPermission = async () => {
   }
 }
 
-export const addTokenToMetamask = async () => {
-  try {
-    if (!window || !window.ethereum) return
-    let success = await window.ethereum.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: '0xb60e8dd61c5d32be8058bb8eb970870f07233155',
-          symbol: 'FOO',
-          decimals: 18,
-          image: 'https://foo.io/token-image.svg',
-        },
-      },
-    });
-    return success
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-export const setMemberBalance = async (address) => {
-  try {
-    if (!window || !window.ethereum) return
-    let balance = await window.ethereum.request({
-      method: 'eth_getBalance',
-      params: [
-        address,
-        "latest"
-      ]
-    });
-    return balance
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 export const sendTransaction = async ({ from, to, gas, gasPrice, value, data }) => {
   try {
     if (!window || !window.ethereum) return

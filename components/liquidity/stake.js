@@ -31,6 +31,7 @@ const StakeReward = props => {
       },
       store
     })
+    console.log("PP ", pool)
     setPool(pool)
   }
 
@@ -45,7 +46,7 @@ const StakeReward = props => {
         selectedToken="dnt"
         onSelectedTokenChange={() => { }}
         label={label}
-        balance={pool.dnt - pool.dntStaked}
+        balance={pool.dnt - pool.dntStaked > 0 ? pool.dnt - pool.dntStaked : 0}
       />
       <Button
         onClick={() => { 
@@ -56,7 +57,7 @@ const StakeReward = props => {
             return setShowToast({show: true, text: 'Not enough DNT!', reason: 'error'})
           }
           stakeDnt({
-            params: { amountDnt: value },
+            params: { amount: value },
             store
           })
         }}

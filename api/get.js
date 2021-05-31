@@ -74,7 +74,11 @@ export const getMembers = async ({ params, store }) => {
 
 export const getPool = async ({ params, store }) => {
   try {
-    const { data: { result } } = await http.get('/api/ctPools')
+    const { data: { result } } = await http.get('/api/ctPools', {
+      params: {
+        ...params
+      }
+    })
     return result ? result : {}
   } catch(err) {
     console.log("getPool: ", err)
@@ -96,9 +100,10 @@ export const getMemberPool = async ({ params, store }) => {
 
 export const getProtocol = async ({ params, store }) => {
   try {
+    console.log("GET PROTOCOL")
     const { data: { result } } = await http.get('/api/ctProtocol')
     let protocol = result.protocol ? result.protocol : {}
-
+    console.log("GOT PROTOCOL: ", result)
     store.setProtocol(protocol)
     return protocol
   } catch(err) {
@@ -120,8 +125,9 @@ export const getAllocationsTo = async ({ params, store }) => {
     result.allocationsTo ? result.allocationsTo.map((to, i) => {
       const {alias, ethAddress} = to.toTxMember
       const weight = to.weight
+      const points = to.points
       allocationsTo.push({
-        ethAddress, alias, weight
+        ethAddress, alias, weight, points
       })
     }) : null
 
@@ -148,8 +154,9 @@ export const getAllocationsFrom = async ({ params, store }) => {
     result.allocationsFrom ? result.allocationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
       const weight = from.weight
+      const points = from.points
       allocationsFrom.push({
-        ethAddress, alias, weight
+        ethAddress, alias, weight, points
       })
     }) : null
 
@@ -176,8 +183,9 @@ export const getStakesTo = async ({ params, store }) => {
     result.delegationsTo ? result.delegationsTo.map((to, i) => {
       const {alias, ethAddress} = to.toTxMember
       const weight = to.weight
+      const votes = to.votes
       delegationsTo.push({
-        ethAddress, alias, weight
+        ethAddress, alias, weight, votes
       })
     }) : null
 
@@ -199,13 +207,13 @@ export const getStakesFrom = async ({ params, store }) => {
       }
     })
     result = result ? result : {}
-
     let delegationsFrom = []
     result.delegationsFrom ? result.delegationsFrom.map((from, i) => {
       const {alias, ethAddress} = from.fromTxMember
       const weight = from.weight
+      const votes = from.votes
       delegationsFrom.push({
-        ethAddress, alias, weight
+        ethAddress, alias, weight, votes
       })
     }) : null
 
@@ -226,7 +234,6 @@ export const getNetwork = async ({params, store}) => {
         ...params
       }
     })
-    console.log("RES: ", result)
 
     return result
   } catch (err) {
@@ -235,3 +242,70 @@ export const getNetwork = async ({params, store}) => {
     store.setShowToast({ show: true, text: "Couldn't get network. Please try again later", reason: 'error' })
   }
 }
+
+export const getMemberUsdcHistory = async({params, store}) => {
+  try {
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctPools/member/usdcHistory', {
+      params: {
+        ...params
+      }
+    })
+
+    return result
+  } catch(err) {
+    console.log("getMemberUsdcHistory: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get usdc history. Please try again later", reason: 'error' })
+  }
+}
+
+export const getMemberDntHistory = async({params, store}) => {
+  try {
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctPools/member/dntHistory', {
+      params: {
+        ...params
+      }
+    })
+
+    return result
+  } catch(err) {
+    console.log("getMemberDntHistory: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get dnt history. Please try again later", reason: 'error' })
+  }
+}
+
+export const getStakeRanking = async ({params, store}) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctPools/dnt/stakeRanking', {
+      params: {
+        ...params
+      }
+    })
+
+    return result
+  } catch (err) {
+    console.log("getStakeRanking: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get stake rankings. Please try again later", reason: 'error' })
+  }
+}
+
+export const getMemberStakeHistory = async ({params, store}) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctPools/dnt/stakeHistory', {
+      params: {
+        ...params
+      }
+    })
+
+    return result
+  } catch (err) {
+    console.log("getMemberStakeHistory: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get stake history. Please try again later", reason: 'error' })
+  }
+}
+

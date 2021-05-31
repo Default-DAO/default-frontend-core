@@ -15,8 +15,12 @@ const routes = [
     text: "Pool"
   },
   {
+    route: '/dnt',
+    text: "DNT"
+  },
+  {
     route: '/stake',
-    text: "Stake"
+    text: "Elect"
   },
   {
     route: '/reward',
@@ -24,7 +28,7 @@ const routes = [
   },
   {
     route: '/network',
-    text: "Network"
+    text: "History"
   }
 ]
 
@@ -56,18 +60,6 @@ const Header = (props) => {
             </a>
           )
         })}
-        {/* <a
-          className={classes.link}
-          onClick={() => store.setShowAddLiquidity(true)}
-        >
-          Add
-        </a> */}
-        {/* <a
-          className={classes.link}
-          onClick={() => store.setShowSwapLiquidity(true)}
-        >
-          Swap
-            </a> */}
       </div>
     );
   }
@@ -93,6 +85,7 @@ const Header = (props) => {
           margin='0px 0px 0px 14px'
         >Epoch {protocol.epochNumber}</Text>
         <span className={classes.memberProfile} onClick={() => {
+          console.log("?????? ")
           store.setShowProfile({
             ethAddress: member.ethAddress,
             alias: member.alias,

@@ -6,6 +6,10 @@ function getCurrentEpoch() {
   return Math.ceil(difference / 7)
 }
 
+function daysToEpoch(days) {
+  return Math.floor(days / 7)
+}
+
 function getCurrentCycle() {
     const today = new Date()
     let difference = (today.getTime() - genesisEpochDate.getTime()) / (1000 * 3600 * 24)
@@ -24,6 +28,7 @@ function isMonday() {
 
 module.exports = {
     getCurrentEpoch,
+    daysToEpoch,
     getCurrentCycle,
     isFriday,
     isMonday

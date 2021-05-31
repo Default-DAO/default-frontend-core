@@ -55,7 +55,8 @@ const useStyles = theme => ({
   container: {
     display: 'flex',
     alignItems: 'center',
-    flexDirection: 'column'
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   icon: {
     width: 100,
@@ -64,12 +65,14 @@ const useStyles = theme => ({
     userSelect: 'none',
     opacity: 0.8
   },
-  mainText: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    marginBottom: 30,
-    opacity: 0.8
+  mainText: props =>{
+    return {
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      marginBottom: props.action ? 30 : 0,
+      opacity: 0.8
+    }
   },
   h2: {
     fontSize: 30,

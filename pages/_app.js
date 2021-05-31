@@ -1,4 +1,3 @@
-// require('./global-style.css')
 import './global-style.css'
 import React, { useState } from 'react';
 import Head from 'next/head';
@@ -52,11 +51,8 @@ const App = (props) => {
       await loadInfo()
     })
 
-    if (!getMember() || !getMember().claimed || getProtocol().epochNumber == undefined) {
-      loadInfo()
-    } else {
-      setIsLoading(false)
-    }
+    
+    loadInfo()
   }, []);
 
   async function loadInfo() {

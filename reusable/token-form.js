@@ -78,7 +78,7 @@ const TokenForm = props => {
           {label ? label : 'Tokens'}
         </Text>
         {balance != undefined ? <Text>
-          Limit: {symbol + format(balance ? balance : 0.0)}
+          Limit: {symbol + format(balance ? balance : 0.0, 3)}
         </Text> : null}
       </span>
       <div className={classes.formContainer}>

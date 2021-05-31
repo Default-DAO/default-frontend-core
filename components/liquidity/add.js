@@ -7,7 +7,7 @@ import Text from '../../reusable/text'
 import TokenForm from '../../reusable/token-form'
 import Button from '../../reusable/button'
 import { useStoreApi } from '../../store/provider'
-import { addLiquidity } from '../../api/post'
+import { checkAddLiquidity, checkTransaction } from '../../api/post'
 import { sendTransaction, getWeb3 } from '../../api/web3'
 import abi from '../../api/erc20.json'
 
@@ -38,24 +38,29 @@ const AddLiquidity = (props) => {
           if (value > member.liquidityCapUsdc) {
             return store.setShowToast({show: true, text:"This amount is over the limit!", reason: 'error'})
           }
-          var web3 = getWeb3();
-          let contract = new web3.eth.Contract(abi, process.env.USDC_CONTRACT_ADDRESS);
 
-          let data = contract.methods.transfer(process.env.DEFAULT_CONTRACT_ADDRESS, value).encodeABI()
-
-          await sendTransaction({
-            from: getMember().ethAddress,
-            // to: '0xEe4De25a333A96389bc29363ed404814f6211BB3',
-            // gas: '21000',
-            // gasPrice: '21000',
-            // value,
-            data
-          })
-          await addLiquidity({
+          let checkPass = await checkAddLiquidity({
             params: {
               amount: value
             },
             store
+          })
+          if (!checkPass) return
+
+          var web3 = getWeb3();
+          let contract = new web3.eth.Contract(abi, process.env.USDC_CONTRACT_ADDRESS);
+          let data = contract.methods.transfer(process.env.DEFAULT_CONTRACT_ADDRESS, value).encodeABI()
+          let transactionHash = await sendTransaction({
+            from: getMember().ethAddress,
+            to: process.env.DEFAULT_CONTRACT_ADDRESS,
+            data
+          })
+          if (!transactionHash) return
+
+          // Only before dUSDC is not live
+          await checkTransaction({
+            transactionHash,
+            amount: value
           })
         }}
         margin="35px 0px 0px 0px" gradient width={200} height={50}>

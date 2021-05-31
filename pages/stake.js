@@ -11,25 +11,21 @@ import Card from '../reusable/card'
 import Table from '../reusable/table'
 import Weight from '../reusable/weight'
 import Button from '../reusable/button'
-import StakeModal from '../components/liquidity/stake'
 import MemberSearch from '../components/modals/member-search'
-import EpochSelector from '../components/modals/epoch-selector'
 import { useStoreApi } from '../store/provider'
 import { getStakesTo, getStakesFrom } from '../api/get'
 import { delegateStakes } from '../api/post'
-import { format } from '../utils/money'
+import { format, round } from '../utils/money'
 
 const Stake = props => {
   const store = useStoreApi()
   const { getMember, getProtocol, setShowProfile } = store
 
-  const [epochSelectorOpen, setEpochSelectorOpen] = useState(false)
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
-  const [delegationsTo, setDelegationsTo] = useState([])
-  const [delegationsFrom, setDelegationsFrom] = useState([])
+  const [delegationsTo, setDelegationsTo] = useState(undefined)
+  const [delegationsFrom, setDelegationsFrom] = useState(undefined)
   const [delegationsToAmount, setDelegationsToAmount] = useState(0)
   const [delegationsFromAmount, setDelegationsFromAmount] = useState(0)
-  const [stakeDntOpen, setStakeDntOpen] = useState(false)
   const [showMemberSearch, setShowMemberSearch] = useState(false)
 
   useEffect(() => {
@@ -69,7 +65,7 @@ const Stake = props => {
 
   async function stakeDelegations() {
     await delegateStakes({
-      params: {delegations: delegationsTo},
+      params: { delegations: delegationsTo },
       store
     })
   }
@@ -82,13 +78,43 @@ const Stake = props => {
   }
 
   function handleCellClick(cell) {
-    const {ethAddress, alias} = cell
+    const { ethAddress, alias } = cell
     setShowProfile({
       selectedTab: 0,
-      selectedEpoch, 
-      ethAddress, 
+      selectedEpoch,
+      ethAddress,
       alias
     })
+  }
+
+  function calculateToVotes(weight) {
+    let weights = delegationsTo.reduce((accumulator, reducer) => {
+      return accumulator + reducer.weight
+    }, 0)
+    console.log(weights, delegationsToAmount, weight)
+    return format(delegationsToAmount * (weight / weights), 3)
+  }
+
+  function renderToTableHeader() {
+    return <span className={classes.header}>
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 0px 0px 15px" fontSize={15}>Profile</Text>
+      </span>
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 25px 0px 0px" fontSize={15}>Votes</Text>
+        <Text margin="0px 20px 0px 0px" fontSize={15}>Weight</Text>
+      </span>
+    </span>
+  }
+  function renderFromTableHeader() {
+    return <span className={classes.header}>
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 0px 0px 15px" fontSize={15}>Profile</Text>
+      </span>
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 15px 0px 0px" fontSize={15}>Votes</Text>
+      </span>
+    </span>
   }
 
   function renderToCell(cell, i) {
@@ -96,10 +122,12 @@ const Stake = props => {
     const { alias, weight } = cell
 
     return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
-      <span className={classes.profileContainer}>
+      <span className={classes.cellWrapper}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
+      <span className={classes.cellWrapper}>
+      <Text margin="0px 15px 0px 0px" fontSize={20}>{calculateToVotes(weight)} Votes</Text>
       <Weight
         disabled={selectedEpoch != getProtocol().epochNumber}
         value={weight}
@@ -116,29 +144,29 @@ const Stake = props => {
           setDelegationsTo(newDelegationsTo)
         }}
       />
+      </span>
     </Card>
   }
 
   function renderFromCell(cell) {
     const { classes } = props
-    const { alias, weight } = cell
+    const { alias, weight, votes } = cell
 
     return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
-      <span className={classes.profileContainer}>
+      <span className={classes.cellWrapper}>
         <Avatar member={cell} size={40}></Avatar>
         <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
       </span>
-      <Weight
-        value={weight}
-        disabled
-      />
+      <Text margin="0px 0px 0px 15px" fontSize={20}>{votes} Votes</Text>
     </Card>
   }
 
   function renderStakeButton() {
     const { classes } = props
-    if (selectedEpoch != getProtocol().epochNumber || delegationsTo.length <= 0) return null
-    
+    if (delegationsTo &&
+      (selectedEpoch != getProtocol().epochNumber
+        || delegationsTo.length <= 0)) return null
+
     return (
       <span className={classes.buttonContainer}><Button
         gradient
@@ -154,50 +182,45 @@ const Stake = props => {
   const { classes } = props
   return (
     <div className={classes.stake}>
-      <div className={classes.epoch}>
-        <Button
-          onClick={() => setEpochSelectorOpen(true)}
-          type="secondary" className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
-          Epoch {selectedEpoch}
-        </Button>
-        {(selectedEpoch == getProtocol().epochNumber) ? <Button
-          onClick={() => setStakeDntOpen(true)}
-          gradient className={classes.epochButton} margin="0px 20px 0px 0px" width={110}>
-          Stake DNT!
-        </Button> : null}
+      <div className={classes.top}>
+        <Card className={classes.topCard}>
+          <Text type="paragraph" fontSize={17} fontWeight={500}>Currently Giving</Text>
+          <Text type="subheading" fontSize={25} fontWeight={700}>{format(delegationsToAmount, 3)} VOTES</Text>
+          <Text type="paragraph" fontSize={14} fontWeight={300}>(1 Staked DNT = 1 VOTE)</Text>
+        </Card>
+        <Card className={classes.topCard}>
+          <Text type="paragraph" fontSize={17} fontWeight={500}>Currently Receiving</Text>
+          <Text type="subheading" fontSize={25} fontWeight={700}>{format(delegationsFromAmount, 3)} VOTES</Text>
+        </Card>
       </div>
       <div className={classes.tables}>
         <div className={classes.left}>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={20} fontWeight={700}>Stake To</Text>
-            {(selectedEpoch == getProtocol().epochNumber) ? <AddIcon
+            <Text type="paragraph" fontSize={17} fontWeight={700}>My Delegates</Text>
+            <AddIcon
               onClick={() => setShowMemberSearch(true)}
               className={classes.icon}
-              fontSize="small"
-            /> : null}
+              fontSize="medium"
+            />
           </span>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsToAmount, 2)}</Text>
-          </span>
+          {renderToTableHeader()}
           <Table
+            width="100%"
             text="You haven't staked anyone"
             list={delegationsTo}
             renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
-            action={(selectedEpoch != getProtocol().epochNumber) ? null : () => {
+            action={() => {
               setShowMemberSearch(true)
             }}
           />
           {renderStakeButton()}
         </div>
         <div className={classes.right}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={20} fontWeight={700}>Stake From</Text>
-          </span>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={15} fontWeight={700}>Staked: {format(delegationsFromAmount, 2)}</Text>
-          </span>
+          <Text type="paragraph" fontSize={17} fontWeight={700}>My Voters / Supporters</Text>
+          {renderFromTableHeader()}
           <Table
+            width="100%"
             text='No stakes here!'
             list={delegationsFrom}
             renderCell={value => renderFromCell(value)}
@@ -208,13 +231,6 @@ const Stake = props => {
           />
         </div>
       </div>
-      <StakeModal
-        open={stakeDntOpen}
-        close={() => setStakeDntOpen(false)}
-        title="Stake Your DNT"
-        label="Stake DNT"
-        buttonLabel="Stake"
-      />
       <MemberSearch
         selected={delegationsTo}
         open={showMemberSearch}
@@ -222,7 +238,7 @@ const Stake = props => {
         title={'Choose people to stake'}
         action={(selected) => {
           let newSelected = [...delegationsTo]
-          for (let i = 0; i < selected.length; i ++) {
+          for (let i = 0; i < selected.length; i++) {
             if (selected[i].weight == undefined) selected[i].weight = 0
             if (!includes(newSelected, selected[i])) {
               newSelected.push(selected[i])
@@ -230,17 +246,6 @@ const Stake = props => {
           }
           setDelegationsTo(newSelected)
           setShowMemberSearch(false)
-        }}
-      />
-      <EpochSelector
-        open={epochSelectorOpen}
-        close={() => setEpochSelectorOpen(false)}
-        title={'Select epoch'}
-        action={(selected) => {
-          setSelectedEpoch(selected)
-          getStakeDelegationsTo(0, selected)
-          getStakeDelegationsFrom(0, selected)
-          setEpochSelectorOpen(false)
         }}
       />
     </div>
@@ -253,8 +258,22 @@ const useStyles = theme => ({
     flexDirection: 'column',
     height: '100%',
     overflowY: 'hidden',
-    padding: '30px 200px',
+    padding: '30px 100px',
     // height: '80vh'
+  },
+  top: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  topCard: {
+    // width: 200,
+    flex: 1,
+    padding: 15,
+    margin: '0px 10px 25px 10px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   epoch: {
     display: 'flex',
@@ -279,18 +298,22 @@ const useStyles = theme => ({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: '0px 20px',
-    height: '72vh'
+    height: '60vh'
   },
   right: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: '0px 20px',
-    height: '72vh'
+    height: '60vh'
   },
   cell: {
-    marginBottom: 20,
+    marginBottom: 15,
     borderRadius: '15px',
     display: 'flex',
     flexDirection: 'row',
@@ -298,24 +321,26 @@ const useStyles = theme => ({
     justifyContent: 'space-between',
     transition: '0.2s',
     cursor: 'pointer',
-    padding: '17px 20px',
+    padding: '14px 20px',
     '&:hover': {
       opacity: 0.8,
       transition: '0.2s'
     }
   },
-  profileContainer: {
+  cellWrapper: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
   textContainer: {
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   icon: {
     color: keys.WHITE,
     cursor: 'pointer',
+    marginLeft: 10,
     '&:hover': {
       opacity: 0.7
     }
@@ -324,6 +349,11 @@ const useStyles = theme => ({
     display: 'flex',
     justifyContent: "center",
     marginTop: 28
+  },
+  header: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 });
 

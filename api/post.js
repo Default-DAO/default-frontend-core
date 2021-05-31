@@ -4,13 +4,13 @@ let http = axios.create({
   baseURL: process.env.API_URL,
   withCredentials: false,
   headers: {
-    'Access-Control-Allow-Origin' : '*'
-    }
+    'Access-Control-Allow-Origin': '*'
+  }
 });
 
 export const registerMember = async ({ params, store }) => {
   try {
-    const sign = await getSignedMessage({store})
+    const sign = await getSignedMessage({ store })
     if (!sign) return
     const { signature, ethAddress, chainId } = sign
     const { data: { result } } = await http.post('/api/member/claim', {
@@ -26,7 +26,7 @@ export const registerMember = async ({ params, store }) => {
         params: {
           ethAddress
         }
-      })      
+      })
     } else {
       member = result;
     }
@@ -35,16 +35,16 @@ export const registerMember = async ({ params, store }) => {
       params: {},
       store
     })
-    
+
     member = member ? member : {}
     let apiMember = member.apiMember ? member.apiMember : {}
     let txMember = member.txMember ? member.txMember : {}
-    
-    store.setMember({...apiMember, ...txMember})
+
+    store.setMember({ ...apiMember, ...txMember })
     store.setShowRegistration(false)
     store.setEthAddress(ethAddress)
 
-    return {...member.apiMember, ...member.txMember}
+    return { ...member.apiMember, ...member.txMember }
   } catch (err) {
     console.log("registerMember: ", err)
     if (err == 'notWhitelisted') {
@@ -54,10 +54,10 @@ export const registerMember = async ({ params, store }) => {
   }
 }
 
-export const addLiquidity = async ({ params, store }) => {
+export const checkAddLiquidity = async ({ params, store }) => {
   try {
     const { signature, ethAddress, chainId } = await getSignedMessage()
-    const { data: { result } } = await http.post('/api/ctPools/addLiquidity', {
+    const { data: { result } } = await http.post('/api/ctPools/addLiquidity/checkLimit', {
       signature,
       ethAddress,
       chainId,
@@ -65,15 +65,31 @@ export const addLiquidity = async ({ params, store }) => {
     })
 
     if (result.error && result.errorCode == 'overLimit') {
-      return store.setShowToast({ show: true, text: 'You have reached your limit this epoch!', reason: 'error' })
+      store.setShowToast({ show: true, text: 'You have reached your limit this epoch!', reason: 'error' })
+      return false
     }
 
-    if (!result.error) {
-      store.setShowToast({ show: true, text: 'Successfully added liquidity!', reason: 'success' })
+    if (result.error) {
+      store.setShowToast({ show: true, text: "Couldn't initiate add liquidity. Please try again later.", reason: 'error' })
+      return false
     }
+
+    return true
   } catch (err) {
     console.log("addLiquidity: ", err)
     store.setShowToast({ show: true, text: 'Unable to add liquidity', reason: 'error' })
+    return false
+  }
+}
+
+//Temporary solution before dUSDC is up
+export const checkTransaction = async({ params, store }) => {
+  try {
+    await http.post('/api/ctPools/addLiquidity/checkTransfer', {
+      ...params  
+    })
+  } catch(err) {
+    console.log("checkTransaction: ", err)
   }
 }
 
@@ -92,7 +108,7 @@ export const stakeDnt = async ({ params, store }) => {
       signature,
       ethAddress,
       chainId,
-      amountDnt: parseFloat(params.amountDnt)
+      amount: parseFloat(params.amount)
     })
 
     if (result.error && result.errorCode == 'alreadyOccurred') {

@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import { mdiShareVariantOutline } from '@mdi/js';
 
 import keys from '../config/keys'
 import Button from '../reusable/button'
 import Text from '../reusable/text'
 import Card from '../reusable/card'
+import Table from '../reusable/table'
 import { useStoreApi } from '../store/provider'
-import { getPool, getMemberPool } from '../api/get'
-import { format } from '../utils/money'
+import { getPool, getMemberPool, getMemberUsdcHistory, getMemberDntHistory } from '../api/get'
+import { format, round } from '../utils/money'
+
+const transactionTypes = {
+  STAKE: 'Stake',
+  CONTRIBUTOR_REWARD: 'Contributor Reward',
+  LP_REWARD: 'LP Reward',
+  DEPOSIT: 'Deposit',
+  WITHDRAW: "Withdraw",
+  SWAP: "Swap"
+}
 
 const Pool = props => {
   const store = useStoreApi()
-  const {setShowAddLiquidity, setShowSwapLiquidity, getMember} = store
+  const { setShowAddLiquidity, setShowSwapLiquidity, setShowStakeLiquidity, getMember } = store
   const [pool, setPool] = useState({
     usdc: 0,
     dnt: 0,
@@ -23,12 +34,16 @@ const Pool = props => {
     dnt: 0,
     dntStaked: 0
   })
+  const [usdcHistory, setUsdcHistory] = useState(undefined)
+  const [dntHistory, setDntHistory] = useState(undefined)
 
   useEffect(() => {
-    getPoolInformation()
+    fetchPool()
+    fetchMemberUsdcHistory()
+    fetchMemberDntHistory()
   }, [])
 
-  async function getPoolInformation() {
+  async function fetchPool() {
     let pool = await getPool({
       params: {},
       store
@@ -43,72 +58,189 @@ const Pool = props => {
     setMemberPool(memberPool)
   }
 
-  function calculateShare(total, owned) {
-    if (!total) return 0
-    return Math.round(owned / total * 100 * 100) / 100
+  async function fetchMemberUsdcHistory(skip) {
+    let newHistory = await getMemberUsdcHistory({
+      params: {
+        ethAddress: getMember().ethAddress,
+        skip: skip ? skip : 0
+      },
+      store
+    })
+    console.log(usdcHistory)
+    let oldHistory = usdcHistory ? usdcHistory : []
+    let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]
+    setUsdcHistory(newTable)
+  }
+
+  async function fetchMemberDntHistory(skip) {
+    let newHistory = await getMemberDntHistory({
+      params: {
+        ethAddress: getMember().ethAddress,
+        skip: skip ? skip : 0
+      },
+      store
+    })
+    let oldHistory = dntHistory ? dntHistory : []
+    let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]
+    setDntHistory(newTable)
+  }
+
+  function renderUsdcHistoryHeader() {
+    return <div className={classes.header}>
+      <p className={classes.headerText} style={{ flex: 2 }}>Amount</p>
+      <p className={classes.headerText} style={{ flex: 1 }}>Epoch</p>
+      <p className={classes.headerText} style={{ flex: 1 }}>Transaction</p>
+      <p className={classes.headerText} style={{
+        flex: 1, textAlign: 'right'
+      }}>Status</p>
+    </div>
+  }
+
+  function renderUsdcHistoryCell(cell) {
+    let { amount, createdEpoch, transactionType, status } = cell
+    transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
+    return <div className={classes.historyCell}>
+      <p className={classes.historyText} style={{ flex: 2 }}>{format(round(amount, 3))} USDC</p>
+      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {createdEpoch}</p>
+      <p className={classes.historyText} style={{ flex: 1 }}>{transactionType}</p>
+      <p className={classes.historyText} style={{
+        flex: 1, textAlign: 'right',
+        color: keys.GREEN
+      }}>Verified</p>
+    </div>
+  }
+
+  function renderDntHistoryHeader() {
+    return <div className={classes.header}>
+      <p className={classes.headerText} style={{ flex: 1.5 }}>Amount</p>
+      <p className={classes.headerText} style={{ flex: 1 }}>Epoch</p>
+      <p className={classes.headerText} style={{ flex: 1, textAlign: 'right' }}>Transaction</p>
+    </div>
+  }
+
+  function renderDntHistoryCell(cell) {
+    let { amount, createdEpoch, transactionType } = cell
+    if (transactionType == 'STAKE') amount *= -1
+    transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
+    return <div className={classes.historyCell}>
+      <p className={classes.historyText} style={{ flex: 1.5 }}>{format(round(amount, 3))} DNT</p>
+      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {createdEpoch}</p>
+      <p className={classes.historyText} style={{ flex: 1, textAlign: 'right' }}>{transactionType}</p>
+    </div>
   }
 
   const { classes } = props
   return (
     <div className={classes.pool}>
-      <div className={classes.left}>
-        <Card className={classes.card}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={20} fontWeight={700}>Total DNT</Text>
-          </span>
-          <Text type="heading" fontSize={70} fontWeight={700}>Ð {format(pool.dnt)}</Text>
-          {/* <Button
-            onClick={() => setShowAddLiquidity(true)}
-            gradient width={200} height={50}>
-            ADD LIQUIDITY</Button> */}
+      <div className={classes.top}>
+        <Card className={classes.topCard}>
+          <Text type="paragraph" fontSize={17} fontWeight={700}>USDC Liquidity Pool</Text>
+          <Text type="subheading" fontSize={35} fontWeight={700}>$ {format(pool.usdc, 3)}</Text>
         </Card>
-        <Card className={classes.card}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={20} fontWeight={700}>Total USDC</Text>
-          </span>
-          <Text type="heading" fontSize={70} fontWeight={700}>$ {format(pool.usdc)}</Text>
-          {/* <Button
-            gradient width={200} height={50}
-            onClick={() => setShowSwapLiquidity(true)}
-          >SWAP</Button> */}
+        <span className={classes.topCard}>
+          <Text type="paragraph" fontSize={18} fontWeight={700}>Swap Price</Text>
+          <Text type="subheading" fontSize={25} fontWeight={700}>
+            1 ÐNT = {format(round(pool.usdc / pool.dnt, 2))} USDC
+          </Text>
+        </span>
+        <Card className={classes.topCard}>
+          <Text type="paragraph" fontSize={17} fontWeight={700}>DNT Liquidity Pool</Text>
+          <Text type="subheading" fontSize={35} fontWeight={700}>Ð {format(pool.dnt, 3)}</Text>
         </Card>
       </div>
-      <div className={classes.right}>
-        <Card className={classes.card}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={18} fontWeight={700}>My DNT</Text>
-            <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
-              {calculateShare(pool.dnt, memberPool.dnt)} %
-            </Text>
+      <div className={classes.bottom}>
+
+        <Card className={classes.bottomCard}>
+          <span className={classes.bottomTextContainer}>
+            <Text type="paragraph" fontSize={17} fontWeight={700}>My USDC Liquidity</Text>
           </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dnt)}</Text>
+          <span className={classes.bottomTextContainer}>
+            <span className={classes.bottomTextWrapper}>
+              <Text type="paragraph" fontSize={18} fontWeight={700}>
+                $ {format(memberPool.usdc, 3)}
+              </Text>
+              <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
+                In LP Pool
+              </Text>
+            </span>
+            <div className={classes.verticalLine}></div>
+            <span className={classes.bottomTextWrapper}>
+              <Text type="paragraph" fontSize={18} fontWeight={700}>
+                $ {getMember().liquidityCapUsdc}
+              </Text>
+              <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
+                Available to Add
+              </Text>
+            </span>
+          </span>
+          <span className={classes.buttonContainer}>
+            <Button
+              onClick={() => setShowAddLiquidity(true)}
+              gradient width={130} height={35}>
+              Add Liquidity
+          </Button>
+          </span>
+          {renderUsdcHistoryHeader()}
+          <Table
+            className={classes.table}
+            text='No liquidity history'
+            list={usdcHistory}
+            renderCell={renderUsdcHistoryCell}
+            icon={mdiShareVariantOutline}
+            width="100%"
+            height="100%"
+            onScroll={async () => {
+              await fetchMemberUsdcHistory(usdcHistory.length)
+            }}
+          />
+        </Card>
+
+        <Card className={classes.bottomCard}>
+          <span className={classes.bottomTextContainer}>
+            <Text type="paragraph" fontSize={17} fontWeight={700}>My DNT Liquidity</Text>
+          </span>
+          <span className={classes.bottomTextContainer}>
+            <span className={classes.bottomTextWrapper}>
+              <Text type="paragraph" fontSize={18} fontWeight={700}>
+                $ {format(memberPool.dnt, 3)}
+              </Text>
+              <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
+                In LP Pool
+              </Text>
+            </span>
+            <div className={classes.verticalLine}></div>
+            <span className={classes.bottomTextWrapper}>
+              <Text type="paragraph" fontSize={18} fontWeight={700}>
+                Ð {format(memberPool.dntStaked, 3)}
+              </Text>
+              <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
+                Staked ÐNT
+              </Text>
+            </span>
+          </span>
           <span className={classes.buttonContainer}>
             <Button
               onClick={() => {
-                window.location.replace("/stake")
+                setShowStakeLiquidity(true)
               }}
-              gradient width={100} height={30}>
+              gradient width={130} height={35}>
               STAKE</Button>
           </span>
+          {renderDntHistoryHeader()}
+          <Table
+            className={classes.table}
+            text='No DNT history'
+            list={dntHistory}
+            renderCell={renderDntHistoryCell}
+            icon={mdiShareVariantOutline}
+            width="100%"
+            height="100%"
+            onScroll={async () => {
+              await fetchMemberDntHistory(dntHistory.length)
+            }}
+          />
         </Card>
-        <Card className={classes.card}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={18} fontWeight={700}>My Staked DNT</Text>
-            <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
-              {calculateShare(memberPool.dnt, memberPool.dntStaked)} %
-            </Text>
-          </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>Ð {format(memberPool.dntStaked)}</Text>
-        </Card>
-        <Card className={classes.card}>
-          <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={18} fontWeight={700}>My USDC</Text>
-            <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
-              {calculateShare(pool.usdc, memberPool.usdc)} %
-            </Text>
-          </span>
-          <Text type="heading" fontSize={40} fontWeight={700}>$ {format(memberPool.usdc)}</Text>
-        </Card>
+
       </div>
     </div>
   )
@@ -117,35 +249,86 @@ const Pool = props => {
 const useStyles = theme => ({
   pool: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     height: '100%',
     padding: '20px 90px',
     overflowY: 'hidden'
   },
-  left: {
-    flex: 1,
+  top: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'row'
   },
-  right: {
+  topCard: {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  card: {
-    flex: 1,
-    margin: 20,
+    margin: 10,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  textContainer: {
+  bottom: {
+    flex: 1,
     display: 'flex',
-    justifyContent: 'space-between'
+    flexDirection: 'row'
+  },
+  bottomCard: {
+    flex: 1,
+    margin: 10,
+    padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '60vh'
+  },
+  bottomTextContainer: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    marginBottom: 20
+  },
+  verticalLine: {
+    borderLeft: `1px solid ${keys.WHITE}`,
+    height: 50,
+    opacity: 0.4
+  },
+  bottomTextWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: 200
   },
   buttonContainer: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'center'
+  },
+  table: {
+    flex: 1,
+    marginTop: 0
+  },
+  header: {
+    marginTop: 20,
+    padding: '5px 10px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  historyCell: {
+    padding: '5px 10px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  headerText: {
+    color: keys.WHITE,
+    fontWeight: 700,
+    fontSize: 14,
+    flex: 1,
+    margin: 0
+  },
+  historyText: {
+    color: keys.WHITE,
+    fontWeight: 500,
+    fontSize: 14,
+    flex: 1,
+    margin: 0
   }
 });
 

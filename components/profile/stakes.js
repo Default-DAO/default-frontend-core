@@ -11,14 +11,14 @@ import Table from '../../reusable/table'
 import Weight from '../../reusable/weight'
 import { useStoreApi } from '../../store/provider'
 import { getStakesTo, getStakesFrom } from '../../api/get'
-import { format } from '../../utils/money'
+import { format, round } from '../../utils/money'
 
 const ProfileStakes = props => {
-  const {ethAddress, selectedEpoch} = props
+  const { ethAddress, selectedEpoch } = props
   const store = useStoreApi()
 
-  const [delegationsTo, setDelegationsTo] = useState([])
-  const [delegationsFrom, setDelegationsFrom] = useState([])
+  const [delegationsTo, setDelegationsTo] = useState(undefined)
+  const [delegationsFrom, setDelegationsFrom] = useState(undefined)
   const [delegationsToAmount, setDelegationsToAmount] = useState(0)
   const [delegationsFromAmount, setDelegationsFromAmount] = useState(0)
 
@@ -57,19 +57,35 @@ const ProfileStakes = props => {
     setDelegationsFromAmount(data.delegationsFromAmount)
   }
 
-  function renderCell(cell) {
+  function renderToCell(cell) {
     const { classes } = props
-    const { alias, weight } = cell
+    const { alias, weight, votes } = cell
 
     return <Card className={classes.cell}>
-      <span className={classes.profileContainer}>
-        <Avatar member={cell} size={40}></Avatar>
-        <Text margin="0px 0px 0px 15px" fontSize={20}>{alias}</Text>
+      <span className={classes.cellWrapper}>
+        <Avatar member={cell} size={30}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={16}>{alias}</Text>
       </span>
-      <Weight
-        value={weight}
-        disabled
-      />
+      <span className={classes.cellWrapper}>
+        <Text margin="0px 15px 0px 0px" fontSize={16}>{format(votes, 3)} Votes</Text>
+        <Weight
+          value={weight}
+          disabled
+        />
+      </span>
+    </Card>
+  }
+
+  function renderFromCell(cell) {
+    const { classes } = props
+    const { alias, weight, votes } = cell
+
+    return <Card className={classes.cell}>
+      <span className={classes.cellWrapper}>
+        <Avatar member={cell} size={30}></Avatar>
+        <Text margin="0px 0px 0px 15px" fontSize={16}>{alias}</Text>
+      </span>
+      <Text margin="0px 0px 0px 15px" fontSize={16}>{format(votes, 3)} Votes</Text>
     </Card>
   }
 
@@ -82,13 +98,13 @@ const ProfileStakes = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Stake To</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsToAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsToAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
             text="No stakes sent"
             list={delegationsTo}
-            renderCell={(value, i) => renderCell(value, i)}
+            renderCell={(value, i) => renderToCell(value, i)}
             icon={mdiWalletGiftcard}
           />
         </div>
@@ -97,13 +113,13 @@ const ProfileStakes = props => {
             <Text type="paragraph" fontSize={15} fontWeight={700}>Stake From</Text>
           </span>
           <span className={classes.textContainer}>
-            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsFromAmount, 2)}</Text>
+            <Text type="paragraph" fontSize={12} fontWeight={700}>Staked: {format(delegationsFromAmount, 3)}</Text>
           </span>
           <Table
             className={classes.table}
             text='No stakes received'
             list={delegationsFrom}
-            renderCell={value => renderCell(value)}
+            renderCell={value => renderFromCell(value)}
             icon={mdiTrophyAward}
             onScroll={async () => {
               await getStakeDelegationsFrom(delegationsFrom.length, selectedEpoch)
@@ -127,8 +143,8 @@ const useStyles = theme => ({
     height: '100%',
   },
   table: {
-    height: '100%',
-    width: 350
+    height: 400,
+    width: 420
   },
   left: {
     flex: 1,
@@ -150,10 +166,10 @@ const useStyles = theme => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    transition: '0.2s',    
+    transition: '0.2s',
     padding: '14px 20px',
   },
-  profileContainer: {
+  cellWrapper: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
