@@ -85,7 +85,6 @@ const Header = (props) => {
           margin='0px 0px 0px 14px'
         >Epoch {protocol.epochNumber}</Text>
         <span className={classes.memberProfile} onClick={() => {
-          console.log("?????? ")
           store.setShowProfile({
             ethAddress: member.ethAddress,
             alias: member.alias,
