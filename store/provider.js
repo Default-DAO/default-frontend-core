@@ -14,7 +14,16 @@ const initialState = {
   showRegistration: false,
   isLoading: true,
   member: {},
-  memberPool: {},
+  memberPool: {
+    usdc: 0,
+    dnt: 0,
+    dntStaked: 0
+  },
+  pool: {
+    usdc: 0,
+    dnt: 0,
+    dntStaked: 0
+  },
   protocol: {},
 
   showAddLiquidity: false,
@@ -74,6 +83,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         memberPool: action.memberPool
+      }
+    case keys.POOL:
+      return {
+        ...state,
+        pool: action.pool
       }
     case keys.PROTOCOL:
       return {
@@ -147,6 +161,7 @@ export const useStoreApi = () => {
         return state.memberPool
       }
     },
+    pool: state.pool,
     protocol: state.protocol,
     getProtocol: () => {
       let protocol = getLocalStorage(keys.PROTOCOL)
@@ -200,10 +215,17 @@ export const useStoreApi = () => {
         member
       })
     },
-    setMemberPool: pool => {
-      setLocalStorage(keys.MEMBER_POOL, pool)
+    setMemberPool: memberPool => {
+      setLocalStorage(keys.MEMBER_POOL, memberPool)
       dispatch({
         type: keys.MEMBER_POOL,
+        memberPool
+      })
+    },
+    setPool: pool => {
+      setLocalStorage(keys.POOL, pool)
+      dispatch({
+        type: keys.POOL,
         pool
       })
     },
