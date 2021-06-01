@@ -143,7 +143,7 @@ const useStyles = theme => ({
     height: '100%',
   },
   table: {
-    height: 400,
+    height: '100%',
     width: 420
   },
   left: {

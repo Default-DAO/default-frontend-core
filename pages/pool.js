@@ -240,7 +240,6 @@ const Pool = props => {
         callback={() => {
           fetchPool()
           fetchMemberUsdcHistory(0)
-          fetchMemberDntHistory(0)
         }}
       />
       <StakeModal
@@ -251,7 +250,6 @@ const Pool = props => {
         buttonLabel="Stake"
         callback={() => {
           fetchPool()
-          fetchMemberUsdcHistory(0)
           fetchMemberDntHistory(0)
         }}
       />
