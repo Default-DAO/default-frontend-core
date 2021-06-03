@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { mdiAccountQuestionOutline } from '@mdi/js';
 import Icon from '@mdi/react'
 
+import Form from '../../reusable/form'
 import keys from '../../config/keys'
 import Modal from '../../reusable/modal'
 import Text from '../../reusable/text'
@@ -14,6 +15,7 @@ import Avatar from '../../reusable/avatar'
 import Button from '../../reusable/button'
 import { getMembers, getProtocol } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
+import { SettingsInputAntennaTwoTone } from '@material-ui/icons';
 
 const SearchModal = props => {
   const { classes, title, open, close, action, disabled } = props
@@ -28,14 +30,15 @@ const SearchModal = props => {
     searchMembers(0)
   }, [])
 
-  async function searchMembers(skip) {
+  async function searchMembers(skip, searchText) {
     let newMembers = await getMembers({
       params: {
         skip,
+        searchText,
         excludeEthAddress: getMember().ethAddress
       }
     })
-    if (newMembers && newMembers.length) {
+    if (newMembers) {
       let newTable = skip == 0 ? [...newMembers] : [...members, ...newMembers]
       setMembers(newTable)
     }
@@ -44,6 +47,15 @@ const SearchModal = props => {
   function closeSearch() {
     props.close()
     setSelected([])
+  }
+  
+  function handleTextSearch(text) {
+    setSearchText(text)
+    let timeout = 0
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        searchMembers(0, text)
+    }, 800);
   }
 
   function includes(array, cell) {
@@ -94,14 +106,20 @@ const SearchModal = props => {
   return (
     <Modal className={classes.modal} open={open} close={closeSearch}>
       <Text center type="paragraph" fontSize={24} fontWeight={600} >{title}</Text>
-      {/* <Form 
-        value={searchText} 
-        onChange={searchText => setSearchText(searchText)}
+      <Form
+        width="100%"
+        className={classes.form}
+        value={searchText}
+        onChange={text => {
+          console.log(text)
+          handleTextSearch(text)
+        }}
         placeholder="Search members"
       >
-      </Form> */}
+      </Form>
       <Table
-        height="65vh"
+        className={classes.table}
+        // height="65vh"
         list={members}
         renderCell={value => renderCell(value)}
         text="We couldn't find members"
@@ -128,6 +146,14 @@ const SearchModal = props => {
 const useStyles = theme => ({
   modal: {
     padding: '40px 30px',
+    height: '90vh'
+  },
+  form: {
+    padding: "0px 20px",
+    height: 70
+  },
+  table: {
+    marginTop: 0
   },
   cell: {
     marginBottom: 20,

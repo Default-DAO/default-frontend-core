@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -62,6 +62,7 @@ const AddLiquidity = (props) => {
             transactionHash,
             amount: value
           })
+          await props.callback()
         }}
         margin="35px 0px 0px 0px" gradient width={200} height={50}>
         Add!

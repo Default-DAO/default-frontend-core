@@ -8,6 +8,8 @@ import Button from '../reusable/button'
 import Text from '../reusable/text'
 import Card from '../reusable/card'
 import Table from '../reusable/table'
+import AddLiquidity from '../components/liquidity/add'
+import StakeModal from '../components/liquidity/stake'
 import { useStoreApi } from '../store/provider'
 import { getPool, getMemberPool, getMemberUsdcHistory, getMemberDntHistory } from '../api/get'
 import { format, round } from '../utils/money'
@@ -23,17 +25,9 @@ const transactionTypes = {
 
 const Pool = props => {
   const store = useStoreApi()
-  const { setShowAddLiquidity, setShowSwapLiquidity, setShowStakeLiquidity, getMember } = store
-  const [pool, setPool] = useState({
-    usdc: 0,
-    dnt: 0,
-    dntStaked: 0
-  })
-  const [memberPool, setMemberPool] = useState({
-    usdc: 0,
-    dnt: 0,
-    dntStaked: 0
-  })
+  const { getMember, memberPool, pool} = store
+  const [showAddLiquidity, setShowAddLiquidity] = useState(false)
+  const [showStakeLiquidity, setShowStakeLiquidity] = useState(false)
   const [usdcHistory, setUsdcHistory] = useState(undefined)
   const [dntHistory, setDntHistory] = useState(undefined)
 
@@ -44,18 +38,16 @@ const Pool = props => {
   }, [])
 
   async function fetchPool() {
-    let pool = await getPool({
+    await getPool({
       params: {},
       store
     })
-    let memberPool = await getMemberPool({
+    await getMemberPool({
       params: {
         ethAddress: getMember().ethAddress
       },
       store
     })
-    setPool(pool)
-    setMemberPool(memberPool)
   }
 
   async function fetchMemberUsdcHistory(skip) {
@@ -66,7 +58,6 @@ const Pool = props => {
       },
       store
     })
-    console.log(usdcHistory)
     let oldHistory = usdcHistory ? usdcHistory : []
     let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]
     setUsdcHistory(newTable)
@@ -80,6 +71,8 @@ const Pool = props => {
       },
       store
     })
+    console.log(newHistory)
+
     let oldHistory = dntHistory ? dntHistory : []
     let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]
     setDntHistory(newTable)
@@ -120,7 +113,6 @@ const Pool = props => {
 
   function renderDntHistoryCell(cell) {
     let { amount, createdEpoch, transactionType } = cell
-    if (transactionType == 'STAKE') amount *= -1
     transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
     return <div className={classes.historyCell}>
       <p className={classes.historyText} style={{ flex: 1.5 }}>{format(round(amount, 3))} DNT</p>
@@ -157,7 +149,7 @@ const Pool = props => {
           <span className={classes.bottomTextContainer}>
             <span className={classes.bottomTextWrapper}>
               <Text type="paragraph" fontSize={18} fontWeight={700}>
-                $ {format(memberPool.usdc, 3)}
+                Ð {format(memberPool.usdc, 3)}
               </Text>
               <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
                 In LP Pool
@@ -202,7 +194,7 @@ const Pool = props => {
           <span className={classes.bottomTextContainer}>
             <span className={classes.bottomTextWrapper}>
               <Text type="paragraph" fontSize={18} fontWeight={700}>
-                $ {format(memberPool.dnt, 3)}
+                Ð {format(memberPool.dnt, 3)}
               </Text>
               <Text type="paragraph" fontSize={15} fontWeight={500} color={keys.PRIMARY_COLOR}>
                 In LP Pool
@@ -242,6 +234,25 @@ const Pool = props => {
         </Card>
 
       </div>
+      <AddLiquidity
+        open={showAddLiquidity}
+        close={() => setShowAddLiquidity(false)}
+        callback={() => {
+          fetchPool()
+          fetchMemberUsdcHistory(0)
+        }}
+      />
+      <StakeModal
+        open={showStakeLiquidity}
+        close={() => setShowStakeLiquidity(false)}
+        title="Stake Your DNT"
+        label="Stake DNT"
+        buttonLabel="Stake"
+        callback={() => {
+          fetchPool()
+          fetchMemberDntHistory(0)
+        }}
+      />
     </div>
   )
 }

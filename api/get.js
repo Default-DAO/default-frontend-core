@@ -74,12 +74,14 @@ export const getMembers = async ({ params, store }) => {
 
 export const getPool = async ({ params, store }) => {
   try {
-    const { data: { result } } = await http.get('/api/ctPools', {
+    let { data: { result } } = await http.get('/api/ctPools', {
       params: {
         ...params
       }
     })
-    return result ? result : {}
+    result = result ? result : {}
+    store.setPool(result)
+    return result
   } catch(err) {
     console.log("getPool: ", err)
   }
@@ -87,12 +89,14 @@ export const getPool = async ({ params, store }) => {
 
 export const getMemberPool = async ({ params, store }) => {
   try {
-    const { data: { result } } = await http.get('/api/ctPools/member', {
+    let { data: { result } } = await http.get('/api/ctPools/member', {
       params: {
         ...params
       }
     })
-    return result ? result : {}
+    result = result ? result : {}
+    store.setMemberPool(result)
+    return result
   } catch(err) {
     console.log("getMemberPool: ", err)
   }
@@ -100,10 +104,8 @@ export const getMemberPool = async ({ params, store }) => {
 
 export const getProtocol = async ({ params, store }) => {
   try {
-    console.log("GET PROTOCOL")
     const { data: { result } } = await http.get('/api/ctProtocol')
     let protocol = result.protocol ? result.protocol : {}
-    console.log("GOT PROTOCOL: ", result)
     store.setProtocol(protocol)
     return protocol
   } catch(err) {

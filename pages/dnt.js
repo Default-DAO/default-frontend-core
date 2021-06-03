@@ -18,19 +18,11 @@ import { daysToEpoch } from '../utils/epoch'
 
 const Stake = props => {
   const store = useStoreApi()
-  const { getMember, getProtocol, setShowProfile } = store
+  const { getMember, getProtocol, setShowProfile, pool, memberPool } = store
 
   const [selectedEpoch, setSelectedEpoch] = useState(getProtocol().epochNumber)
   const [stakeRanking, setStakeRanking] = useState(undefined)
   const [stakeHistory, setStakeHistory] = useState(undefined)
-  const [totalStakeAmount, setTotalStakeAmount] = useState(0)
-  const [memberStakeAmount, setMemberStakeAmount] = useState(0)
-  const [pool, setPool] = useState({
-    dntStaked: 0
-  })
-  const [memberPool, setMemberPool] = useState({
-    dntStaked: 0
-  })
 
   useEffect(() => {
     fetchPool()
@@ -39,18 +31,16 @@ const Stake = props => {
   }, [])
 
   async function fetchPool() {
-    let pool = await getPool({
+    await getPool({
       params: {},
       store
     })
-    let memberPool = await getMemberPool({
+    await getMemberPool({
       params: {
         ethAddress: getMember().ethAddress
       },
       store
     })
-    setPool(pool)
-    setMemberPool(memberPool)
   }
 
   //No pagination on the "To" table
@@ -85,7 +75,11 @@ const Stake = props => {
 
   function handleCellClick(cell) {
     const { ethAddress, alias } = cell
-    
+    setShowProfile({
+      ethAddress,
+      alias,
+      selectedEpoch: getProtocol().epochNumber
+    })
   }
   
   function renderRankingHeader() {
@@ -122,7 +116,7 @@ const Stake = props => {
       <span className={classes.cellWrapper}>
         <Text margin="0px 25px 0px 0px" fontSize={15}>{format(sum.amount, 3)} DNT</Text>
         <Text margin="0px 20px 0px 0px" fontSize={15}>{
-          format(round(sum.amount / pool.dntStaked * 100, 3))
+          format(sum.amount / pool.dntStaked * 100, 3)
         }%</Text>
       </span>
     </Card>
@@ -132,7 +126,7 @@ const Stake = props => {
     const { classes } = props
     const { amount, createdEpoch } = cell
 
-    return <Card onClick={() => handleCellClick(cell)} className={classes.cell}>
+    return <Card className={classes.cell}>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{format(amount, 3)} DNT</Text>
       <Text margin="0px 0px 0px 15px" fontSize={20}>Epoch {createdEpoch + daysToEpoch(730)}</Text>
     </Card>

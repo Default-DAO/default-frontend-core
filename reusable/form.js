@@ -39,7 +39,9 @@ const Form = (props) => {
 
 const useStyles = theme => ({
   container: props => {
-
+    return {
+      width: props.width ? props.width : '100%',
+    }
   },
   label: {
     color: keys.WHITE,
