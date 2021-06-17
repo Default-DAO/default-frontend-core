@@ -48,7 +48,7 @@ const StakeReward = props => {
         balance={pool.dnt > 0 ? pool.dnt : 0}
       />
       <Button
-        onClick={async () => { 
+        onClick={async () => {           
           if (!value || value <= 0) {
             return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
           }

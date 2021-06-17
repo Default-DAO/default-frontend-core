@@ -71,7 +71,6 @@ const Pool = props => {
       },
       store
     })
-    console.log(newHistory)
 
     let oldHistory = dntHistory ? dntHistory : []
     let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]

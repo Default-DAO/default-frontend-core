@@ -91,7 +91,6 @@ const Stake = props => {
     let weights = delegationsTo.reduce((accumulator, reducer) => {
       return accumulator + reducer.weight
     }, 0)
-    console.log(weights, delegationsToAmount, weight)
     return format(delegationsToAmount * (weight / weights), 3)
   }
 
