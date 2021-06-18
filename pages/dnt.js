@@ -53,7 +53,6 @@ const Stake = props => {
       store
     })
     if (!data) return
-    console.log(data)
     let newTable = skip == 0 ? [...data] : [...stakeRanking, ...data]
     
     setStakeRanking(newTable)
@@ -68,7 +67,6 @@ const Stake = props => {
       store
     })
     if (!data) return
-    console.log("histo ", data)
     let newTable = skip == 0 ? [...data] : [...stakeHistory, ...data]
     setStakeHistory(newTable)
   }

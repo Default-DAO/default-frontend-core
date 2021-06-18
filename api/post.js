@@ -102,7 +102,7 @@ export const withdrawLiquidity = async ({ params, store }) => {
 }
 
 export const stakeDnt = async ({ params, store }) => {
-  try {
+  try {    
     const { signature, ethAddress, chainId } = await getSignedMessage()
     const { data: { result } } = await http.post('/api/txStakeDelegation/stake', {
       signature,

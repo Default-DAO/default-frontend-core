@@ -46,14 +46,6 @@ const Register = (props) => {
         >
           Register
         </Button>
-        {/* <Button
-          gradient width={300} height={40}
-          onClick={async () => {
-            console.log(ethAddress)
-          }}
-        >
-          GETAD
-        </Button> */}
       </span>
     </div>
   )

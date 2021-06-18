@@ -111,7 +111,6 @@ const SearchModal = props => {
         className={classes.form}
         value={searchText}
         onChange={text => {
-          console.log(text)
           handleTextSearch(text)
         }}
         placeholder="Search members"

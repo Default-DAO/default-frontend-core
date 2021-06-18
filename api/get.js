@@ -11,9 +11,9 @@ let http = axios.create({
 });
 
 export const getSignedMessage = async () => {
-  try {
+  try {    
     let ethAddress = await web3.getEthAddress()
-    let chainId = await web3.getChainId()
+    let chainId = await web3.getChainId()    
     const { data: { result } } = await http.get('/api/auth', {
       params: {
         ethAddress,
@@ -23,8 +23,7 @@ export const getSignedMessage = async () => {
     if (result.error) {
       throw result.errorCode;
     }
-    let authMsg = result.authMsg;
-    authMsg.domain.chainId = chainId;
+    let authMsg = result.authMsg;        
 
     const signature = await web3.getSignedMessage(ethAddress, authMsg)
 

@@ -195,7 +195,6 @@ const Stake = props => {
   }
 
   function calculatePointWorth() {
-    console.log('POOL ',pool)
     const contributorIssuance = getProtocol().dntEpochRewardIssuanceAmount
     const dntPerPoint = pool.dntStaked ? (contributorIssuance / 2) / pool.dntStaked : 0
     return format(dntPerPoint, 3)
