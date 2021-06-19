@@ -118,7 +118,7 @@ export const sendTransaction = async ({ from, to, gas, gasPrice, value, data }) 
 export const getSignedMessage = async (ethAddress, authMsg) => {
   try {
     if (!window || !window.ethereum) return
-    authMsg.domain.chainId = Number(authMsg.domain.chainId.replace('0x', ''));
+    authMsg.domain.chainId = parseInt(authMsg.domain.chainId)
     return await window.ethereum.request({
       method: 'eth_signTypedData_v4',
       params: [ethAddress, JSON.stringify(authMsg)],
