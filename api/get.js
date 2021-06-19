@@ -23,7 +23,8 @@ export const getSignedMessage = async () => {
     if (result.error) {
       throw result.errorCode;
     }
-    let authMsg = result.authMsg;        
+    let authMsg = result.authMsg;
+    authMsg.domain.chainId = chainId
 
     const signature = await web3.getSignedMessage(ethAddress, authMsg)
 
