@@ -33,7 +33,6 @@ const Network = props => {
       },
       store
     })
-    console.log("N: ", network)
     if (!network) return
     setNetwork(network)
   }

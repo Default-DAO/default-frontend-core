@@ -56,7 +56,6 @@ const Liquidity = props => {
       },
       store
     })
-    console.log(usdcHistory)
     let oldHistory = usdcHistory ? usdcHistory : []
     let newTable = skip == 0 ? [...newHistory] : [...oldHistory, ...newHistory]
     setUsdcHistory(newTable)
