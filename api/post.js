@@ -186,3 +186,24 @@ export const allocateRewards = async ({ params, store }) => {
     store.setShowToast({ show: true, text: 'Unable to save rewards', reason: 'error' })
   }
 }
+
+
+export const createVote = async ({ params, store }) => {
+  try {
+    const { signature, ethAddress, chainId } = await getSignedMessage()
+
+    const { data: { result } } = await http.post('/api/ctVote/create', {
+      ...params,
+      signature,
+      ethAddress,
+      chainId      
+    })
+
+    if (!result.error) {
+      store.setShowToast({ show: true, text: 'Successfully voted!', reason: 'success' })
+    }
+  } catch (err) {
+    console.log("createVote: ", err)
+    store.setShowToast({ show: true, text: 'Unable to vote', reason: 'error' })
+  }
+}

@@ -29,6 +29,10 @@ const routes = [
   {
     route: '/network',
     text: "History"
+  },
+  {
+    route: '/proposals',
+    text: "Proposals"
   }
 ]
 
