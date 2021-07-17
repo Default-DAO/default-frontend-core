@@ -245,6 +245,38 @@ export const getNetwork = async ({params, store}) => {
   }
 }
 
+export const getProposals = async ({params, store}) => {
+  try {
+    //params: ethAddress, page, epoch
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctVote/proposals', {
+      params: {
+        ...params
+      }
+    })
+
+    return result
+  } catch (err) {
+    console.log("getProposals: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get proposals. Please try again later", reason: 'error' })
+  }
+}
+
+export const getProposal = async ({params, store}) => {
+  try {
+    let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctVote/proposal', {
+      params: {
+        ...params
+      }
+    })    
+    return result
+  } catch (err) {
+    console.log("getProposal: ", err)
+    if (!store) return
+    store.setShowToast({ show: true, text: "Couldn't get proposals. Please try again later", reason: 'error' })
+  }
+}
+
 export const getMemberUsdcHistory = async({params, store}) => {
   try {
     let { data: { result } } = await axios.get(process.env.API_URL + '/api/ctPools/member/usdcHistory', {
