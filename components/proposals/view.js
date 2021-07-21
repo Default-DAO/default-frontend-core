@@ -106,7 +106,7 @@ const ProposalDetail = props => {
           height="65vh"
           list={votesInFavor}
           renderCell={value => renderTableCell(value)}
-          text="There are no selectable epochs"
+          text="No votes in favor"
         ></Table>
       </span>
       <span className={classes.tableContainer}>
@@ -120,7 +120,7 @@ const ProposalDetail = props => {
           height="65vh"
           list={votesAgainst}
           renderCell={value => renderTableCell(value)}
-          text="There are no selectable epochs"
+          text="No votes against"
         ></Table>
       </span>
     </span>
