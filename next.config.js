@@ -11,5 +11,6 @@ module.exports = {
     API_URL: process.env.API_URL,
     DEFAULT_CONTRACT_ADDRESS: process.env.DEFAULT_CONTRACT_ADDRESS,
     USDC_CONTRACT_ADDRESS: process.env.USDC_CONTRACT_ADDRESS,
+    BUILDERIO_API_KEY: process.env.BUILDERIO_API_KEY
   }
 }
