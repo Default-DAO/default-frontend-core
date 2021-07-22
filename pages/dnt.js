@@ -122,11 +122,11 @@ const Stake = props => {
 
   function renderHistoryCell(cell) {
     const { classes } = props
-    const { amount, createdEpoch } = cell
+    const { amount, epoch } = cell
 
     return <Card className={classes.cell}>
       <Text margin="0px 0px 0px 15px" fontSize={20}>{format(amount, 3)} DNT</Text>
-      <Text margin="0px 0px 0px 15px" fontSize={20}>Epoch {createdEpoch + daysToEpoch(730)}</Text>
+      <Text margin="0px 0px 0px 15px" fontSize={20}>Epoch {epoch + daysToEpoch(730)}</Text>
     </Card>
   }
 

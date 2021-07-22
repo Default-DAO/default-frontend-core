@@ -76,7 +76,7 @@ const Liquidity = props => {
 
   function getEpochInvestment() {
     if (!usdcHistory || !usdcHistory.length) return 0
-    return usdcHistory && usdcHistory[0].createdEpoch == store.getProtocol().epochNumber 
+    return usdcHistory && usdcHistory[0].epoch == store.getProtocol().epochNumber 
       ? usdcHistory[0].amount : 0
   }
 
@@ -92,11 +92,11 @@ const Liquidity = props => {
   }
 
   function renderUsdcHistoryCell(cell) {
-    let { amount, createdEpoch, transactionType, status } = cell
+    let { amount, epoch, transactionType, status } = cell
     transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
     return <div className={classes.historyCell}>
       <p className={classes.historyText} style={{ flex: 2 }}>{format(round(amount, 3))} USDC</p>
-      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {createdEpoch}</p>
+      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {epoch}</p>
       <p className={classes.historyText} style={{ flex: 1 }}>{transactionType}</p>
       <p className={classes.historyText} style={{
         flex: 1, textAlign: 'right',
@@ -114,11 +114,11 @@ const Liquidity = props => {
   }
 
   function renderDntHistoryCell(cell) {
-    let { amount, createdEpoch, transactionType } = cell
+    let { amount, epoch, transactionType } = cell
     transactionType = transactionTypes[transactionType] ? transactionTypes[transactionType] : transactionType
     return <div className={classes.historyCell}>
       <p className={classes.historyText} style={{ flex: 1.5 }}>{format(round(amount, 3))} DNT</p>
-      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {createdEpoch}</p>
+      <p className={classes.historyText} style={{ flex: 1 }}>Epoch {epoch}</p>
       <p className={classes.historyText} style={{ flex: 1, textAlign: 'right' }}>{transactionType}</p>
     </div>
   }

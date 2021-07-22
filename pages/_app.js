@@ -4,15 +4,17 @@ import Head from 'next/head';
 import { StoreProvider } from '../store/provider'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { builder, BuilderComponent } from '@builder.io/react'
 
 import * as keys from '../config/keys';
 import Layout from '../components/main/layout'
 import { useStoreApi } from '../store/provider'
-import Register from '../components/register'
 import { isMetamask, getEthAddress, handleAccountChange, handleChainChange } from '../api/web3'
 import * as api from '../api/get'
 import Toast from '../reusable/toast'
 import Loading from '../components/loading'
+
+builder.init(process.env.BUILDERIO_API_KEY)
 
 // Create a theme instance for material ui
 export const theme = createMuiTheme({
@@ -30,10 +32,15 @@ export const theme = createMuiTheme({
   shadows: ["none"]
 });
 
+const noAuth = [
+  "/register"
+]
+
 const App = (props) => {
   const { children, router } = props
   const store = useStoreApi()
   let { reset, isLoading, setIsLoading, setMember, getProtocol, getMember, showRegistration, setShowRegistration } = store
+  const [landingPage, setLandingPage] = useState({})
   React.useEffect(() => {
     if (!isMetamask()) {
       reset()
@@ -51,14 +58,21 @@ const App = (props) => {
       await loadInfo()
     })
 
-    
+
     loadInfo()
   }, []);
 
+  async function loadLandingPage() {
+    const landingPage = await builder.get('page', { url: '/' }).promise();
+    setLandingPage(landingPage)
+  }
+
   async function loadInfo() {
     setIsLoading(true)
+
     let ethAddress = await getEthAddress()
     if (!ethAddress) {
+      await loadLandingPage()
       setMember({})
       setShowRegistration(true)
       setIsLoading(false)
@@ -71,6 +85,7 @@ const App = (props) => {
       store
     })
     if (!member || !member.claimed) {
+      await loadLandingPage()
       setShowRegistration(true)
       setIsLoading(false)
       return
@@ -79,13 +94,19 @@ const App = (props) => {
       params: {},
       store
     })
+
     setShowRegistration(false)
     setIsLoading(false)
   }
 
-  function renderApp() {  
+  function renderApp() {
+
+
     if (showRegistration) {
-      return <Register />
+      return <BuilderComponent
+        content={landingPage}
+        model="page"
+      />
     }
 
     if (isLoading) {
@@ -102,7 +123,11 @@ const App = (props) => {
 
   return <React.Fragment>
     <Toast />
-    {renderApp()}
+    {
+      (noAuth.includes(router.route)) ? 
+      children : 
+      renderApp()
+    }
   </React.Fragment>
 }
 
