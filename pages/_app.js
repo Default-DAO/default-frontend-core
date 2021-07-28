@@ -33,7 +33,12 @@ export const theme = createMuiTheme({
 });
 
 const noAuth = [
-  "/register"
+  "/register",
+  "/overview/landing",
+  "/overview/treasury",
+  "/overview/mining",
+  "/overview/voting",
+  "/overview/review"
 ]
 
 const App = (props) => {
