@@ -1,9 +1,9 @@
 import React from 'react';
-import Stake from './stake'
+import Allocate from './allocate'
 
 const Index = props => {
     return (
-        <Stake/>
+        <Allocate/>
     );
 }
 

@@ -11,8 +11,7 @@ import Text from '../../reusable/text'
 import Avatar from '../../reusable/avatar'
 import { useStoreApi } from '../../store/provider'
 import keys from '../../config/keys'
-import Stakes from './stakes'
-import Rewards from './rewards'
+import Rewards from './allocations'
 import Liquidity from './liquidity'
 import EpochSelector from '../modals/epoch-selector'
 
@@ -62,7 +61,6 @@ const Profile = props => {
           indicator: classes.tab,
         }}
         value={selectedTab} onChange={handleTab}>
-        <Tab label="Stakes" id="stakes" />
         <Tab label="Rewards" id="rewards" />
         <Tab label="Liquidity" id="liquidity" />
       </Tabs>
@@ -75,12 +73,10 @@ const Profile = props => {
   }
 
   function renderContent() {
-    switch (selectedTab) {
+    switch (selectedTab) {      
       case (0):
-        return <Stakes ethAddress={ethAddress} selectedEpoch={selectedEpoch} />
-      case (1):
         return <Rewards ethAddress={ethAddress} selectedEpoch={selectedEpoch} />
-      case (2):
+      case (1):
         return <Liquidity ethAddress={ethAddress} selectedEpoch={selectedEpoch} />
       default:
         return null

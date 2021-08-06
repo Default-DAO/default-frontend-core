@@ -15,24 +15,8 @@ const routes = [
     text: "Pool"
   },
   {
-    route: '/dnt',
-    text: "DNT"
-  },
-  {
-    route: '/stake',
-    text: "Elect"
-  },
-  {
-    route: '/reward',
-    text: "Reward"
-  },
-  {
-    route: '/network',
-    text: "History"
-  },
-  {
-    route: '/proposals',
-    text: "Proposals"
+    route: '/allocate',
+    text: "Allocate"
   }
 ]
 

@@ -9,7 +9,7 @@ import { builder, BuilderComponent } from '@builder.io/react'
 import * as keys from '../config/keys';
 import Layout from '../components/main/layout'
 import { useStoreApi } from '../store/provider'
-import { isMetamask, getEthAddress, handleAccountChange, handleChainChange } from '../api/web3'
+import { isMetamask, getEthAddress, handleAccountChange, handleChainChange } from '../api/ethers'
 import * as api from '../api/get'
 import Toast from '../reusable/toast'
 import Loading from '../components/loading'
