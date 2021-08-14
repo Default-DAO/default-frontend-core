@@ -1,26 +1,26 @@
 import axios from 'axios'
-import { getSignedMessage, getMember, getProtocol } from './get'
-let http = axios.create({
-  baseURL: process.env.API_URL,
-  withCredentials: false,
-  headers: {
-    'Access-Control-Allow-Origin': '*'
-  }
-});
+import { getMember, getProtocol } from './get'
+import operatorAbi from '../abi/operator.json'
+import membersAbi from '../abi/members.json'
+const operatorAddress = '0x260aed4d82CFC5d4c91da6720dB3356a2F8b7A5f'  
 
 export const registerMember = async ({ params, store }) => {
   try {
-    const sign = await getSignedMessage({ store })
-    if (!sign) return
-    const { signature, ethAddress, chainId } = sign
+    var w3 = web3.getWeb3();
+    let operatorContract = new w3.eth.Contract(operatorAbi, operatorAddress);
+
+    let ethAddress = await web3.getEthAddress()
     
-    // member = member ? member : {}
+    let membersAddress = await operatorContract.methods.Members().call()
+    let membersContract = new w3.eth.Contract(membersAbi, membersAddress);
 
-    store.setMember({ ...apiMember, ...txMember })
-    store.setShowRegistration(false)
-    store.setEthAddress(ethAddress)
+    let registeredMember = await membersContract.methods.registerMember(ethAddress).call()
+    console.log(registeredMember)
+    // store.setMember({ 
+    //   ethAddress: registeredMember
+    // })
 
-    return { ...member.apiMember, ...member.txMember }
+    return {}
   } catch (err) {
     console.log("registerMember: ", err)
     if (err == 'notWhitelisted') {
@@ -50,26 +50,8 @@ export const withdrawLiquidity = async ({ params, store }) => {
 
 export const allocateRewards = async ({ params, store }) => {
   try {
-    const { signature, ethAddress, chainId } = await getSignedMessage()
 
-    let allocations = [...params.allocations]
-    for (let i = 0; i < allocations.length; i++) {
-      let allocation = allocations[i]
-      allocations[i] = {
-        fromEthAddress: ethAddress,
-        toEthAddress: allocation.ethAddress,
-        weight: allocation.weight
-      }
-    }
-
-    const { data: { result } } = await http.post('/api/txValueAllocation/send', {
-      signature,
-      ethAddress,
-      chainId,
-      allocations
-    })
-
-    if (!result.error) {
+    if (false) {
       store.setShowToast({ show: true, text: 'Successfully allocated rewards!', reason: 'success' })
     }
   } catch (err) {
