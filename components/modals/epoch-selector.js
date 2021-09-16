@@ -11,9 +11,9 @@ import Card from '../../reusable/card'
 import { useStoreApi } from '../../store/provider'
 
 const EpochSelector = props => {
-  const { getProtocol } = useStoreApi()
+  const { getEpoch } = useStoreApi()
   const { classes, title, open, close, action } = props
-  const currentEpoch = props.maxEpoch ? props.maxEpoch : getProtocol().epochNumber
+  const currentEpoch = props.maxEpoch ? props.maxEpoch : getEpoch().epochNumber
   let epochs = []
   for (let i = 1; i <= currentEpoch; i++) {
     epochs.push(i)

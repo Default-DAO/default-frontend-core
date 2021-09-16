@@ -13,7 +13,7 @@ import Table from '../../reusable/table'
 import Card from '../../reusable/card'
 import Avatar from '../../reusable/avatar'
 import Button from '../../reusable/button'
-import { getMembers, getProtocol } from '../../api/get'
+import { getMembers, getEpoch } from '../../api/get'
 import { useStoreApi } from '../../store/provider'
 import { SettingsInputAntennaTwoTone } from '@material-ui/icons';
 
@@ -21,7 +21,7 @@ const SearchModal = props => {
   const { classes, title, open, close, action, disabled } = props
 
   const store = useStoreApi()
-  const { getMember, setShowProfile, getProtocol } = store
+  const { getMember, setShowProfile, getEpoch } = store
   const [members, setMembers] = useState([])
   const [searchText, setSearchText] = useState('')
   const [selected, setSelected] = useState([])
@@ -78,7 +78,7 @@ const SearchModal = props => {
     const { ethAddress, alias } = cell
     setShowProfile({
       selectedTab: 1,
-      selectedEpoch: getProtocol().epochNumber,
+      selectedEpoch: getEpoch().epochNumber,
       ethAddress,
       alias
     })

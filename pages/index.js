@@ -1,9 +1,9 @@
 import React from 'react';
-import Allocate from './allocate'
+import Treasury from './treasury'
 
 const Index = props => {
     return (
-        <Allocate/>
+        <Treasury/>
     );
 }
 

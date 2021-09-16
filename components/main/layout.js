@@ -8,7 +8,7 @@ import SwapLiquidity from '../liquidity/swap'
 import WithdrawLiquidity from '../liquidity/withdraw'
 import { useStoreApi } from '../../store/provider'
 import Profile from '../profile'
-import { getMemberPool, getProtocol } from '../../api/get'
+import { getMemberTreasury, getEpoch } from '../../api/get'
 
 const Layout = (props) => {
   const store = useStoreApi()

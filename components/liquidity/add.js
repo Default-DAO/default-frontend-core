@@ -7,13 +7,9 @@ import Text from '../../reusable/text'
 import TokenForm from '../../reusable/token-form'
 import Button from '../../reusable/button'
 import { useStoreApi } from '../../store/provider'
-import { checkAddLiquidity } from '../../api/post'
-import { sendTransaction, getWeb3 } from '../../api/web3'
-import abi from '../../api/erc20.json'
 
 const AddLiquidity = (props) => {
   const store = useStoreApi()
-  const {getMember} = store
   const [value, setValue] = useState('')
 
 
@@ -27,15 +23,11 @@ const AddLiquidity = (props) => {
         onValueChange={(value) => setValue(value)}
         selectedToken="usdc"
         onSelectedTokenChange={() => { }}
-        balance={getMember().liquidityCapUsdc}
+        balance={0}
       />
       <Button
         onClick={async () => { 
-          if (!value || value <= 0) {
-            return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
-          }
-          // ADD LIQUIDITY GOES HERE
-          await props.callback()
+          
         }}
         margin="35px 0px 0px 0px" gradient width={200} height={50}>
         Add!

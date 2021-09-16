@@ -11,8 +11,6 @@ import Text from '../../reusable/text'
 import Avatar from '../../reusable/avatar'
 import { useStoreApi } from '../../store/provider'
 import keys from '../../config/keys'
-import Rewards from './allocations'
-import Liquidity from './liquidity'
 import EpochSelector from '../modals/epoch-selector'
 
 const Profile = props => {
@@ -75,9 +73,9 @@ const Profile = props => {
   function renderContent() {
     switch (selectedTab) {      
       case (0):
-        return <Rewards ethAddress={ethAddress} selectedEpoch={selectedEpoch} />
+        return null
       case (1):
-        return <Liquidity ethAddress={ethAddress} selectedEpoch={selectedEpoch} />
+        return null
       default:
         return null
     }
