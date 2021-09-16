@@ -11,12 +11,16 @@ import { useStoreApi } from '../../store/provider'
 
 const routes = [
   {
-    route: '/pool',
-    text: "Pool"
+    route: '/endorse',
+    text: "Endorsements"
   },
   {
-    route: '/allocate',
-    text: "Allocate"
+    route: '/reward',
+    text: "Rewards"
+  },
+  {
+    route: '/treasury',
+    text: "Treasury"
   }
 ]
 
@@ -55,7 +59,7 @@ const Header = (props) => {
   function renderProfile() {
     const { classes } = props
     let member = store.getMember()
-    let protocol = store.getProtocol()
+    let epoch = store.getEpoch()
     return (
       <div className={classes.profile}>
         <Button
@@ -71,12 +75,12 @@ const Header = (props) => {
           fontSize={14}
           fontWeight={700}
           margin='0px 0px 0px 14px'
-        >Epoch {protocol.epochNumber}</Text>
+        >Epoch {epoch.epochNumber}</Text>
         <span className={classes.memberProfile} onClick={() => {
           store.setShowProfile({
             ethAddress: member.ethAddress,
             alias: member.alias,
-            selectedEpoch: protocol.epochNumber
+            selectedEpoch: epoch.epochNumber
           })
         }}>
           <Avatar

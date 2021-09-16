@@ -14,17 +14,7 @@ const initialState = {
   showRegistration: false,
   isLoading: true,
   member: {},
-  memberPool: {
-    usdc: 0,
-    dnt: 0,
-    dntStaked: 0
-  },
-  pool: {
-    usdc: 0,
-    dnt: 0,
-    dntStaked: 0
-  },
-  protocol: {},
+  epoch: {},
 
   showAddLiquidity: false,
   showStakeLiquidity: false,
@@ -79,20 +69,15 @@ const reducer = (state, action) => {
         ...state,
         member: action.member
       }
-    case keys.MEMBER_POOL:
+    case keys.TREASURY:
       return {
         ...state,
-        memberPool: action.memberPool
-      }
-    case keys.POOL:
-      return {
-        ...state,
-        pool: action.pool
+        treasury: action.treasury
       }
     case keys.PROTOCOL:
       return {
         ...state,
-        protocol: action.protocol
+        epoch: action.epoch
       }
     case keys.SHOW_ADD_LIQUIDITY:
       return {
@@ -152,23 +137,13 @@ export const useStoreApi = () => {
         return state.member
       }
     },
-    memberPool: state.memberPool,
-    getMemberPool: () => {
-      let memberPool = getLocalStorage(keys.MEMBER_POOL)
-      if (memberPool) {
-        return memberPool
+    epoch: state.epoch,
+    getEpoch: () => {
+      let epoch = getLocalStorage(keys.PROTOCOL)
+      if (epoch) {
+        return epoch
       } else {
-        return state.memberPool
-      }
-    },
-    pool: state.pool,
-    protocol: state.protocol,
-    getProtocol: () => {
-      let protocol = getLocalStorage(keys.PROTOCOL)
-      if (protocol) {
-        return protocol
-      } else {
-        return state.protocol
+        return state.epoch
       }
     },
 
@@ -215,25 +190,11 @@ export const useStoreApi = () => {
         member
       })
     },
-    setMemberPool: memberPool => {
-      setLocalStorage(keys.MEMBER_POOL, memberPool)
-      dispatch({
-        type: keys.MEMBER_POOL,
-        memberPool
-      })
-    },
-    setPool: pool => {
-      setLocalStorage(keys.POOL, pool)
-      dispatch({
-        type: keys.POOL,
-        pool
-      })
-    },
-    setProtocol: protocol => {
-      setLocalStorage(keys.PROTOCOL, protocol)
+    setEpoch: epoch => {
+      setLocalStorage(keys.PROTOCOL, epoch)
       dispatch({
         type: keys.PROTOCOL,
-        protocol
+        epoch
       })
     },
 
@@ -297,7 +258,7 @@ export const useStoreApi = () => {
 
     reset: () => {
       setLocalStorage(keys.PROTOCOL, {})
-      setLocalStorage(keys.MEMBER_POOL, {})
+      setLocalStorage(keys.MEMBER_TREASURY, {})
       setLocalStorage(keys.MEMBER, {})
       dispatch({
         type: keys.RESET

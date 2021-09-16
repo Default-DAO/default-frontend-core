@@ -44,7 +44,7 @@ const noAuth = [
 const App = (props) => {
   const { children, router } = props
   const store = useStoreApi()
-  let { reset, isLoading, setIsLoading, setMember, getProtocol, getMember, showRegistration, setShowRegistration } = store
+  let { reset, isLoading, setIsLoading, setMember, getEpoch, getMember, showRegistration, setShowRegistration } = store
   const [landingPage, setLandingPage] = useState({})
   React.useEffect(() => {
     if (!isMetamask()) {
@@ -95,7 +95,7 @@ const App = (props) => {
       setIsLoading(false)
       return
     }
-    await api.getProtocol({
+    await api.getEpoch({
       params: {},
       store
     })

@@ -8,30 +8,18 @@ import TokenForm from '../../reusable/token-form'
 import Button from '../../reusable/button'
 import { stakeDnt } from '../../api/post'
 import { useStoreApi } from '../../store/provider'
-import { getMemberPool } from '../../api/get';
+import { getMemberTreasury } from '../../api/get';
 
 const StakeReward = props => {
   const store = useStoreApi()
-  const { getMember, setShowToast } = store
+  
   const [value, setValue] = useState('')
-  const [pool, setPool] = useState({
-    dnt: 0,
-    usdc: 0,
-    dntStaked: 0
-  })
-
   useEffect(() => {
-    initPoolInfo()
+    initTreasuryInfo()
   }, [])
 
-  async function initPoolInfo() {
-    let pool = await getMemberPool({
-      params: {
-        ethAddress: getMember().ethAddress
-      },
-      store
-    })
-    setPool(pool)
+  async function initTreasuryInfo() {
+    
   }
 
   const { classes, open, close, configurations, title, label, buttonLabel } = props
@@ -45,21 +33,11 @@ const StakeReward = props => {
         selectedToken="dnt"
         onSelectedTokenChange={() => { }}
         label={label}
-        balance={pool.dnt > 0 ? pool.dnt : 0}
+        balance={0}
       />
       <Button
         onClick={async () => {           
-          if (!value || value <= 0) {
-            return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
-          }
-          if (value > (pool.dnt - pool.dntStaked)) {
-            return setShowToast({show: true, text: 'Not enough DNT!', reason: 'error'})
-          }
-          await stakeDnt({
-            params: { amount: value },
-            store
-          })
-          await props.callback()
+          
         }}
         margin="35px 0px 0px 0px" gradient width={200} height={50}>
         {buttonLabel}
