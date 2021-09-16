@@ -27,20 +27,18 @@ const SearchModal = props => {
   const [selected, setSelected] = useState([])
 
   useEffect(() => {
-    searchMembers(0)
+    searchMembers()
   }, [])
 
-  async function searchMembers(skip, searchText) {
+  async function searchMembers(searchText) {
     let newMembers = await getMembers({
       params: {
-        skip,
         searchText,
         excludeEthAddress: getMember().ethAddress
       }
     })
     if (newMembers) {
-      let newTable = skip == 0 ? [...newMembers] : [...members, ...newMembers]
-      setMembers(newTable)
+      setMembers(newMembers)
     }
   }
 
@@ -54,7 +52,7 @@ const SearchModal = props => {
     let timeout = 0
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
-        searchMembers(0, text)
+        searchMembers(text)
     }, 800);
   }
 
@@ -126,9 +124,6 @@ const SearchModal = props => {
         actionText="Close"
         action={closeSearch}
         icon={mdiAccountQuestionOutline}
-        onScroll={async () => {
-          await searchMembers(members.length)
-        }}
       ></Table>
       {selected.length > 0 ? <Button
         onClick={() => {

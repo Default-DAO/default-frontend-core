@@ -31,6 +31,9 @@ const AddLiquidity = (props) => {
       />
       <Button
         onClick={async () => { 
+          if (!value || value <= 0) {
+            return setShowToast({show: true, text: 'Please enter an amount!', reason: 'error'})
+          }
           // ADD LIQUIDITY GOES HERE
           await props.callback()
         }}
